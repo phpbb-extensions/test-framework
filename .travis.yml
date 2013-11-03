@@ -6,6 +6,7 @@ php:
   - 5.5
 
 env:
+  - DB=mariadb
   - DB=mysql
   - DB=postgres
 
@@ -17,5 +18,12 @@ before_script:
   # clone phpBB
   - git clone "git://github.com/phpbb-extensions/test-framework.git" "./../../test-framework"
   
-  # run the travis.yml file from the cloned repo to finish the setup
-  - ./../../test-framework/.travis.yml
+  # run the prepare-travis.sh file from the cloned repo to finish the setup
+  - ./../../test-framework/prepare-travis.sh
+
+  # Go to the root phpBB repository that was cloned from prepare-travis.sh,
+  # so the script path and relative paths are correct
+  - cd ../../phpbb
+
+script:
+  - ./phpBB/vendor/bin/phpunit --configuration ./phpBB/ext/$VENDOR/$NAME/travis/phpunit-$DB-travis.xml
