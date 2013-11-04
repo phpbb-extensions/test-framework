@@ -3,6 +3,9 @@
 # @copyright (c) 2013 phpBB Group
 # @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
 #
+VENDOR=$1
+NAME=$2
+DB=$3
 
 # clone phpBB
 git clone "git://github.com/phpbb/phpbb.git" "./../../phpbb"
@@ -14,7 +17,7 @@ mkdir -p ./../../phpbb/phpBB/ext/$VENDOR/$NAME/travis
 mv * ./../../phpbb/phpBB/ext/$VENDOR/$NAME
 
 # move the test-framework/travis files to the ext dir
-mv ./../../test-framework/travis/* ./../../phpbb/phpBB/ext/$VENDOR/$NAME/travis
+mv -n ./../../test-framework/travis/* ./../../phpbb/phpBB/ext/$VENDOR/$NAME/travis
 
 # move ourselves to the root phpBB directory
 cd ./../../phpbb/phpBB
