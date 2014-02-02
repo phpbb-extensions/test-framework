@@ -16,8 +16,11 @@ mkdir -p ./../../phpbb/phpBB/ext/$VENDOR/$NAME/travis
 # move the current working directory (which contains the root of the main repository) to the extension directory
 mv * ./../../phpbb/phpBB/ext/$VENDOR/$NAME
 
-# move the test-framework/travis files to the ext dir
+# move the test-framework/travis files to the ext dir (-n means no overwriting files)
 mv -n ./../../test-framework/travis/* ./../../phpbb/phpBB/ext/$VENDOR/$NAME/travis
+
+# move the test-framework/tests files to the ext dir (-n means no overwriting files)
+mv -n ./../../test-framework/tests/* ./../../phpbb/phpBB/ext/$VENDOR/$NAME/tests
 
 # move ourselves to the root phpBB directory
 cd ./../../phpbb/phpBB
