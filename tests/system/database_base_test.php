@@ -52,5 +52,10 @@ class extension_system_database_base_test extends extension_database_test_case
 		{
 			$this->fail('Migration did not run');
 		}
+
+		if (!$db_tools->sql_table_exists('phpbb_test_subdir'))
+		{
+			$this->fail('Migration in subdirectory did not run');
+		}
 	}
 }
