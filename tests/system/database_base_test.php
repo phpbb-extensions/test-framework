@@ -7,7 +7,7 @@
 *
 */
 
-class extension_system_database_base_test extends phpbb_database_test_case
+class extension_system_database_base_test extends extension_database_test_case
 {
 	public function getDataSet()
 	{
@@ -28,8 +28,8 @@ class extension_system_database_base_test extends phpbb_database_test_case
 	*/
 	public function test_check()
 	{
-		$sql = 'SELECT *
-			FROM phpbb_config';
+		$sql = "SELECT *
+			FROM phpbb_config";
 		$result = $this->db->sql_query($sql);
 		$this->assertEquals(array(
 			array(
@@ -39,5 +39,18 @@ class extension_system_database_base_test extends phpbb_database_test_case
 			),
 		), $this->db->sql_fetchrowset($result));
 		$this->db->sql_freeresult($result);
+	}
+
+	/**
+	* Confirm the migration was installed
+	*/
+	public function test_migration()
+	{
+		$db_tools = $this->container->get('dbal.tools');
+
+		if (!$db_tools->sql_table_exists('phpbb_test'))
+		{
+			$this->fail('Migration did not run');
+		}
 	}
 }
