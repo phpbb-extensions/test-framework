@@ -18,7 +18,7 @@ class extension_functional_extension_base_test extends extension_functional_test
 
 		$this->vendor = 'phpbb';
 		$this->extension = 'example';
-		$this->display_name = 'phpBB Example Extension'
+		$this->display_name = 'phpBB Example Extension';
 		
 		$this->login();
 		$this->admin_login();
