@@ -46,4 +46,48 @@ class extension_functional_extension_base_test extends extension_functional_test
 			$this->assertEquals($this->display_name, $extension);
 		}
 	}
+
+	/**
+	* Test disabling an extension
+	*
+	* @access public
+	*/
+	public function test_disable_extension()
+	{
+		$this->disable_extension();
+
+		$crawler = self::request('GET', 'adm/index.php?i=acp_extensions&mode=main&sid=' . $this->sid);
+		$disabled_extensions = $crawler->filter('tr.ext_disabled')->extract(array('_text'));
+		foreach ($disabled_extensions as $extension)
+		{
+			if (strpos($extension, $this->display_name) !== 0)
+			{
+				continue;
+			}
+			
+			$this->assertEquals($this->display_name, $extension);
+		}
+	}
+
+	/**
+	* Test purging an extension
+	*
+	* @access public
+	*/
+	public function test_purge_extension()
+	{
+		$this->purge_extension();
+
+		$crawler = self::request('GET', 'adm/index.php?i=acp_extensions&mode=main&sid=' . $this->sid);
+		$disabled_extensions = $crawler->filter('tr.ext_disabled')->extract(array('_text'));
+		foreach ($disabled_extensions as $extension)
+		{
+			if (strpos($extension, $this->display_name) !== 0)
+			{
+				continue;
+			}
+			
+			$this->assertEquals($this->display_name, $extension);
+		}
+	}
 }
