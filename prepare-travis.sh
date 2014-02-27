@@ -38,4 +38,4 @@ sh -c "if [ '$DB' = 'mariadb' ]; then ./travis/setup-mariadb.sh; fi"
 sh -c "if [ '$DB' = 'mysql' -o '$DB' = 'mariadb' ]; then mysql -e 'create database IF NOT EXISTS phpbb_tests;'; fi"
 ./travis/install-php-extensions.sh
 phpenv rehash
-sh -c "if [ `php -r "echo (int) version_compare(PHP_VERSION, '5.3.19', '>=');"` = "1" ]; then ./travis/setup-webserver.sh; fi"
+sh -c "./travis/setup-webserver.sh; fi"
