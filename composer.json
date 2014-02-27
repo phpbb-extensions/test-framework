@@ -18,6 +18,6 @@
 		"phpbb/phpbb": "3.1.*@dev"
 	},
 	"extra": {
-		"display-name": "phpBB Example Extension",
+		"display-name": "phpBB Example Extension"
 	}
 }
