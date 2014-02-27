@@ -65,6 +65,10 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 			$crawler = self::submit($form);
 			$this->assertContainsLang('EXTENSION_ENABLE_SUCCESS', $crawler->text());
 		}
+		else
+		{
+			$this->fail($this->extension_display_name . ' not available');
+		}
 	}
 
 	/**
@@ -87,6 +91,10 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 			$crawler = self::submit($form);
 			$this->assertContainsLang('EXTENSION_DISABLE_SUCCESS', $crawler->text());
 		}
+		else
+		{
+			$this->fail($this->extension_display_name . ' not enabled');
+		}
 	}
 
 	/**
@@ -108,6 +116,10 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 			$form = $crawler->selectButton($this->lang('EXTENSION_DELETE_DATA'))->form();
 			$crawler = self::submit($form);
 			$this->assertContainsLang('EXTENSION_DELETE_DATA_SUCCESS', $crawler->text());
+		}
+		else
+		{
+			$this->fail($this->extension_display_name . ' not disabled');
 		}
 	}
 
