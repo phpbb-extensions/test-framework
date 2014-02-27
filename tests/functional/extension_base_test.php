@@ -25,14 +25,14 @@ class extension_functional_extension_base_test extends extension_functional_test
 
 		// Enable extension
 		$this->enable_extension();
-		$this->assertTrue(is_enabled());
+		$this->assertTrue($this->is_enabled());
 
 		// Disable extension
 		$this->disable_extension();
-		$this->assertTrue(is_disabled());
+		$this->assertTrue($this->is_disabled());
 
 		// Purge extension
 		$this->purge_extension();
-		$this->assertTrue(is_available());
+		$this->assertTrue($this->is_available());
 	}
 }

@@ -154,17 +154,18 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 	{
 		$crawler = self::request('GET', 'adm/index.php?i=acp_extensions&mode=main&sid=' . $this->sid);
 
-		$extension_items = array(
+		$disabled_extensions = array(
 			$crawler->filter('tr.ext_disabled')->each(function ($node, $i) {
-				return array('name' => $node->filter('td')->eq(0)->text(), 'action' => $node->filter('td')->eq(2)->text());
+				$children = $node->children();
+				return array('name' => $children[0]->text(), 'action' => $children[2]->text());
 			}),
 		);
 
-		foreach ($extension_items as $extensions)
+		foreach ($disabled_extensions as $extension)
 		{
-			foreach($extensions as $extension)
+			foreach($extension as $column)
 			{
-				if (strpos($extension['name'], $this->extension_display_name) !== false && strpos($extension['action'], $this->lang('EXTENSION_DELETE_DATA')) !== false)
+				if (strpos($column['name'], $this->extension_display_name) !== false && strpos($column['action'], $this->lang('EXTENSION_DELETE_DATA')) !== false)
 				{
 					return true;
 				}
@@ -184,17 +185,18 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 	{
 		$crawler = self::request('GET', 'adm/index.php?i=acp_extensions&mode=main&sid=' . $this->sid);
 
-		$extension_items = array(
+		$disabled_extensions = array(
 			$crawler->filter('tr.ext_disabled')->each(function ($node, $i) {
-				return array('name' => $node->filter('td')->eq(0)->text(), 'action' => $node->filter('td')->eq(2)->text());
+				$children = $node->children();
+				return array('name' => $children[0]->text(), 'action' => $children[2]->text());
 			}),
 		);
 
-		foreach ($extension_items as $extensions)
+		foreach ($disabled_extensions as $extension)
 		{
-			foreach($extensions as $extension)
+			foreach($extension as $column)
 			{
-				if (strpos($extension['name'], $this->extension_display_name) !== false && strpos($extension['action'], $this->lang('EXTENSION_DELETE_DATA')) === false)
+				if (strpos($column['name'], $this->extension_display_name) !== false && strpos($column['action'], $this->lang('EXTENSION_DELETE_DATA')) === false)
 				{
 					return true;
 				}
