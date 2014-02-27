@@ -28,12 +28,6 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 	protected $extension_display_name;
 
 	/**
-	* The enabled state of an extension
-	* @var string
-	*/
-	protected $extension_enabled = false;
-
-	/**
 	* Set an extension vandor/name data up
 	*
 	* @param string $extension_vendor The vendor name of an extension
@@ -59,7 +53,6 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 	*/
 	public function enable_extension()
 	{
-		if ($this->extension_enabled === true || $this->is_enabled())
 		{
 			return;
 		}
@@ -70,7 +63,6 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 			$form = $crawler->selectButton($this->lang('EXTENSION_ENABLE'))->form();
 			$crawler = self::submit($form);
 			$this->assertContainsLang('EXTENSION_ENABLE_SUCCESS', $crawler->text());
-			$this->extension_enabled = true;
 		}
 	}
 
@@ -82,7 +74,6 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 	*/
 	public function disable_extension()
 	{
-		if ($this->extension_enabled === false || $this->is_disabled())
 		{
 			return;
 		}
@@ -93,7 +84,6 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 			$form = $crawler->selectButton($this->lang('EXTENSION_DISABLE'))->form();
 			$crawler = self::submit($form);
 			$this->assertContainsLang('EXTENSION_DISABLE_SUCCESS', $crawler->text());
-			$this->extension_enabled = false;
 		}
 	}
 
@@ -105,7 +95,6 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 	*/
 	public function purge_extension()
 	{
-		if ($this->extension_enabled === true || $this->is_enabled())
 		{
 			return;
 		}
@@ -116,7 +105,6 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 			$form = $crawler->selectButton($this->lang('EXTENSION_DELETE_DATA'))->form();
 			$crawler = self::submit($form);
 			$this->assertContainsLang('EXTENSION_DELETE_DATA_SUCCESS', $crawler->text());
-			$this->extension_enabled = false;
 		}
 	}
 
