@@ -12,19 +12,6 @@
 */
 class extension_functional_extension_base_test extends extension_functional_test_case
 {
-	public function setUp()
-	{
-		parent::setUp();
-
-		$this->vendor = 'phpbb';
-		$this->extension = 'example';
-		$this->display_name = 'phpBB Example Extension';
-		
-		$this->login();
-		$this->admin_login();
-		$this->set_extension($this->vendor, $this->extension, $this->display_name);
-	}
-
 	/**
 	* Test enabling / disabling / purging of an extension
 	*
@@ -32,6 +19,10 @@ class extension_functional_extension_base_test extends extension_functional_test
 	*/
 	public function test_enable_disable_purge_extension()
 	{
+		$this->login();
+		$this->admin_login();
+		$this->set_extension('phpbb', 'example', 'phpBB Example Extension');
+
 		// Enable extension
 		$this->enable_extension();
 		$this->assertTrue(is_enabled());
