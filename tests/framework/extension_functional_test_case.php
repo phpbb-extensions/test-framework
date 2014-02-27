@@ -154,25 +154,17 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 	{
 		$crawler = self::request('GET', 'adm/index.php?i=acp_extensions&mode=main&sid=' . $this->sid);
 
-		$disabled_extensions = array(
-			$crawler->filter('tr.ext_disabled')->each(function ($node, $i) {
-				$children = $node->children();
-				return array('name' => $children[0]->text(), 'action' => $children[2]->text());
-			}),
-		);
+		$is_disabled = false;
 
-		foreach ($disabled_extensions as $extension)
-		{
-			foreach($extension as $column)
+		$crawler->filter('tr.ext_disabled')->each(function ($node, $i) use ($is_disabled) {
+			$children = $node->children();
+			if (strpos($children[0], $this->extension_display_name) !== false && strpos($children[2], $this->lang('EXTENSION_DELETE_DATA')) !== false)
 			{
-				if (strpos($column['name'], $this->extension_display_name) !== false && strpos($column['action'], $this->lang('EXTENSION_DELETE_DATA')) !== false)
-				{
-					return true;
-				}
+				$is_disabled = true;
 			}
-		}
+		});
 
-		return false;
+		return $is_disabled;
 	}
 
 	/**
@@ -185,24 +177,16 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 	{
 		$crawler = self::request('GET', 'adm/index.php?i=acp_extensions&mode=main&sid=' . $this->sid);
 
-		$disabled_extensions = array(
-			$crawler->filter('tr.ext_disabled')->each(function ($node, $i) {
-				$children = $node->children();
-				return array('name' => $children[0]->text(), 'action' => $children[2]->text());
-			}),
-		);
+		$is_available = false;
 
-		foreach ($disabled_extensions as $extension)
-		{
-			foreach($extension as $column)
+		$crawler->filter('tr.ext_disabled')->each(function ($node, $i) use ($is_disabled) {
+			$children = $node->children();
+			if (strpos($children[0], $this->extension_display_name) !== false && strpos($children[2], $this->lang('EXTENSION_DELETE_DATA')) === false)
 			{
-				if (strpos($column['name'], $this->extension_display_name) !== false && strpos($column['action'], $this->lang('EXTENSION_DELETE_DATA')) === false)
-				{
-					return true;
-				}
+				$is_available = true;
 			}
-		}
+		});
 
-		return false;
+		return $is_available;
 	}
 }
