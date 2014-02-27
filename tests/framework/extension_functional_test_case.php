@@ -158,7 +158,7 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 
 		$crawler->filter('tr.ext_disabled')->each(function ($node, $i) use ($is_disabled) {
 			$children = $node->children();
-			if (strpos($children[0], $this->extension_display_name) !== false && strpos($children[2], $this->lang('EXTENSION_DELETE_DATA')) !== false)
+			if (strpos($children[0]->text(), $this->extension_display_name) !== false && strpos($children[2]->text(), $this->lang('EXTENSION_DELETE_DATA')) !== false)
 			{
 				$is_disabled = true;
 			}
@@ -181,7 +181,7 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 
 		$crawler->filter('tr.ext_disabled')->each(function ($node, $i) use ($is_disabled) {
 			$children = $node->children();
-			if (strpos($children[0], $this->extension_display_name) !== false && strpos($children[2], $this->lang('EXTENSION_DELETE_DATA')) === false)
+			if (strpos($children[0]->text(), $this->extension_display_name) !== false && strpos($children[2]->text(), $this->lang('EXTENSION_DELETE_DATA')) === false)
 			{
 				$is_available = true;
 			}
