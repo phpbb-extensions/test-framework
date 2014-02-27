@@ -154,7 +154,7 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 	{
 		$crawler = self::request('GET', 'adm/index.php?i=acp_extensions&mode=main&sid=' . $this->sid);
 
-		$crawler->filter('tr.ext_disabled')->each(function (Crawler $node, $i) {
+		$crawler->filter('tr.ext_disabled')->each(function ($node, $i) {
 			$children = $node->children();
 			if (strpos($children[0]->text(), $this->extension_display_name) !== false && strpos($children[2]->text(), $this->lang('EXTENSION_DELETE_DATA')) !== false)
 			{
@@ -175,7 +175,7 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 	{
 		$crawler = self::request('GET', 'adm/index.php?i=acp_extensions&mode=main&sid=' . $this->sid);
 
-		$crawler->filter('tr.ext_disabled')->each(function (Crawler $node, $i) {
+		$crawler->filter('tr.ext_disabled')->each(function ($node, $i) {
 			$children = $node->children();
 			if (strpos($children[0]->text(), $this->extension_display_name) !== false && strpos($children[2]->text(), $this->lang('EXTENSION_DELETE_DATA')) === false)
 			{
