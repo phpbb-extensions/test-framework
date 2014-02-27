@@ -30,7 +30,7 @@ class extension_functional_extension_base_test extends extension_functional_test
 	*
 	* @access public
 	*/
-	public function test_enable__diabel_purge_extension()
+	public function test_enable_disable_purge_extension()
 	{
 		// Enable extension
 		$this->enable_extension();
