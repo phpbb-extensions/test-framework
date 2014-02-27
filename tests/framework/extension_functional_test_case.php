@@ -154,13 +154,22 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 	{
 		$crawler = self::request('GET', 'adm/index.php?i=acp_extensions&mode=main&sid=' . $this->sid);
 
-		$crawler->filter('tr.ext_disabled')->each(function ($node, $i) {
-			$children = $node->children();
-			if (strpos($children[0]->text(), $this->extension_display_name) !== false && strpos($children[2]->text(), $this->lang('EXTENSION_DELETE_DATA')) !== false)
+		$extension_items = array(
+			$crawler->filter('tr.ext_disabled')->each(function ($node, $i) {
+				return array('name' => $node->filter('td')->eq(0)->text(), 'action' => $node->filter('td')->eq(2)->text());
+			}),
+		);
+
+		foreach ($extension_items as $extensions)
+		{
+			foreach($extensions as $extension)
 			{
-				return true;
+				if (strpos($extension['name'], $this->extension_display_name) !== false && strpos($extension['action'], $this->lang('EXTENSION_DELETE_DATA')) !== false)
+				{
+					return true;
+				}
 			}
-		});
+		}
 
 		return false;
 	}
@@ -175,13 +184,22 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 	{
 		$crawler = self::request('GET', 'adm/index.php?i=acp_extensions&mode=main&sid=' . $this->sid);
 
-		$crawler->filter('tr.ext_disabled')->each(function ($node, $i) {
-			$children = $node->children();
-			if (strpos($children[0]->text(), $this->extension_display_name) !== false && strpos($children[2]->text(), $this->lang('EXTENSION_DELETE_DATA')) === false)
+		$extension_items = array(
+			$crawler->filter('tr.ext_disabled')->each(function ($node, $i) {
+				return array('name' => $node->filter('td')->eq(0)->text(), 'action' => $node->filter('td')->eq(2)->text());
+			}),
+		);
+
+		foreach ($extension_items as $extensions)
+		{
+			foreach($extensions as $extension)
 			{
-				return true;
+				if (strpos($extension['name'], $this->extension_display_name) !== false && strpos($extension['action'], $this->lang('EXTENSION_DELETE_DATA')) === false)
+				{
+					return true;
+				}
 			}
-		});
+		}
 
 		return false;
 	}
