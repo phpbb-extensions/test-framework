@@ -12,3 +12,6 @@ require dirname(__FILE__) . '/../../../../../tests/bootstrap.php';
 
 // Require our base extension database class
 require_once dirname(__FILE__) . '/../tests/framework/extension_database_test_case.php';
+
+// Require our base extension functional class
+require_once dirname(__FILE__) . '/../tests/framework/extension_functional_test_case.php';
