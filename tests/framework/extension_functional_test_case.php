@@ -152,13 +152,16 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 	*/
 	protected function is_disabled()
 	{
-		$crawler = self::request('GET', 'adm/index.php?i=acp_extensions&mode=main&sid=' . $this->sid);
-
 		$is_disabled = false;
 
-		$crawler->filter('tr.ext_disabled')->each(function ($node, $i) use (&$is_disabled) {
+		// PHP 5.3 does not allow $this to be used directly in closures
+		$name = $this->extension_display_name;
+		$lang = $this->lang('EXTENSION_DELETE_DATA');
+
+		$crawler = self::request('GET', 'adm/index.php?i=acp_extensions&mode=main&sid=' . $this->sid);
+		$crawler->filter('tr.ext_disabled')->each(function ($node, $i) use (&$is_disabled, $name, $lang) {
 			$children = $node->children();
-			if (strpos($children->eq(0)->text(), $this->extension_display_name) !== false && strpos($children->eq(2)->text(), $this->lang('EXTENSION_DELETE_DATA')) !== false)
+			if (strpos($children->eq(0)->text(), $name) !== false && strpos($children->eq(2)->text(), $lang) !== false)
 			{
 				$is_disabled = true;
 			}
@@ -175,13 +178,16 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 	*/
 	protected function is_available()
 	{
-		$crawler = self::request('GET', 'adm/index.php?i=acp_extensions&mode=main&sid=' . $this->sid);
-
 		$is_available = false;
+		
+		// PHP 5.3 does not allow $this to be used directly in closures
+		$name = $this->extension_display_name;
+		$lang = $this->lang('EXTENSION_DELETE_DATA');
 
-		$crawler->filter('tr.ext_disabled')->each(function ($node, $i) use (&$is_available) {
+		$crawler = self::request('GET', 'adm/index.php?i=acp_extensions&mode=main&sid=' . $this->sid);
+		$crawler->filter('tr.ext_disabled')->each(function ($node, $i) use (&$is_available, $name, $lang) {
 			$children = $node->children();
-			if (strpos($children->eq(0)->text(), $this->extension_display_name) !== false && strpos($children->eq(2)->text(), $this->lang('EXTENSION_DELETE_DATA')) === false)
+			if (strpos($children->eq(0)->text(), $name) !== false && strpos($children->eq(2)->text(), $lang) === false)
 			{
 				$is_available = true;
 			}
