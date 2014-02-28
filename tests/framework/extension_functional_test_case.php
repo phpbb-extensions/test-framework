@@ -28,12 +28,6 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 	protected $extension_display_name;
 
 	/**
-	* The enabled state of an extension
-	* @var string
-	*/
-	protected $extension_enabled = false;
-
-	/**
 	* Set an extension vandor/name data up
 	*
 	* @param string $extension_vendor The vendor name of an extension
@@ -59,18 +53,21 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 	*/
 	public function enable_extension()
 	{
-		if ($this->extension_enabled === true || $this->is_enabled())
+		if ($this->is_enabled())
 		{
 			return;
 		}
 
-		if ($this->is_disabled())
+		if ($this->is_available() || $this->is_disabled())
 		{
 			$crawler = self::request('GET', 'adm/index.php?i=acp_extensions&mode=main&action=enable_pre&ext_name=' . $this->extension_vendor . '%2f' . $this->extension_name . '&sid=' . $this->sid);
 			$form = $crawler->selectButton($this->lang('EXTENSION_ENABLE'))->form();
 			$crawler = self::submit($form);
 			$this->assertContainsLang('EXTENSION_ENABLE_SUCCESS', $crawler->text());
-			$this->extension_enabled = true;
+		}
+		else
+		{
+			$this->fail($this->extension_display_name . ' not available');
 		}
 	}
 
@@ -82,7 +79,7 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 	*/
 	public function disable_extension()
 	{
-		if ($this->extension_enabled === false || $this->is_disabled())
+		if ($this->is_disabled())
 		{
 			return;
 		}
@@ -93,7 +90,10 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 			$form = $crawler->selectButton($this->lang('EXTENSION_DISABLE'))->form();
 			$crawler = self::submit($form);
 			$this->assertContainsLang('EXTENSION_DISABLE_SUCCESS', $crawler->text());
-			$this->extension_enabled = false;
+		}
+		else
+		{
+			$this->fail($this->extension_display_name . ' not enabled');
 		}
 	}
 
@@ -105,7 +105,7 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 	*/
 	public function purge_extension()
 	{
-		if ($this->extension_enabled === true || $this->is_enabled())
+		if ($this->is_enabled() || $this->is_available)
 		{
 			return;
 		}
@@ -116,7 +116,10 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 			$form = $crawler->selectButton($this->lang('EXTENSION_DELETE_DATA'))->form();
 			$crawler = self::submit($form);
 			$this->assertContainsLang('EXTENSION_DELETE_DATA_SUCCESS', $crawler->text());
-			$this->extension_enabled = false;
+		}
+		else
+		{
+			$this->fail($this->extension_display_name . ' not disabled');
 		}
 	}
 
@@ -144,21 +147,52 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 	/**
 	* Check if the extension is disabled
 	*
-	* @return bool is extension found in the disabled list
+	* @return bool is extension found in the disabled list and available to be enabled or purged
 	* @access protected
 	*/
 	protected function is_disabled()
 	{
-		$crawler = self::request('GET', 'adm/index.php?i=acp_extensions&mode=main&sid=' . $this->sid);
-		$disabled_extensions = $crawler->filter('tr.ext_disabled')->extract(array('_text'));
-		foreach ($disabled_extensions as $extension)
-		{
-			if (strpos($extension, $this->extension_display_name) !== false)
-			{
-				return true;
-			}
-		}
+		$is_disabled = false;
 
-		return false;
+		// PHP 5.3 does not allow $this to be used directly in closures
+		$name = $this->extension_display_name;
+		$lang = $this->lang('EXTENSION_DELETE_DATA');
+
+		$crawler = self::request('GET', 'adm/index.php?i=acp_extensions&mode=main&sid=' . $this->sid);
+		$crawler->filter('tr.ext_disabled')->each(function ($node, $i) use (&$is_disabled, $name, $lang) {
+			$children = $node->children();
+			if (strpos($children->eq(0)->text(), $name) !== false && strpos($children->eq(2)->text(), $lang) !== false)
+			{
+				$is_disabled = true;
+			}
+		});
+
+		return $is_disabled;
+	}
+
+	/**
+	* Check if the extension is available
+	*
+	* @return bool is extension found in the disabled list and available to be enabled
+	* @access protected
+	*/
+	protected function is_available()
+	{
+		$is_available = false;
+		
+		// PHP 5.3 does not allow $this to be used directly in closures
+		$name = $this->extension_display_name;
+		$lang = $this->lang('EXTENSION_DELETE_DATA');
+
+		$crawler = self::request('GET', 'adm/index.php?i=acp_extensions&mode=main&sid=' . $this->sid);
+		$crawler->filter('tr.ext_disabled')->each(function ($node, $i) use (&$is_available, $name, $lang) {
+			$children = $node->children();
+			if (strpos($children->eq(0)->text(), $name) !== false && strpos($children->eq(2)->text(), $lang) === false)
+			{
+				$is_available = true;
+			}
+		});
+
+		return $is_available;
 	}
 }
