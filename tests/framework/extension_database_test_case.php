@@ -45,6 +45,9 @@ abstract class extension_database_test_case extends phpbb_database_test_case
 			$db = $phpbb_container->get('dbal.conn');
 			$phpbb_log = $phpbb_container->get('log');
 
+			// Tables have been built, let's fill in the basic information
+			$this->add_schema_data($db, $phpbb_root_path, $phpEx);
+
 			// Setup and populate the module tables
 			define('IN_INSTALL', true);
 
@@ -98,6 +101,51 @@ abstract class extension_database_test_case extends phpbb_database_test_case
 		}
 
 		return $this->createDefaultDBConnection($manager->get_pdo(), 'testdb');
+	}
+
+	protected function add_schema_data($db, $phpbb_root_path, $phpEx)
+	{
+		require_once($phpbb_root_path . 'includes/functions_install.' . $phpEx);
+
+		$config = phpbb_test_case_helpers::get_test_config();
+
+		// Load the schema_data
+		$sql_query = file_get_contents($phpbb_root_path . 'install/schemas/schema_data.sql');
+
+		// Deal with any special comments and characters
+		switch ($config['dbms'])
+		{
+			case 'mssql':
+			case 'mssql_odbc':
+			case 'mssqlnative':
+				$sql_query = preg_replace('#\# MSSQL IDENTITY (phpbb_[a-z_]+) (ON|OFF) \##s', 'SET IDENTITY_INSERT \1 \2;', $sql_query);
+			break;
+
+			case 'postgres':
+				$sql_query = preg_replace('#\# POSTGRES (BEGIN|COMMIT) \##s', '\1; ', $sql_query);
+			break;
+
+			case 'mysql':
+			case 'mysqli':
+				$sql_query = str_replace('\\', '\\\\', $sql_query);
+			break;
+		}
+
+		// Change language strings...
+		$sql_query = preg_replace_callback('#\{L_([A-Z0-9\-_]*)\}#s', 'adjust_language_keys_callback', $sql_query);
+
+		$sql_query = phpbb_remove_comments($sql_query);
+		$sql_query = split_sql_file($sql_query, ';');
+
+		foreach ($sql_query as $sql)
+		{
+			//$sql = trim(str_replace('|', ';', $sql));
+			if (!$db->sql_query($sql))
+			{
+				$error = $db->sql_error();
+				$this->fail($error['message']);
+			}
+		}
 	}
 
 	protected function get_vendor_ext($phpbb_root_path)
