@@ -42,7 +42,7 @@ abstract class extension_database_test_case extends phpbb_database_test_case
 
 			// Setup and populate the module tables
 			define('IN_INSTALL', true);
-			require_once($phpbb_root_path . 'install/index.' . $phpEx);
+			require_once(dirname(__FILE__) . 'extension_module_class.' . $phpEx);
 			require_once($phpbb_root_path . 'install/install_install.' . $phpEx);
 			$install = new install_install();
 			$install->add_modules(null, null);
