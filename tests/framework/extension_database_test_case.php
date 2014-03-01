@@ -38,14 +38,26 @@ abstract class extension_database_test_case extends phpbb_database_test_case
 			require_once($phpbb_root_path . 'includes/functions_container.' . $phpEx);
 			$this->container = phpbb_create_default_container($phpbb_root_path, $phpEx);
 
-			$migrations_path = $phpbb_root_path . substr(phpbb_realpath(dirname(__FILE__) . '/../../migrations'), strlen(phpbb_realpath($phpbb_root_path))) . '/';
+			// Setup some globals needed to add schema data and module data to the tables
+			global $db, $phpbb_log, $phpbb_container;
+
+			$phpbb_container = $this->container;
+			$db = $phpbb_container->get('dbal.conn');
+			$phpbb_log = $phpbb_container->get('log');
 
 			// Setup and populate the module tables
 			define('IN_INSTALL', true);
-			require_once(dirname(__FILE__) . 'extension_module_class.' . $phpEx);
+
+			// Load module and install classes needed to populate the module tables
+			require_once(dirname(__FILE__) . '/extension_module_class.' . $phpEx);
+			require_once($phpbb_root_path . 'includes/functions_module.' . $phpEx);
 			require_once($phpbb_root_path . 'install/install_install.' . $phpEx);
-			$install = new install_install();
+
+			// Populate the module tables
+			$install = new install_install(new p_master());
 			$install->add_modules(null, null);
+
+			$migrations_path = $phpbb_root_path . substr(phpbb_realpath(dirname(__FILE__) . '/../../migrations'), strlen(phpbb_realpath($phpbb_root_path))) . '/';
 
 			// If there are any migrations, load and run them all
 			if (file_exists($migrations_path) && is_dir($migrations_path))
