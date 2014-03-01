@@ -7,6 +7,9 @@
 *
 */
 
+/**
+* Extends the install_install class used in extension_database_test_case
+*/
 class module
 {
 }
