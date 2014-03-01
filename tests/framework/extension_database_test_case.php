@@ -40,6 +40,13 @@ abstract class extension_database_test_case extends phpbb_database_test_case
 
 			$migrations_path = $phpbb_root_path . substr(phpbb_realpath(dirname(__FILE__) . '/../../migrations'), strlen(phpbb_realpath($phpbb_root_path))) . '/';
 
+			// Setup and populate the module tables
+			define('IN_INSTALL', true);
+			require_once($phpbb_root_path . 'install/index.' . $phpEx);
+			require_once($phpbb_root_path . 'install/install_install.' . $phpEx);
+			$install = new install_install();
+			$install->add_modules(null, null);
+
 			// If there are any migrations, load and run them all
 			if (file_exists($migrations_path) && is_dir($migrations_path))
 			{
