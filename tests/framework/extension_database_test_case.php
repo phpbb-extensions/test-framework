@@ -39,9 +39,10 @@ abstract class extension_database_test_case extends phpbb_database_test_case
 			$this->container = phpbb_create_default_container($phpbb_root_path, $phpEx);
 
 			// Setup some globals needed to add schema data and module data to the tables
-			global $db, $phpbb_log, $phpbb_container;
+			global $cache, $db, $phpbb_log, $phpbb_container;
 
 			$phpbb_container = $this->container;
+			$cache = $phpbb_container->get('cache');
 			$db = $phpbb_container->get('dbal.conn');
 			$phpbb_log = $phpbb_container->get('log');
 
