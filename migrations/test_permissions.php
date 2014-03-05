@@ -20,8 +20,6 @@ class test_permissions extends \phpbb\db\migration\migration
 			array('permission.add', array('u_new')), // New global user permission u_new
 			array('permission.add', array('u_new', false)), // New local user permission u_new
 
-			array('permission.add', array('a_copy', true, 'a_existing')), // New global admin permission a_copy, copies permission settings from a_existing
-
 			array('permission.role_add', array('new admin role', 'a_', 'a new role')), // New admin role "new admin role"
 			array('permission.role_add', array('new moderator role', 'm_', 'a new role')), // New admin role "new moderator role"
 			array('permission.role_add', array('new user role', 'u_', 'a new role')), // New admin role "new user role"
