@@ -35,4 +35,18 @@ class extension_functional_extension_base_test extends extension_functional_test
 		$this->purge_extension();
 		$this->assertTrue($this->is_available());
 	}
+
+	/**
+	* Test loading of extension language files
+	*
+	* @access public
+	*/
+	public function test_extension_language()
+	{
+		// Add the language file
+		$this->add_lang_ext('test_language');
+		
+		// Test the language file was successfully loaded
+		$this->assertEquals($this->lang('FOO'), 'BAR');
+	}
 }
