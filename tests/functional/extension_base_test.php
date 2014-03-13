@@ -47,6 +47,6 @@ class extension_functional_extension_base_test extends extension_functional_test
 		$this->add_lang_ext('test_language');
 		
 		// Test the language file was successfully loaded
-		$this->assertEquals($this->lang('FOO'), 'BAR');
+		$this->assertEquals('BAR', $this->lang('FOO'));
 	}
 }
