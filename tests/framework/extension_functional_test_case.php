@@ -209,6 +209,8 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 			{
 				$this->add_lang_ext($file);
 			}
+
+			return;
 		}
 
 		$lang_path = __DIR__ . "/../../language/en/$lang_file.php";
