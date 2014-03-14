@@ -195,4 +195,33 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 
 		return $is_available;
 	}
+
+	/**
+	* Add Language Items from an extension
+	*
+	* @param mixed $lang_set specifies the language entries to include
+	*/
+	protected function add_lang_ext($lang_file)
+	{
+		if (is_array($lang_file))
+		{
+			foreach ($lang_file as $file)
+			{
+				$this->add_lang_ext($file);
+			}
+
+			return;
+		}
+
+		$lang_path = __DIR__ . "/../../language/en/$lang_file.php";
+
+		$lang = array();
+
+		if (file_exists($lang_path))
+		{
+			include($lang_path);
+		}
+
+		$this->lang = array_merge($this->lang, $lang);
+	}
 }
