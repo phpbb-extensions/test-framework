@@ -17,6 +17,6 @@ If you wish to run your tests on your local system (from a checked out copy of p
 Note: Change your/extension to your vendor name/extension name.
 
 1. Copy tests/framework/* to phpBB/ext/your/extension/tests/framework/*
-2. Edit tests/bootstrap.php and add these lines at the end:
-	require_once $phpbb_root_path . 'ext/your/extension/tests/framework/extension_database_test_case.php';
+2. Edit tests/bootstrap.php and add these lines at the end:<br />
+	require_once $phpbb_root_path . 'ext/your/extension/tests/framework/extension_database_test_case.php';<br />
 	require_once $phpbb_root_path . 'ext/your/extension/tests/framework/extension_functional_test_case.php';
