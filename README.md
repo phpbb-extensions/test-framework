@@ -5,9 +5,9 @@ Basic test framework for using Travis CI with phpBB Extensions
 
 You can setup your extension to use this by following these steps:
 
-1. Copy the example.travis.yml file into your extension directory.
+1. Copy the **example.travis.yml** file into your extension directory.
 
-2. Rename the file `.travis.yml`
+2. Rename the file **.travis.yml**
 
 3. Edit the file and change the VENDOR= and NAME= lines to fit your extension.
 
@@ -26,12 +26,12 @@ Note: Change your/extension to your vendor name/extension name.
 
 2. Copy `tests/framework/*` to `phpBB/ext/your/extension/tests/framework/*`
 
-3. Copy `travis/*` to `phpBB/ext/your/extension/travis/*`
+3. Copy `travis/bootstrap.php` to `phpBB/ext/your/extension/tests/bootstrap.php`
 
-4. Duplicate `travis/phpunit-mysql-travis.xml` and rename it to `phpunit-mysql-local.xml`
+4. Copy `travis/phpunit-mysql-travis.xml` to `phpBB/ext/your/extension/tests/phpunit-mysql-travis.xml` and rename it to **phpunit-mysql-local.xml**
 
-5. Edit `phpunit-mysql-local.xml` changing the SERVER CONFIG settings to match your phpBB config.php settings:
+5. Edit **phpunit-mysql-local.xml** changing the server config settings to match your phpBB config.php settings:
 
 6. Run the tests from the command line using:
 
-`phpBB/vendor/bin/phpunit -c phpBB/ext/your/extension/travis/phpunit-mysql-local.xml`
+`phpBB/vendor/bin/phpunit -c phpBB/ext/your/extension/tests/phpunit-mysql-local.xml`
