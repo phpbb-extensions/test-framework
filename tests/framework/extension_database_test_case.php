@@ -29,7 +29,7 @@ abstract class extension_database_test_case extends phpbb_database_test_case
 		if (!self::$already_connected)
 		{
 			// Install phpBB's schema
-			$manager->load_schema();
+			$manager->load_schema($this->new_dbal());
 
 			// We must create a config file to be able to create the container
 			$this->create_config_file($phpbb_root_path, $phpEx);
