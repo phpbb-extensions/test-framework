@@ -181,6 +181,7 @@ abstract class extension_database_test_case extends phpbb_database_test_case
 
 @define('PHPBB_INSTALLED', true);
 @define('DEBUG', true);
+@define('DEBUG_CONTAINER', true);
 
 ";
 		if (file_put_contents($phpbb_root_path . 'config.' . $phpEx, $contents) === false)
