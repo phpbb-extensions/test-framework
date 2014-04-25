@@ -52,4 +52,25 @@ class extension_system_database_base_test extends extension_database_test_case
 		
 		$this->assertTrue($db_tools->sql_table_exists('phpbb_test_subdir'));
 	}
+
+	/**
+	* Confirm the ACP module was installed
+	*/
+	public function test_module()
+	{
+		$sql = "SELECT module_basename, module_class, module_langname, module_mode, module_auth
+			FROM phpbb_modules
+			WHERE module_langname = 'ACP_EXAMPLE'";
+		$result = $this->db->sql_query($sql);
+		$this->assertEquals(array(
+			array(
+				'module_basename'	=> '\phpbb\example\acp\example_module',
+				'module_class'		=> 'acp',
+				'module_langname'	=> 'ACP_EXAMPLE',
+				'module_mode' 		=> 'settings',
+				'module_auth' 		=> 'ext_phpbb/example',
+			),
+		), $this->db->sql_fetchrowset($result));
+		$this->db->sql_freeresult($result);
+	}
 }
