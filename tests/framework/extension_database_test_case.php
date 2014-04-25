@@ -9,24 +9,24 @@
 
 abstract class extension_database_test_case extends phpbb_database_test_case
 {
-	static protected $already_connected = false;
-
 	public function getConnection()
 	{
 		global $phpbb_root_path, $phpEx;
+
+		static $already_connected = false;
 
 		$config = $this->get_database_config();
 
 		$manager = $this->create_connection_manager($config);
 
-		if (!self::$already_connected)
+		if (!$already_connected)
 		{
 			$manager->recreate_db();
 		}
 
 		$manager->connect();
 
-		if (!self::$already_connected)
+		if (!$already_connected)
 		{
 			// Install phpBB's schema
 			$manager->load_schema($this->new_dbal());
@@ -98,7 +98,7 @@ abstract class extension_database_test_case extends phpbb_database_test_case
 				}
 			}
 
-			self::$already_connected = true;
+			$already_connected = true;
 		}
 
 		return $this->createDefaultDBConnection($manager->get_pdo(), 'testdb');
