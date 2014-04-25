@@ -9,6 +9,26 @@
 
 abstract class extension_database_test_case extends phpbb_database_test_case
 {
+	protected $container;
+
+	public function get_container()
+	{
+
+		if ($this->container === null)
+		{
+			global $phpbb_root_path, $phpEx;
+
+			// We must create a config file to be able to create the container
+			$this->create_config_file($phpbb_root_path, $phpEx);
+
+			// Setup the container
+			require_once($phpbb_root_path . 'includes/functions_container.' . $phpEx);
+			$this->container = phpbb_create_default_container($phpbb_root_path, $phpEx);
+		}
+
+		return $this->container;
+	}
+
 	public function getConnection()
 	{
 		global $phpbb_root_path, $phpEx;
@@ -31,17 +51,10 @@ abstract class extension_database_test_case extends phpbb_database_test_case
 			// Install phpBB's schema
 			$manager->load_schema($this->new_dbal());
 
-			// We must create a config file to be able to create the container
-			$this->create_config_file($phpbb_root_path, $phpEx);
-
-			// Setup the container
-			require_once($phpbb_root_path . 'includes/functions_container.' . $phpEx);
-			$this->container = phpbb_create_default_container($phpbb_root_path, $phpEx);
-
 			// Setup some globals needed to add schema data and module data to the tables
 			global $cache, $db, $phpbb_log, $phpbb_container;
 
-			$phpbb_container = $this->container;
+			$phpbb_container = $this->get_container();
 			$cache = $phpbb_container->get('cache');
 			$db = $phpbb_container->get('dbal.conn');
 			$phpbb_log = $phpbb_container->get('log');
@@ -66,8 +79,8 @@ abstract class extension_database_test_case extends phpbb_database_test_case
 			// If there are any migrations, load and run them all
 			if (file_exists($migrations_path) && is_dir($migrations_path))
 			{
-				$finder = $this->container->get('ext.finder');
-				$migrator = $this->container->get('migrator');
+				$finder = $phpbb_container->get('ext.finder');
+				$migrator = $phpbb_container->get('migrator');
 
 				$migrations = array();
 				$vendor_ext = $this->get_vendor_ext($phpbb_root_path);
