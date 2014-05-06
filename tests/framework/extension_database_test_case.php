@@ -66,7 +66,9 @@ abstract class extension_database_test_case extends phpbb_database_test_case
 			// If there are any migrations, load and run them all
 			if (file_exists($migrations_path) && is_dir($migrations_path))
 			{
-				$finder = $this->container->get('ext.finder');
+				global $phpbb_extension_manager;
+				$finder = $phpbb_extension_manager->get_finder();
+
 				$migrator = $this->container->get('migrator');
 
 				$migrations = array();
@@ -181,7 +183,7 @@ abstract class extension_database_test_case extends phpbb_database_test_case
 
 @define('PHPBB_INSTALLED', true);
 @define('DEBUG', true);
-@define('DEBUG_CONTAINER', true);
+@define('DEBUG_CONTAINER', false);
 
 ";
 		if (file_put_contents($phpbb_root_path . 'config.' . $phpEx, $contents) === false)
