@@ -9,27 +9,14 @@
 
 abstract class extension_database_test_case extends phpbb_database_test_case
 {
-	static protected $already_connected = false;
+	protected $container;
 
-	public function getConnection()
+	public function get_container()
 	{
-		global $phpbb_root_path, $phpEx;
 
-		$config = $this->get_database_config();
-
-		$manager = $this->create_connection_manager($config);
-
-		if (!self::$already_connected)
+		if ($this->container === null)
 		{
-			$manager->recreate_db();
-		}
-
-		$manager->connect();
-
-		if (!self::$already_connected)
-		{
-			// Install phpBB's schema
-			$manager->load_schema($this->new_dbal());
+			global $phpbb_root_path, $phpEx;
 
 			// We must create a config file to be able to create the container
 			$this->create_config_file($phpbb_root_path, $phpEx);
@@ -37,11 +24,37 @@ abstract class extension_database_test_case extends phpbb_database_test_case
 			// Setup the container
 			require_once($phpbb_root_path . 'includes/functions_container.' . $phpEx);
 			$this->container = phpbb_create_default_container($phpbb_root_path, $phpEx);
+		}
+
+		return $this->container;
+	}
+
+	public function getConnection()
+	{
+		global $phpbb_root_path, $phpEx;
+
+		static $already_connected = false;
+
+		$config = $this->get_database_config();
+
+		$manager = $this->create_connection_manager($config);
+
+		if (!$already_connected)
+		{
+			$manager->recreate_db();
+		}
+
+		$manager->connect();
+
+		if (!$already_connected)
+		{
+			// Install phpBB's schema
+			$manager->load_schema($this->new_dbal());
 
 			// Setup some globals needed to add schema data and module data to the tables
 			global $cache, $db, $phpbb_log, $phpbb_container;
 
-			$phpbb_container = $this->container;
+			$phpbb_container = $this->get_container();
 			$cache = $phpbb_container->get('cache');
 			$db = $phpbb_container->get('dbal.conn');
 			$phpbb_log = $phpbb_container->get('log');
@@ -100,7 +113,7 @@ abstract class extension_database_test_case extends phpbb_database_test_case
 				}
 			}
 
-			self::$already_connected = true;
+			$already_connected = true;
 		}
 
 		return $this->createDefaultDBConnection($manager->get_pdo(), 'testdb');
