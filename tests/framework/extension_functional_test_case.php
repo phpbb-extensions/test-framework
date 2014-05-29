@@ -161,7 +161,7 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 		$crawler = self::request('GET', 'adm/index.php?i=acp_extensions&mode=main&sid=' . $this->sid);
 		$crawler->filter('tr.ext_disabled')->each(function ($node, $i) use (&$is_disabled, $name, $lang) {
 			$children = $node->children();
-			if (strpos($children->eq(0)->text(), $name) !== false && strpos($children->eq(2)->text(), $lang) !== false)
+			if (strpos($children->eq(0)->text(), $name) !== false && strpos($children->eq(3)->text(), $lang) !== false)
 			{
 				$is_disabled = true;
 			}
@@ -187,7 +187,7 @@ abstract class extension_functional_test_case extends phpbb_functional_test_case
 		$crawler = self::request('GET', 'adm/index.php?i=acp_extensions&mode=main&sid=' . $this->sid);
 		$crawler->filter('tr.ext_disabled')->each(function ($node, $i) use (&$is_available, $name, $lang) {
 			$children = $node->children();
-			if (strpos($children->eq(0)->text(), $name) !== false && strpos($children->eq(2)->text(), $lang) === false)
+			if (strpos($children->eq(0)->text(), $name) !== false && strpos($children->eq(3)->text(), $lang) === false)
 			{
 				$is_available = true;
 			}
