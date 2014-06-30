@@ -1,3 +1,8 @@
+DEPRECATED
+==============
+This framework has been deprecated. We suggest using [this framework](https://github.com/nickvergessen/phpbb-ext-acme-demo/wiki/How-to-test-your-extension-with-phpunit-and-TravisCI) for testing phpBB extensions.
+
+
 test-framework
 ==============
 
