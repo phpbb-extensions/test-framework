@@ -25,6 +25,10 @@ on:
       PHPBB_BRANCH:
         required: true
         type: string
+    secrets:
+      CODECOV_TOKEN:
+        required: false
+        description: ''
 
 env:
     EXTNAME: ${{ inputs.EXTNAME }}
