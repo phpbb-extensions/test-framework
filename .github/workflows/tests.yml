@@ -218,7 +218,7 @@ jobs:
             - name: Setup PHPUnit files
               env:
                   DB: ${{steps.database-type.outputs.db}}
-                  COVERAGE: ${{ matrix.COVERAGE == 1 && env.CODECOV == '1' }}
+                  COVERAGE: ${{ matrix.COVERAGE == 1 && env.CODECOV == '1' && '1' || '0' }}
               run: |
                   if [ $COVERAGE == '1' ]
                   then
@@ -231,7 +231,7 @@ jobs:
             - name: Run unit tests
               env:
                   DB: ${{steps.database-type.outputs.db}}
-                  COVERAGE: ${{ matrix.COVERAGE == 1 && env.CODECOV == '1' }}
+                  COVERAGE: ${{ matrix.COVERAGE == 1 && env.CODECOV == '1' && '1' || '0' }}
               run: |
                   if [ $COVERAGE == '1' ]
                   then
