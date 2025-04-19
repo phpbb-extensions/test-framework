@@ -244,8 +244,8 @@ jobs:
             - name: Send code coverage
               if: ${{ matrix.COVERAGE == 1 && env.CODECOV == '1' }}
               uses: codecov/codecov-action@v5
-              env:
-                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}
     # END MySQL and MariaDB Job
 
     # START PostgreSQL Job
