@@ -18,16 +18,21 @@ on:
       EXECUTABLE_FILES:
         required: true
         type: string
+      CODECOV:
+        required: false
+        default: '0'
+        type: string
       PHPBB_BRANCH:
         required: true
         type: string
 
 env:
     EXTNAME: ${{ inputs.EXTNAME }}
-    SNIFF: ${{ inputs.SNIFF }}
-    IMAGE_ICC: ${{ inputs.IMAGE_ICC }}
-    EPV: ${{ inputs.EPV }}
-    EXECUTABLE_FILES: ${{ inputs.EXECUTABLE_FILES }}
+    SNIFF: ${{ inputs.SNIFF == '1' && '1' || '0' }}
+    IMAGE_ICC: ${{ inputs.IMAGE_ICC == '1' && '1' || '0' }}
+    EPV: ${{ inputs.EPV == '1' && '1' || '0' }}
+    EXECUTABLE_FILES: ${{ inputs.EXECUTABLE_FILES == '1' && '1' || '0' }}
+    CODECOV: ${{ inputs.CODECOV == '1' && '1' || '0' }}
     PHPBB_BRANCH: ${{ inputs.PHPBB_BRANCH }}
 
 jobs:
@@ -72,29 +77,29 @@ jobs:
               working-directory: ./phpBB3
 
             - name: Setup EPV
-              if: ${{ env.EPV != 0 }}
+              if: ${{ env.EPV != '0' }}
               run: composer require phpbb/epv:dev-master --dev --no-interaction --ignore-platform-reqs
               working-directory: ./phpBB3/phpBB
 
             - name: Run code sniffer
-              if: ${{ env.SNIFF != 0 }}
+              if: ${{ env.SNIFF != '0' }}
               env:
                   NOTESTS: '1'
               run: .github/ext-sniff.sh $EXTNAME $NOTESTS
               working-directory: ./phpBB3
 
             - name: Check image ICC profiles
-              if: ${{ env.IMAGE_ICC != 0 }}
+              if: ${{ env.IMAGE_ICC != '0' }}
               run: .github/check-image-icc-profiles.sh
               working-directory: ./phpBB3
 
             - name: Check executable files
-              if: ${{ env.EXECUTABLE_FILES != 0 }}
+              if: ${{ env.EXECUTABLE_FILES != '0' }}
               run: .github/ext-check-executable-files.sh ./ $EXTNAME
               working-directory: ./phpBB3
 
             - name: Run EPV
-              if: ${{ env.EPV != 0 }}
+              if: ${{ env.EPV != '0' }}
               run: phpBB/vendor/bin/EPV.php run --dir="phpBB/ext/$EXTNAME/"
               working-directory: ./phpBB3
     # END Basic Checks Job
@@ -189,20 +194,11 @@ jobs:
                   echo "db=$db" >> $GITHUB_OUTPUT
 
             - name: Setup PHP
-              if: ${{ matrix.COVERAGE != 1 }}
               uses: shivammathur/setup-php@v2
               with:
                   php-version: ${{ matrix.php }}
                   extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, mysqli, sqlite, pdo_sqlite, intl, gd, exif, iconv, sqlsrv, pdo_sqlsrv, ldap
-                  coverage: none
-
-            - name: Setup PHP with Coverage
-              if: ${{ matrix.COVERAGE == 1 }}
-              uses: shivammathur/setup-php@v2
-              with:
-                  php-version: ${{ matrix.php }}
-                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, mysqli, sqlite, pdo_sqlite, intl, gd, exif, iconv, sqlsrv, pdo_sqlsrv, ldap
-                  coverage: xdebug
+                  coverage: ${{ matrix.COVERAGE == 1 && env.CODECOV == '1' && 'xdebug' || 'none' }}
 
             - name: Setup environment for phpBB
               env:
@@ -222,7 +218,7 @@ jobs:
             - name: Setup PHPUnit files
               env:
                   DB: ${{steps.database-type.outputs.db}}
-                  COVERAGE: ${{ matrix.COVERAGE != 1 && '0' || '1' }}
+                  COVERAGE: ${{ matrix.COVERAGE == 1 && env.CODECOV == '1' }}
               run: |
                   if [ $COVERAGE == '1' ]
                   then
@@ -235,18 +231,18 @@ jobs:
             - name: Run unit tests
               env:
                   DB: ${{steps.database-type.outputs.db}}
-                  COVERAGE: ${{ matrix.COVERAGE != 1 && '0' || '1' }}
+                  COVERAGE: ${{ matrix.COVERAGE == 1 && env.CODECOV == '1' }}
               run: |
                   if [ $COVERAGE == '1' ]
                   then
-                      phpBB/vendor/bin/phpunit --configuration phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml --bootstrap ./tests/bootstrap.php --coverage-clover build/logs/clover.xml --testsuite 'phpBB Test Suite'
+                      phpBB/vendor/bin/phpunit --configuration phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml --bootstrap ./tests/bootstrap.php --coverage-clover build/logs/clover.xml
                   else
                       phpBB/vendor/bin/phpunit --configuration phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml --bootstrap ./tests/bootstrap.php
                   fi
               working-directory: ./phpBB3
 
             - name: Send code coverage
-              if: ${{ matrix.COVERAGE == 1 }}
+              if: ${{ matrix.COVERAGE == 1 && env.CODECOV == '1' }}
               uses: codecov/codecov-action@v3
               with:
                   files: ./phpBB3/build/logs/clover.xml
