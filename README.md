@@ -63,6 +63,28 @@ jobs:
 - Your extension must follow standard phpBB extension structure.
 - Tests must be defined in your repository using PHPUnit.
 
+## ⏭️ Skipping Jobs
+
+This test framework runs four primary job groups:
+1. Basic checks - These are the code sniffer, icc profile sniffer, executable file and EPV checks.
+2. MySQL - Tests using MySQL and MariaDB database structures.
+3. PostgreSQL - Tests using PostgreSQL database structures.
+4. MSSQL - Tests using MSSQL and SQLite3 database structures.
+
+You can skip any of these job groups—such as if your extension does not support MSSQL—by setting the appropriate arguments when using this workflow:
+
+```yaml
+with:
+    ...
+    RUN_BASIC_JOBS: 1      # Set to 0 to skip; otherwise set to 1 or omit
+    RUN_MYSQL_JOBS: 1      # Set to 0 to skip; otherwise set to 1 or omit
+    RUN_POSTGRESQL_JOBS: 1 # Set to 0 to skip; otherwise set to 1 or omit
+    RUN_MSSQL_JOBS: 0      # Set to 0 to skip; otherwise set to 1 or omit
+    ...
+```
+
+> Note: If you do not need to skip any jobs, you don’t need to include these arguments at all. For example, omitting `RUN_BASIC_JOBS` is equivalent to setting it to 1. You only need to define these arguments if you want to disable a job by setting its value to 0.
+
 ## 📊 Code Coverage with Codecov
 
 This test framework supports code coverage reporting through [Codecov.io](https://codecov.io). To enable it, follow these steps:
