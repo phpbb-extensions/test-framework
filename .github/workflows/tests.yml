@@ -25,6 +25,22 @@ on:
       PHPBB_BRANCH:
         required: true
         type: string
+      RUN_BASIC_JOBS:
+        required: false
+        type: string
+        default: '1'
+      RUN_MYSQL_JOBS:
+        required: false
+        type: string
+        default: '1'
+      RUN_POSTGRESQL_JOBS:
+        required: false
+        type: string
+        default: '1'
+      RUN_MSSQL_JOBS:
+        required: false
+        type: string
+        default: '1'    
     secrets:
       CODECOV_TOKEN:
         required: false
@@ -42,6 +58,7 @@ env:
 jobs:
     # START Basic Checks Job (EPV, code sniffer, images check, etc.)
     basic-checks:
+        if: ${{ inputs.RUN_BASIC_JOBS == '1' }}
         runs-on: ubuntu-latest
         strategy:
             matrix:
@@ -110,6 +127,7 @@ jobs:
 
     # START MySQL and MariaDB Job
     mysql-tests:
+        if: ${{ inputs.RUN_MYSQL_JOBS == '1' }}
         runs-on: ubuntu-latest
         strategy:
             matrix:
@@ -254,6 +272,7 @@ jobs:
 
     # START PostgreSQL Job
     postgres-tests:
+        if: ${{ inputs.RUN_POSTGRESQL_JOBS == '1' }}
         runs-on: ubuntu-latest
         strategy:
             matrix:
@@ -364,6 +383,7 @@ jobs:
 
     # START Other Tests Job (SQLite 3 and mssql)
     other-tests:
+        if: ${{ inputs.RUN_MSSQL_JOBS == '1' }}
         runs-on: ubuntu-22.04
         strategy:
             matrix:
