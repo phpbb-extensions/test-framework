@@ -24,7 +24,7 @@ Use the branch that matches the phpBB version you're developing for.
 
 ## 📦 How to Use
 
-Add a `tests.yml` file in your extension’s `.github/workflows/` directory. Here's a complete example:
+On GitHub.com, go to your repository, click **Add file → Create new file**, name it `.github/workflows/tests.yml`, add the workflow content shown below, and commit the file. Make sure to replace `acme/demo` with your actual extension vendor/package name, and optionally you may adjust any of the branch names and other checks.
 
 ```yaml
 name: Tests
