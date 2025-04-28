@@ -45,7 +45,7 @@ on:
 
 jobs:
     call-tests:
-        uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x  # Must match PHPBB_BRANCH
+        uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master  # Must match PHPBB_BRANCH
         with:
             EXTNAME: acme/demo   # Your extension vendor/package name
             SNIFF: 1             # Run code sniffer on your code? 1 or 0
@@ -53,7 +53,7 @@ jobs:
             EPV: 1               # Run EPV (Extension Pre Validator) on your code? 1 or 0
             EXECUTABLE_FILES: 1  # Run check for executable files? 1 or 0
             CODECOV: 0           # Run code coverage via codecov? 1 or 0
-            PHPBB_BRANCH: 3.3.x  # The phpBB branch to run tests on
+            PHPBB_BRANCH: master # The phpBB branch to run tests on
         secrets:
             CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }} # Do not edit this
 ```
