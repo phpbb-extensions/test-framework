@@ -2,7 +2,7 @@
 
 Reusable GitHub Actions workflow for testing phpBB extensions across multiple environments.
 
-This repository provides a pre-configured test workflow designed for phpBB extension developers. It runs your extension's tests using various PHP versions and database systems, including **MySQL**, **PostgreSQL**, **SQLite**, and **Microsoft SQL Server**.
+This repository contains a pre-configured test workflow designed for phpBB extension developers. It runs your extension's tests using various PHP versions and database systems, including **MySQL**, **PostgreSQL**, **SQLite**, and **Microsoft SQL Server**.
 
 ## 🚀 Features
 
@@ -24,7 +24,7 @@ Use the branch that matches the phpBB version you're developing for.
 
 ## 📦 How to Use
 
-On GitHub.com, go to your repository, click **Add file → Create new file**, name it `.github/workflows/tests.yml`, add the workflow content shown below, and commit the file. Make sure to replace `acme/demo` with your actual extension vendor/package name, and optionally you may adjust any of the branch names and other checks.
+On GitHub.com, go to your extension's repository, click **Add file → Create new file**, name it `.github/workflows/tests.yml`, add the workflow content shown below, and commit the file. Make sure to replace `acme/demo` with your actual extension vendor/package name, and optionally you may adjust any of the branch names and other checks.
 
 ```yaml
 name: Tests
@@ -60,7 +60,7 @@ jobs:
 
 ## ✅ Requirements
 
-- Your extension must follow standard phpBB extension structure.
+- Your extension's package contents must be located at the root level of the repository. That is, the repository **must directly represent the package**, with all relevant files such as `composer.json`, `README`, `LICENSE`, etc. placed directly in the **root of the repository**, **not inside a subdirectory within the repository**. See any of phpbb-extension's official extension repositories as an example.
 - Tests must be defined in your repository using PHPUnit.
 
 ## ⏭️ Skipping Jobs
