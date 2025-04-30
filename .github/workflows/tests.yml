@@ -157,7 +157,7 @@ jobs:
                 db: 'mysql:5.6'
                 db_alias: 'MyISAM Tests'
                 MYISAM: 1
-              - php: ${{ inputs.MIN_PHP_VERSION }}
+              - php: ${{ startsWith(inputs.MIN_PHP_VERSION, '7') && '7.4' || inputs.MIN_PHP_VERSION }}
                 db: 'mysql:8.0'
                 COVERAGE: ${{ inputs.CODECOV == '1' && '1' || '0' }}
                 db_alias: ${{ inputs.CODECOV == '1' && 'mysql:8.0 with Coverage' || 'mysql:8.0' }}
