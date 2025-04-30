@@ -41,6 +41,14 @@ on:
         required: false
         type: string
         default: '1'
+      RUN_NPM_INSTALL:
+        required: false
+        type: string
+        default: '0'
+      RUN_COMPOSER_INSTALL:
+        required: false
+        type: string
+        default: '0'
       MIN_PHP_VERSION:
         required: false
         type: string
@@ -230,6 +238,22 @@ jobs:
               run: .github/setup-database.sh $DB $MYISAM
               working-directory: ./phpBB3
 
+            - name: Install NPM dependencies
+              if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+            
+            - name: Run npm ci
+              if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
+              run: npm ci
+              working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
+
+            - name: Install composer dependencies
+              if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
+              run: composer install
+              working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
+
             - name: Setup PHPUnit files
               env:
                   DB: ${{steps.database-type.outputs.db}}
@@ -355,6 +379,22 @@ jobs:
               run: .github/setup-database.sh $DB $MYISAM
               working-directory: ./phpBB3
 
+            - name: Install NPM dependencies
+              if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+            
+            - name: Run npm ci
+              if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
+              run: npm ci
+              working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
+
+            - name: Install composer dependencies
+              if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
+              run: composer install
+              working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
+
             - name: Setup PHPUnit files
               run: mkdir -p phpBB/ext/$EXTNAME/.github && cp .github/phpunit* $_
               working-directory: ./phpBB3
@@ -455,6 +495,22 @@ jobs:
                   MYISAM: '0'
               run: .github/setup-database.sh $DB $MYISAM
               working-directory: ./phpBB3
+
+            - name: Install NPM dependencies
+              if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+            
+            - name: Run npm ci
+              if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
+              run: npm ci
+              working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
+
+            - name: Install composer dependencies
+              if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
+              run: composer install
+              working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
 
             - name: Setup PHPUnit files
               run: mkdir -p phpBB/ext/$EXTNAME/.github && cp .github/phpunit* $_
