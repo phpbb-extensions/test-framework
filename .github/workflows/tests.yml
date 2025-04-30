@@ -138,7 +138,7 @@ jobs:
         runs-on: ubuntu-22.04
         strategy:
           matrix:
-            php: ${{ fromJson(inputs.ALL_PHP_VERSIONS) }}
+            php: ${{ fromJSON(inputs.ALL_PHP_VERSIONS) }}
             db: ['mysql:5.7']
             include:
               - php: ${{ inputs.MIN_PHP_VERSION }}
@@ -261,7 +261,7 @@ jobs:
         runs-on: ubuntu-22.04
         strategy:
           matrix:
-            php: ${{ fromJson(inputs.ALL_PHP_VERSIONS) }}
+            php: ${{ fromJSON(inputs.ALL_PHP_VERSIONS) }}
             db: ['postgres:14']
             include:
               - php: ${{ inputs.MIN_PHP_VERSION }}
