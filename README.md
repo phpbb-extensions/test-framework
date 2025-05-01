@@ -73,51 +73,59 @@ Use the branch that matches the phpBB version you're developing for.
 
 ## 🛠 Advanced Configuration Options
 
-You can fine-tune this workflow with several optional arguments:
-
-## 🔃 Selectively Run Job Groups
-
-By default, all test job groups run. You can skip any by setting their arguments to 0:
+You can fine-tune this workflow with several optional arguments in the `with` section:
 
 ```yaml
-with:
-    ...
-    RUN_BASIC_JOBS: 0       # Skip checks like sniffer, EPV, etc.
-    RUN_MYSQL_JOBS: 0       # Skip MySQL/MariaDB tests
-    RUN_POSTGRESQL_JOBS: 0  # Skip PostgreSQL tests
-    RUN_MSSQL_JOBS: 0       # Skip MSSQL and SQLite3 tests
+call-tests:
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+    with:
+        EXTNAME: acme/demo   # Your extension vendor/package name
+        SNIFF: 1             # Run code sniffer on your code? 1 or 0
+        IMAGE_ICC: 1         # Run icc profile sniffer on your images? 1 or 0
+        EPV: 1               # Run EPV (Extension Pre Validator) on your code? 1 or 0
+        EXECUTABLE_FILES: 1  # Run check for executable files? 1 or 0
+        CODECOV: 0           # Run code coverage via codecov? 1 or 0
+        PHPBB_BRANCH: 3.3.x  # The phpBB branch to run tests on
+
+        # OPTIONAL ADVANCED CONFIGURATIONS BELOW
+        # The following arguments are all optional and can be omitted if not needed.
+
+        # Set this to 0 to skip all basic checks (code sniffer, EPV, etc.)
+        # Default: 1
+        RUN_BASIC_JOBS: 1
+
+        # Set this to 0 to skip all MySQL/MariaDB tests.
+        # Default: 1
+        RUN_MYSQL_JOBS: 1
+
+        # Set this to 0 to skip all PostgreSQL tests.
+        # Default: 1
+        RUN_PGSQL_JOBS: 1
+
+        # Set this to 0 to skip all MSSQL and SQLite3 tests.
+        # Default: 1
+        RUN_MSSQL_JOBS: 1
+
+        # Set this to 1 if your extension relies on NPM dependencies.
+        # Default: 0
+        RUN_NPM_INSTALL: 0
+
+        # Set this to 1 if your extension relies on Composer dependencies.
+        # Default: 0
+        RUN_COMPOSER_INSTALL: 0
+
+        # CUSTOMISE PHP VERSIONS
+        # To override the default PHP versions tested (7.2 through 8.4):
+
+        # Preferred PHP version used for all test jobs.
+        # Default: '7.2'
+        PRIMARY_PHP_VERSION: '7.2'
+
+        # The MySQL and PostgreSQL jobs run tests across multiple PHP versions.
+        # List the PHP versions you want your extension tested with.
+        # Default: '["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]'
+        PHP_VERSION_MATRIX: '["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]'
 ```
-
-> 💡 Omit these inputs or set them to 1 to enable each group (default behavior).
-
-## 📦 Install Dependencies
-
-If your extension relies on NPM or Composer dependencies, enable automated installs:
-
-```yaml
-with:
-    ...
-    RUN_NPM_INSTALL: 1        # Run `npm ci`
-    RUN_COMPOSER_INSTALL: 1   # Run `composer install`
-```
-
-> 💡 Omit if not needed.
-
-## 🐘 Customise PHP Versions
-
-To override the default PHP versions tested (7.2 through 8.4), use:
-
-```yaml
-with:
-    ...
-    PRIMARY_PHP_VERSION: '8.1'
-    PHP_VERSION_MATRIX: '["8.0", "8.1", "8.2", "8.3", "8.4"]'
-```
-
-- `PRIMARY_PHP_VERSION`: PHP version used for all jobs, including checks and MSSQL. Default is 7.2.
-- `PHP_VERSION_MATRIX`: List of all PHP versions you want tested (in MySQL and PostgreSQL jobs).
-
-> 💡 Use this if your extension supports a limited or newer PHP version range. Omit if not needed.
 
 ## 📊 Code Coverage with Codecov
 
