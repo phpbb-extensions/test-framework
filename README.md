@@ -46,6 +46,7 @@ on:
 
 jobs:
     call-tests:
+        name: Extension tests
         uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x  # Must match PHPBB_BRANCH
         with:
             EXTNAME: acme/demo   # Your extension vendor/package name
@@ -77,6 +78,7 @@ You can fine-tune this workflow with several optional arguments in the `with` se
 
 ```yaml
 call-tests:
+    name: Extension tests
     uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
     with:
         EXTNAME: acme/demo   # Your extension vendor/package name
