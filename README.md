@@ -6,15 +6,11 @@ This repository contains a pre-configured test workflow designed for phpBB exten
 
 ## Table of Contents
 
-- [✨ Features](#-features)
-- [🚀 How to Use](#-how-to-use)
-- [🧪 Branches](#-branches)
-- [✅ Requirements](#-requirements)
-- [⏭️ Skipping Jobs](#️-skipping-jobs)
-- [📦 Dependency Installation](#-dependency-installation)
-- [⚙️ Customising the PHP Test Suite](#️-customising-the-php-test-suite)
-- [📊 Code Coverage with Codecov](#-code-coverage-with-codecov)
-- [📄 License](#-license)
+- ✨ [Features](#-features)
+- 🚀 [How to Use](#-how-to-use)
+- ✅ [Requirements](#-requirements)
+- 🛠 [Advanced Configuration Options](#-advanced-configuration-options)
+- 📊 [Code Coverage with Codecov](#-code-coverage-with-codecov)
 
 ## ✨ Features
 
@@ -63,7 +59,7 @@ jobs:
             CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }} # Do not edit this
 ```
 
-## 🧪 Branches
+### Branches
 
 Use the branch that matches the phpBB version you're developing for.
 
@@ -75,65 +71,53 @@ Use the branch that matches the phpBB version you're developing for.
 - Your extension's package contents must be located at the root level of the repository. That is, the repository **must directly represent the package**, with all relevant files such as `composer.json`, `README`, `LICENSE`, etc. placed directly in the **root of the repository**, **not inside a subdirectory within the repository**. See any of phpbb-extension's official extension repositories as an example.
 - Tests must be defined in your repository using PHPUnit.
 
-# Advanced Configuration Options
+## 🛠 Advanced Configuration Options
 
-The following sections provide instruction for advanced users who are not able to use the default workflow out-of-the-box configuration. If your tests are failing with the default workflow, it may be because you need to change the PHP versions or skip certain jobs.
+You can fine-tune this workflow with several optional arguments:
 
-## ⏭️ Skipping Jobs
+## 🔃 Selectively Run Job Groups
 
-This test framework runs four primary job groups:
-1. Basic checks - These are the code sniffer, icc profile sniffer, executable file and EPV checks.
-2. MySQL - Tests using MySQL and MariaDB database structures.
-3. PostgreSQL - Tests using PostgreSQL database structures.
-4. MSSQL - Tests using MSSQL and SQLite3 database structures.
-
-You can skip any of these job groups—such as if your extension does not support MSSQL—by setting the appropriate optional arguments when using this workflow:
+By default, all test job groups run. You can skip any by setting their arguments to 0:
 
 ```yaml
 with:
     ...
-    RUN_BASIC_JOBS: 1      # Set to 0 to skip; otherwise set to 1 or omit
-    RUN_MYSQL_JOBS: 1      # Set to 0 to skip; otherwise set to 1 or omit
-    RUN_POSTGRESQL_JOBS: 1 # Set to 0 to skip; otherwise set to 1 or omit
-    RUN_MSSQL_JOBS: 0      # Set to 0 to skip; otherwise set to 1 or omit
-    ...
+    RUN_BASIC_JOBS: 0       # Skip checks like sniffer, EPV, etc.
+    RUN_MYSQL_JOBS: 0       # Skip MySQL/MariaDB tests
+    RUN_POSTGRESQL_JOBS: 0  # Skip PostgreSQL tests
+    RUN_MSSQL_JOBS: 0       # Skip MSSQL and SQLite3 tests
 ```
 
-> Note: If you do not need to skip any jobs, you don’t need to include these arguments at all. For example, omitting `RUN_BASIC_JOBS` is equivalent to setting it to 1. You only need to define these arguments if you want to disable a job by setting its value to 0.
+> 💡 Omit these inputs or set them to 1 to enable each group (default behavior).
 
-## 📦 Dependency Installation
+## 📦 Install Dependencies
 
-If your extension requires **NPM** or **Composer** dependencies, you can enable automatic installation by setting the following arguments:
+If your extension relies on NPM or Composer dependencies, enable automated installs:
 
 ```yaml
 with:
     ...
-    RUN_NPM_INSTALL: 1       # Set to 1 to run `npm ci`; otherwise set to 0 or omit
-    RUN_COMPOSER_INSTALL: 1  # Set to 1 to run `composer install`; otherwise set to 0 or omit
-    ...
+    RUN_NPM_INSTALL: 1        # Run `npm ci`
+    RUN_COMPOSER_INSTALL: 1   # Run `composer install`
 ```
 
-> 💡 If you don't need either, you can omit these arguments entirely.
+> 💡 Omit if not needed.
 
-## ⚙️ Customising the PHP Test Suite
+## 🐘 Customise PHP Versions
 
-By default, this framework tests your extension against the full range of PHP versions supported by phpBB (7.2 through 8.4). You can override this by specifying the following optional inputs:
+To override the default PHP versions tested (7.2 through 8.4), use:
 
 ```yaml
 with:
     ...
     PRIMARY_PHP_VERSION: '8.1'
     PHP_VERSION_MATRIX: '["8.0", "8.1", "8.2", "8.3", "8.4"]'
-    ...
 ```
 
-- `PRIMARY_PHP_VERSION`: The PHP version used for **all** jobs, including code checks and database tests. Defaults to `7.2`.  
-- `PHP_VERSION_MATRIX`: A JSON array of PHP versions to test against during **MySQL** and **PostgreSQL** jobs. Defaults to:
-  ```json
-  ["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]
-  ```
+- `PRIMARY_PHP_VERSION`: PHP version used for all jobs, including checks and MSSQL. Default is 7.2.
+- `PHP_VERSION_MATRIX`: List of all PHP versions you want tested (in MySQL and PostgreSQL jobs).
 
-> 💡 Use these options if your extension supports only a specific set of PHP versions, or if you want to test against a narrower or newer PHP version range.
+> 💡 Use this if your extension supports a limited or newer PHP version range. Omit if not needed.
 
 ## 📊 Code Coverage with Codecov
 
@@ -158,7 +142,6 @@ Ensure `CODECOV: 1` is set in your workflow call:
 with:
     ...
     CODECOV: 1
-    ...
 ```
 
 ### 3. Get Your Codecov Token (if required)
