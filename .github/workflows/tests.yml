@@ -33,7 +33,7 @@ on:
         required: false
         type: string
         default: '1'
-      RUN_POSTGRESQL_JOBS:
+      RUN_PGSQL_JOBS:
         required: false
         type: string
         default: '1'
@@ -289,7 +289,7 @@ jobs:
 
     # START PostgreSQL Job
     postgres-tests:
-        if: ${{ inputs.RUN_POSTGRESQL_JOBS == '1' }}
+        if: ${{ inputs.RUN_PGSQL_JOBS == '1' }}
         runs-on: ubuntu-22.04
         strategy:
           matrix:
