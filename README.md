@@ -121,6 +121,10 @@ call-tests:
         # Default: 1
         RUN_MSSQL_JOBS: 1
 
+        # Set this to 0 to skip all Windows IIS & PostgreSQL tests.
+        # Default: 1
+        RUN_WINDOWS_JOBS: 1
+
         # Set this to 1 if your extension relies on NPM dependencies.
         # Default: 0
         RUN_NPM_INSTALL: 0
