@@ -32,12 +32,12 @@ name: Tests
 
 on:
     push:
-        branches:        # Run tests when commits are pushed to these branches in your repo
+        branches:   # Run tests when commits are pushed to these branches in your repo
             - main
             - master
             - develop
             - dev/*
-    pull_request:        # Run tests when pull requests are made on these branches in your repo
+    pull_request:   # Run tests when pull requests are made on these branches in your repo
         branches:
             - main
             - master
@@ -50,14 +50,9 @@ jobs:
         uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x  # Must match PHPBB_BRANCH
         with:
             EXTNAME: acme/demo   # Your extension vendor/package name
-            SNIFF: 1             # Run code sniffer on your code? 1 or 0
-            IMAGE_ICC: 1         # Run icc profile sniffer on your images? 1 or 0
-            EPV: 1               # Run EPV (Extension Pre Validator) on your code? 1 or 0
-            EXECUTABLE_FILES: 1  # Run check for executable files? 1 or 0
-            CODECOV: 0           # Run code coverage via codecov? 1 or 0
             PHPBB_BRANCH: 3.3.x  # The phpBB branch to run tests on
         secrets:
-            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }} # Do not edit this
+            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }} # Do not edit or remove this
 ```
 
 ### Branches
@@ -82,15 +77,33 @@ call-tests:
     uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
     with:
         EXTNAME: acme/demo   # Your extension vendor/package name
-        SNIFF: 1             # Run code sniffer on your code? 1 or 0
-        IMAGE_ICC: 1         # Run icc profile sniffer on your images? 1 or 0
-        EPV: 1               # Run EPV (Extension Pre Validator) on your code? 1 or 0
-        EXECUTABLE_FILES: 1  # Run check for executable files? 1 or 0
-        CODECOV: 0           # Run code coverage via codecov? 1 or 0
         PHPBB_BRANCH: 3.3.x  # The phpBB branch to run tests on
 
-        # OPTIONAL ADVANCED CONFIGURATIONS BELOW
-        # The following arguments are all optional and can be omitted if not needed.
+        # OPTIONAL CONFIGURATIONS BELOW
+        # The following arguments are optional and can be omitted if not needed.
+
+        # Run code sniffer on your code? 1 or 0
+        # Default: 1
+        SNIFF: 1
+
+        # Run icc profile sniffer on your images? 1 or 0
+        # Default: 1
+        IMAGE_ICC: 1
+
+        # Run EPV (Extension Pre Validator) on your code? 1 or 0
+        # Default: 1
+        EPV: 1
+
+        # Run check for executable files? 1 or 0
+        # Default: 1
+        EXECUTABLE_FILES: 1
+
+        # ADVANCED CONFIGURATIONS BELOW
+        # The following arguments are for users that need to tweak the workflow.
+
+        # Set this to 1 to generate a code coverage report. (See documentation below.)
+        # Default: 0
+        CODECOV: 0
 
         # Set this to 0 to skip all basic checks (code sniffer, EPV, etc.)
         # Default: 1

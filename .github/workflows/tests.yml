@@ -6,24 +6,28 @@ on:
       EXTNAME:
         required: true
         type: string
-      SNIFF:
+      PHPBB_BRANCH:
         required: true
+        type: string
+      SNIFF:
+        required: false
+        default: '1'
         type: string
       IMAGE_ICC:
-        required: true
+        required: false
+        default: '1'
         type: string
       EPV:
-        required: true
+        required: false
+        default: '1'
         type: string
       EXECUTABLE_FILES:
-        required: true
+        required: false
+        default: '1'
         type: string
       CODECOV:
         required: false
         default: '0'
-        type: string
-      PHPBB_BRANCH:
-        required: true
         type: string
       RUN_BASIC_JOBS:
         required: false
