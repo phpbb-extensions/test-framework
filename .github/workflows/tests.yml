@@ -49,11 +49,11 @@ on:
         required: false
         type: string
         default: '0'
-      MIN_PHP_VERSION:
+      PRIMARY_PHP_VERSION:
         required: false
         type: string
         default: '7.2'
-      ALL_PHP_VERSIONS:
+      PHP_VERSION_MATRIX:
         required: false
         type: string
         default: '["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]'
@@ -78,7 +78,7 @@ jobs:
         strategy:
             matrix:
                 include:
-                    - php: ${{ inputs.MIN_PHP_VERSION }}
+                    - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                       db: 'none'
                       NOTESTS: 1
 
@@ -146,26 +146,26 @@ jobs:
         runs-on: ubuntu-22.04
         strategy:
           matrix:
-            php: ${{ fromJSON(inputs.ALL_PHP_VERSIONS) }}
+            php: ${{ fromJSON(inputs.PHP_VERSION_MATRIX) }}
             db: ['mysql:5.7']
             include:
-              - php: ${{ inputs.MIN_PHP_VERSION }}
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'mariadb:10.1'
-              - php: ${{ inputs.MIN_PHP_VERSION }}
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'mariadb:10.2'
-              - php: ${{ inputs.MIN_PHP_VERSION }}
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'mariadb:10.3'
-              - php: ${{ inputs.MIN_PHP_VERSION }}
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'mariadb:10.4'
-              - php: ${{ inputs.MIN_PHP_VERSION }}
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'mariadb:10.5'
-              - php: ${{ inputs.MIN_PHP_VERSION }}
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'mysql:5.6'
-              - php: ${{ inputs.MIN_PHP_VERSION }}
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'mysql:5.6'
                 db_alias: 'MyISAM Tests'
                 MYISAM: 1
-              - php: ${{ startsWith(inputs.MIN_PHP_VERSION, '7') && '7.4' || inputs.MIN_PHP_VERSION }}
+              - php: ${{ startsWith(inputs.PRIMARY_PHP_VERSION, '7') && '7.4' || inputs.PRIMARY_PHP_VERSION }}
                 db: 'mysql:8.0'
                 COVERAGE: ${{ inputs.CODECOV == '1' && '1' || '0' }}
                 db_alias: ${{ inputs.CODECOV == '1' && 'mysql:8.0 with Coverage' || 'mysql:8.0' }}
@@ -293,20 +293,20 @@ jobs:
         runs-on: ubuntu-22.04
         strategy:
           matrix:
-            php: ${{ fromJSON(inputs.ALL_PHP_VERSIONS) }}
+            php: ${{ fromJSON(inputs.PHP_VERSION_MATRIX) }}
             db: ['postgres:14']
             include:
-              - php: ${{ inputs.MIN_PHP_VERSION }}
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'postgres:9.5'
-              - php: ${{ inputs.MIN_PHP_VERSION }}
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'postgres:9.6'
-              - php: ${{ inputs.MIN_PHP_VERSION }}
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'postgres:10'
-              - php: ${{ inputs.MIN_PHP_VERSION }}
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'postgres:11'
-              - php: ${{ inputs.MIN_PHP_VERSION }}
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'postgres:12'
-              - php: ${{ inputs.MIN_PHP_VERSION }}
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'postgres:13'
 
         name: PHP ${{ matrix.php }} - ${{ matrix.db }}
@@ -413,12 +413,12 @@ jobs:
         strategy:
             matrix:
                 include:
-                    - php: ${{ inputs.MIN_PHP_VERSION }}
+                    - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                       db: "sqlite3"
-                    - php: ${{ inputs.MIN_PHP_VERSION }}
+                    - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                       db: "mcr.microsoft.com/mssql/server:2019-CU27-ubuntu-20.04"
                       db_alias: 'MSSQL 2019'
-                    - php: ${{ inputs.MIN_PHP_VERSION }}
+                    - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                       db: "mcr.microsoft.com/mssql/server:2022-CU13-ubuntu-22.04"
                       db_alias: 'MSSQL 2022'
 
