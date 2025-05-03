@@ -56,11 +56,11 @@ on:
       PRIMARY_PHP_VERSION:
         required: false
         type: string
-        default: '7.2'
+        default: '8.1'
       PHP_VERSION_MATRIX:
         required: false
         type: string
-        default: '["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]'
+        default: '["8.1", "8.2", "8.3", "8.4"]'
     secrets:
       CODECOV_TOKEN:
         required: false
@@ -151,10 +151,8 @@ jobs:
         strategy:
           matrix:
             php: ${{ fromJSON(inputs.PHP_VERSION_MATRIX) }}
-            db: ['mysql:5.7']
+            db: ['mysql:8.0', 'mysql:8.1', 'mariadb:10.5']
             include:
-              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
-                db: 'mariadb:10.1'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'mariadb:10.2'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
@@ -162,17 +160,21 @@ jobs:
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'mariadb:10.4'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
-                db: 'mariadb:10.5'
+                db: 'mariadb:10.6'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
-                db: 'mysql:5.6'
+                db: 'mariadb:10.9'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
-                db: 'mysql:5.6'
+                db: 'mariadb:10.10'
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'mariadb:10.11'
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'mysql:5.7'
                 db_alias: 'MyISAM Tests'
                 MYISAM: 1
               - php: ${{ startsWith(inputs.PRIMARY_PHP_VERSION, '7') && '7.4' || inputs.PRIMARY_PHP_VERSION }}
-                db: 'mysql:8.0'
+                db: 'mysql:5.7'
                 COVERAGE: ${{ inputs.CODECOV == '1' && '1' || '0' }}
-                db_alias: ${{ inputs.CODECOV == '1' && 'mysql:8.0 with Coverage' || 'mysql:8.0' }}
+                db_alias: ${{ inputs.CODECOV == '1' && 'mysql:5.7 with Coverage' || 'mysql:5.7' }}
 
         name: PHP ${{ matrix.php }} - ${{ matrix.db_alias != '' && matrix.db_alias || matrix.db }}
 
@@ -294,11 +296,11 @@ jobs:
     # START PostgreSQL Job
     postgres-tests:
         if: ${{ inputs.RUN_PGSQL_JOBS == '1' }}
-        runs-on: ubuntu-lastest
+        runs-on: ubuntu-latest
         strategy:
           matrix:
             php: ${{ fromJSON(inputs.PHP_VERSION_MATRIX) }}
-            db: ['postgres:14']
+            db: ['postgres:15']
             include:
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'postgres:9.5'
@@ -312,6 +314,8 @@ jobs:
                 db: 'postgres:12'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'postgres:13'
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'postgres:14'
 
         name: PHP ${{ matrix.php }} - ${{ matrix.db }}
 
@@ -566,7 +570,7 @@ jobs:
               uses: shivammathur/setup-php@v2
               with:
                   php-version: ${{ matrix.php }}
-                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, intl, gd, exif, iconv, pgsql, pdo_pgsql
+                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, intl, gd, exif, iconv, pgsql, pdo_pgsql, sodium
                   ini-values: upload_tmp_dir=${{ runner.temp }}, sys_temp_dir=${{ runner.temp }}
                   coverage: none
 
@@ -600,6 +604,10 @@ jobs:
                   icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\cache" /grant Users:F /T
                   icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\files" /grant Users:F /T
                   icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\store" /grant Users:F /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\ext" /grant Users:F /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\vendor-ext" /grant Users:F /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\composer-ext.json" /grant Users:F /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\composer-ext.lock" /grant Users:F /T
                   icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\images\avatars\upload" /grant Users:F /T
                   $accessRule = New-Object System.Security.AccessControl.FileSystemAccessRule("IIS_IUSRS", "FullControl", "ContainerInherit,ObjectInherit", "None", "Allow")
                   $acl = Get-ACL "${env:TEMP_DIR}"
@@ -607,8 +615,6 @@ jobs:
                   Set-ACL -Path "${env:TEMP_DIR}" -ACLObject $acl
                   cd ${env:GITHUB_WORKSPACE}\phpBB3\phpBB
                   php ..\composer.phar install
-                  php ..\composer.phar remove phpunit/dbunit --dev --update-with-dependencies
-                  php ..\composer.phar require symfony/yaml:~4.4 misantron/dbunit:~5.0 phpunit/phpunit:^9.3 doctrine/instantiator:^1.4 --dev --update-with-all-dependencies --ignore-platform-reqs
                   cd ..
 
             - name: Setup database
