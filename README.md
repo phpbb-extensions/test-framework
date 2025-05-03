@@ -64,7 +64,7 @@ Use the branch that matches the phpBB version you're developing for.
 
 ## ✅ Requirements
 
-- Your extension's package contents must be located at the root level of the repository. That is, the repository **must directly represent the package**, with all relevant files such as `composer.json`, `README`, `LICENSE`, etc. placed directly in the **root of the repository**, **not inside a subdirectory within the repository**. See any of phpbb-extension's official extension repositories as an example.
+- Your extension's package contents must be located at the root level of the repository. That is, the repository **must directly represent the package**, with all relevant files such as `composer.json`, `README`, `LICENSE`, etc. placed directly in the **root of the repository**, **not inside a subdirectory within the repository**.
 - Tests must be defined in your repository using PHPUnit.
 
 ## 🛠 Advanced Configuration Options
