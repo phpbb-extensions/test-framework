@@ -101,10 +101,6 @@ call-tests:
         # ADVANCED CONFIGURATIONS BELOW
         # The following arguments are for users that need to tweak the workflow.
 
-        # Set this to 1 to generate a code coverage report. (See documentation below.)
-        # Default: 0
-        CODECOV: 0
-
         # Set this to 0 to skip all MySQL/MariaDB tests.
         # Default: 1
         RUN_MYSQL_JOBS: 1
@@ -140,6 +136,10 @@ call-tests:
         # List the PHP versions you want your extension tested with.
         # Default: '["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]'
         PHP_VERSION_MATRIX: '["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]'
+
+        # Set this to 1 to generate a code coverage report. (See documentation below.)
+        # Default: 0
+        CODECOV: 0
 ```
 
 ## 📊 Code Coverage with Codecov

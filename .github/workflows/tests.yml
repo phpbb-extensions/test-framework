@@ -247,7 +247,7 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: 20
-            
+
             - name: Run npm ci
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
               run: npm ci
@@ -388,7 +388,7 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: 20
-            
+
             - name: Run npm ci
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
               run: npm ci
@@ -505,7 +505,7 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: 20
-            
+
             - name: Run npm ci
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
               run: npm ci
@@ -636,7 +636,7 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: 20
-            
+
             - name: Run npm ci
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
               run: npm ci
