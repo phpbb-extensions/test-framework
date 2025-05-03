@@ -82,14 +82,6 @@ call-tests:
         # OPTIONAL CONFIGURATIONS BELOW
         # The following arguments are optional and can be omitted if not needed.
 
-        # Run code sniffer on your code? 1 or 0
-        # Default: 1
-        SNIFF: 1
-
-        # Run icc profile sniffer on your images? 1 or 0
-        # Default: 1
-        IMAGE_ICC: 1
-
         # Run EPV (Extension Pre Validator) on your code? 1 or 0
         # Default: 1
         EPV: 1
@@ -98,16 +90,20 @@ call-tests:
         # Default: 1
         EXECUTABLE_FILES: 1
 
+        # Run icc profile sniffer on your images? 1 or 0
+        # Default: 1
+        IMAGE_ICC: 1
+
+        # Run code sniffer on your code? 1 or 0
+        # Default: 1
+        SNIFF: 1
+
         # ADVANCED CONFIGURATIONS BELOW
         # The following arguments are for users that need to tweak the workflow.
 
         # Set this to 1 to generate a code coverage report. (See documentation below.)
         # Default: 0
         CODECOV: 0
-
-        # Set this to 0 to skip all basic checks (code sniffer, EPV, etc.)
-        # Default: 1
-        RUN_BASIC_JOBS: 1
 
         # Set this to 0 to skip all MySQL/MariaDB tests.
         # Default: 1

@@ -29,10 +29,6 @@ on:
         required: false
         default: '0'
         type: string
-      RUN_BASIC_JOBS:
-        required: false
-        type: string
-        default: '1'
       RUN_MYSQL_JOBS:
         required: false
         type: string
@@ -81,7 +77,7 @@ env:
 jobs:
     # START Basic Checks Job (EPV, code sniffer, images check, etc.)
     basic-checks:
-        if: ${{ inputs.RUN_BASIC_JOBS == '1' }}
+        if: ${{ inputs.EPV == '1' || inputs.EXECUTABLE_FILES == '1' || inputs.IMAGE_ICC == '1' || inputs.SNIFF == '1' }}
         runs-on: ubuntu-22.04
         strategy:
             matrix:
