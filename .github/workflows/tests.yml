@@ -6,41 +6,61 @@ on:
       EXTNAME:
         required: true
         type: string
-      SNIFF:
+      PHPBB_BRANCH:
         required: true
+        type: string
+      SNIFF:
+        required: false
+        default: '1'
         type: string
       IMAGE_ICC:
-        required: true
+        required: false
+        default: '1'
         type: string
       EPV:
-        required: true
+        required: false
+        default: '1'
         type: string
       EXECUTABLE_FILES:
-        required: true
+        required: false
+        default: '1'
         type: string
       CODECOV:
         required: false
         default: '0'
         type: string
-      PHPBB_BRANCH:
-        required: true
-        type: string
-      RUN_BASIC_JOBS:
-        required: false
-        type: string
-        default: '1'
       RUN_MYSQL_JOBS:
         required: false
         type: string
         default: '1'
-      RUN_POSTGRESQL_JOBS:
+      RUN_PGSQL_JOBS:
         required: false
         type: string
         default: '1'
       RUN_MSSQL_JOBS:
         required: false
         type: string
-        default: '1'    
+        default: '1'
+      RUN_WINDOWS_JOBS:
+        required: false
+        type: string
+        default: '1'
+      RUN_NPM_INSTALL:
+        required: false
+        type: string
+        default: '0'
+      RUN_COMPOSER_INSTALL:
+        required: false
+        type: string
+        default: '0'
+      PRIMARY_PHP_VERSION:
+        required: false
+        type: string
+        default: '8.1'
+      PHP_VERSION_MATRIX:
+        required: false
+        type: string
+        default: '["8.1", "8.2", "8.3", "8.4"]'
     secrets:
       CODECOV_TOKEN:
         required: false
@@ -57,13 +77,13 @@ env:
 jobs:
     # START Basic Checks Job (EPV, code sniffer, images check, etc.)
     basic-checks:
-        if: ${{ inputs.RUN_BASIC_JOBS == '1' }}
+        if: ${{ inputs.EPV == '1' || inputs.EXECUTABLE_FILES == '1' || inputs.IMAGE_ICC == '1' || inputs.SNIFF == '1' }}
         runs-on: ubuntu-latest
         strategy:
             matrix:
                 include:
-                    - db: 'none'
-                      php: '8.1'
+                    - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                      db: 'none'
                       NOTESTS: 1
 
         name: PHP ${{ matrix.php }} - ${{ matrix.db }}
@@ -129,44 +149,32 @@ jobs:
         if: ${{ inputs.RUN_MYSQL_JOBS == '1' }}
         runs-on: ubuntu-latest
         strategy:
-            matrix:
-                include:
-                    - php: '8.1'
-                      db: "mariadb:10.2"
-                    - php: '8.1'
-                      db: "mariadb:10.3"
-                    - php: '8.1'
-                      db: "mariadb:10.4"
-                    - php: '8.1'
-                      db: "mariadb:10.6"
-                    - php: '8.1'
-                      db: "mariadb:10.9"
-                    - php: '8.1'
-                      db: "mariadb:10.10"
-                    - php: '8.1'
-                      db: "mariadb:10.11"
-                    - php: '8.1'
-                      db: "mysql:5.7"
-                      db_alias: "MyISAM Tests"
-                      MYISAM: 1
-                    - php: '8.1'
-                      db: "mysql:8.0"
-                      COVERAGE: ${{ inputs.CODECOV == '1' && '1' || '0' }}
-                      db_alias: ${{ inputs.CODECOV == '1' && 'mysql:8.0 with Coverage' || 'mysql:5.7' }}
-                    - php: '8.1'
-                      db: "mysql:8.1"
-                    - php: '8.2'
-                      db: "mysql:8.0"
-                    - php: '8.2'
-                      db: "mariadb:10.2"
-                    - php: '8.3'
-                      db: "mysql:5.7"
-                    - php: '8.3'
-                      db: "mariadb:10.2"
-                    - php: '8.4'
-                      db: "mysql:8.0"
-                    - php: '8.4'
-                      db: "mariadb:10.3"
+          matrix:
+            php: ${{ fromJSON(inputs.PHP_VERSION_MATRIX) }}
+            db: ['mysql:8.0', 'mysql:8.1', 'mariadb:10.5']
+            include:
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'mariadb:10.2'
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'mariadb:10.3'
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'mariadb:10.4'
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'mariadb:10.6'
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'mariadb:10.9'
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'mariadb:10.10'
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'mariadb:10.11'
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'mysql:5.7'
+                db_alias: 'MyISAM Tests'
+                MYISAM: 1
+              - php: ${{ startsWith(inputs.PRIMARY_PHP_VERSION, '7') && '7.4' || inputs.PRIMARY_PHP_VERSION }}
+                db: 'mysql:5.7'
+                COVERAGE: ${{ inputs.CODECOV == '1' && '1' || '0' }}
+                db_alias: ${{ inputs.CODECOV == '1' && 'mysql:5.7 with Coverage' || 'mysql:5.7' }}
 
         name: PHP ${{ matrix.php }} - ${{ matrix.db_alias != '' && matrix.db_alias || matrix.db }}
 
@@ -236,6 +244,22 @@ jobs:
               run: .github/setup-database.sh $DB $MYISAM
               working-directory: ./phpBB3
 
+            - name: Install NPM dependencies
+              if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+
+            - name: Run npm ci
+              if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
+              run: npm ci
+              working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
+
+            - name: Install composer dependencies
+              if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
+              run: composer install
+              working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
+
             - name: Setup PHPUnit files
               env:
                   DB: ${{steps.database-type.outputs.db}}
@@ -271,33 +295,27 @@ jobs:
 
     # START PostgreSQL Job
     postgres-tests:
-        if: ${{ inputs.RUN_POSTGRESQL_JOBS == '1' }}
+        if: ${{ inputs.RUN_PGSQL_JOBS == '1' }}
         runs-on: ubuntu-latest
         strategy:
-            matrix:
-                include:
-                    - php: '8.1'
-                      db: "postgres:9.5"
-                    - php: '8.1'
-                      db: "postgres:9.6"
-                    - php: '8.1'
-                      db: "postgres:10"
-                    - php: '8.1'
-                      db: "postgres:11"
-                    - php: '8.1'
-                      db: "postgres:12"
-                    - php: '8.1'
-                      db: "postgres:13"
-                    - php: '8.1'
-                      db: "postgres:14"
-                    - php: '8.1'
-                      db: "postgres:15"
-                    - php: '8.2'
-                      db: "postgres:9.5"
-                    - php: '8.3'
-                      db: "postgres:9.5"
-                    - php: '8.4'
-                      db: "postgres:9.5"
+          matrix:
+            php: ${{ fromJSON(inputs.PHP_VERSION_MATRIX) }}
+            db: ['postgres:15']
+            include:
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'postgres:9.5'
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'postgres:9.6'
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'postgres:10'
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'postgres:11'
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'postgres:12'
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'postgres:13'
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'postgres:14'
 
         name: PHP ${{ matrix.php }} - ${{ matrix.db }}
 
@@ -369,6 +387,22 @@ jobs:
               run: .github/setup-database.sh $DB $MYISAM
               working-directory: ./phpBB3
 
+            - name: Install NPM dependencies
+              if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+
+            - name: Run npm ci
+              if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
+              run: npm ci
+              working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
+
+            - name: Install composer dependencies
+              if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
+              run: composer install
+              working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
+
             - name: Setup PHPUnit files
               run: mkdir -p phpBB/ext/$EXTNAME/.github && cp .github/phpunit* $_
               working-directory: ./phpBB3
@@ -387,12 +421,12 @@ jobs:
         strategy:
             matrix:
                 include:
-                    - php: '8.1'
+                    - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                       db: "sqlite3"
-                    - php: '8.1'
+                    - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                       db: "mcr.microsoft.com/mssql/server:2019-CU27-ubuntu-20.04"
                       db_alias: 'MSSQL 2019'
-                    - php: '8.1'
+                    - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                       db: "mcr.microsoft.com/mssql/server:2022-CU13-ubuntu-22.04"
                       db_alias: 'MSSQL 2022'
 
@@ -471,6 +505,22 @@ jobs:
               run: .github/setup-database.sh $DB $MYISAM
               working-directory: ./phpBB3
 
+            - name: Install NPM dependencies
+              if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+
+            - name: Run npm ci
+              if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
+              run: npm ci
+              working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
+
+            - name: Install composer dependencies
+              if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
+              run: composer install
+              working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
+
             - name: Setup PHPUnit files
               run: mkdir -p phpBB/ext/$EXTNAME/.github && cp .github/phpunit* $_
               working-directory: ./phpBB3
@@ -481,3 +531,144 @@ jobs:
               run: phpBB/vendor/bin/phpunit --configuration phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml --bootstrap ./tests/bootstrap.php
               working-directory: ./phpBB3
     # END Other Tests Job
+
+    # Test with IIS & PostgreSQL on Windows
+    windows-tests:
+        if: ${{ inputs.RUN_WINDOWS_JOBS == '1' }}
+        runs-on: windows-latest
+        strategy:
+            matrix:
+                php:
+                  - ${{ startsWith(inputs.PRIMARY_PHP_VERSION, '7') && '7.4' || inputs.PRIMARY_PHP_VERSION }}
+                db:
+                  - postgres
+                type:
+                  - unit
+                  - functional
+
+        name: PHP ${{ matrix.php }} - Windows - ${{ matrix.type }}
+
+        steps:
+            - name: Prepare git for Windows
+              run: |
+                  git config --system core.autocrlf false
+                  git config --system core.eol lf
+
+            - name: Checkout phpBB
+              uses: actions/checkout@v4
+              with:
+                  repository: phpbb/phpbb
+                  ref: ${{ env.PHPBB_BRANCH }}
+                  path: phpBB3
+
+            - name: Checkout extension
+              uses: actions/checkout@v4
+              with:
+                  path: phpBB3/phpBB/ext/${{ env.EXTNAME }}
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php }}
+                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, intl, gd, exif, iconv, pgsql, pdo_pgsql, sodium
+                  ini-values: upload_tmp_dir=${{ runner.temp }}, sys_temp_dir=${{ runner.temp }}
+                  coverage: none
+
+            - name: Setup environment for phpBB
+              env:
+                  GITHUB_WORKSPACE: ${{ github.workspace }}
+                  TEMP_DIR: ${{ runner.temp }}
+              run: |
+                  Enable-WindowsOptionalFeature -Online -FeatureName IIS-WebServerRole, IIS-WebServer, IIS-CommonHttpFeatures, IIS-ManagementConsole, IIS-HttpErrors, IIS-HttpRedirect, IIS-WindowsAuthentication, IIS-StaticContent, IIS-DefaultDocument, IIS-HttpCompressionStatic, IIS-DirectoryBrowsing, IIS-WebServerManagementTools, IIS-CGI -All
+                  Set-Service wuauserv -StartupType Manual
+                  (Get-Content ${env:GITHUB_WORKSPACE}\phpBB3\phpBB\web.config).replace("<configuration>", "<configuration>`n`t<system.web>`n`t`t<customErrors mode=`"Off`"/>`n`t</system.web>") | Set-Content ${env:GITHUB_WORKSPACE}\phpBB3\phpBB\web.config
+                  (Get-Content ${env:GITHUB_WORKSPACE}\phpBB3\phpBB\web.config).replace("`t</system.webServer>", "`t`t<httpErrors errorMode=`"Detailed`" />`n`t</system.webServer>") | Set-Content ${env:GITHUB_WORKSPACE}\phpBB3\phpBB\web.config
+                  choco install urlrewrite -y
+                  Import-Module WebAdministration
+                  New-WebSite -Name 'phpBBTest' -PhysicalPath "${env:GITHUB_WORKSPACE}\phpBB3\phpBB" -Force
+                  $session = Get-PSSession -Name WinPSCompatSession
+                  $sb = {Set-ItemProperty 'IIS:\Sites\phpBBTest' -name Bindings -value @{protocol='http';bindingInformation='*:80:phpbb.test'}}
+                  Invoke-Command -Scriptblock $sb -Session $session
+                  $sb = {Set-WebConfigurationProperty -filter /system.WebServer/security/authentication/AnonymousAuthentication -name enabled -value true -location "IIS:\Sites\phpBBTest"}
+                  Invoke-Command -Scriptblock $sb -Session $session
+                  Add-Content -Path $env:windir\System32\drivers\etc\hosts -Value "`r`n127.0.0.1`tphpbb.test" -Force
+                  [System.Environment]::SetEnvironmentVariable('PATH',$Env:PATH+";%windir%\system32\inetsrv")
+                  echo Setup FAST-CGI configuration
+                  Add-WebConfiguration -Filter /system.webServer/fastCgi -PSPath IIS:\ -Value @{fullpath="C:\tools\php\php-cgi.exe"}
+                  echo Setup FACT-CGI handler
+                  New-WebHandler -Name "PHP-FastCGI" -Path "*.php" -Modules FastCgiModule -ScriptProcessor "C:\tools\php\php-cgi.exe" -Verb '*' -ResourceType Either
+                  iisreset
+                  NET START W3SVC
+                  mkdir "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\cache\test"
+                  mkdir "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\cache\installer"
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\cache" /grant Users:F /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\files" /grant Users:F /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\store" /grant Users:F /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\ext" /grant Users:F /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\vendor-ext" /grant Users:F /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\composer-ext.json" /grant Users:F /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\composer-ext.lock" /grant Users:F /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\images\avatars\upload" /grant Users:F /T
+                  $accessRule = New-Object System.Security.AccessControl.FileSystemAccessRule("IIS_IUSRS", "FullControl", "ContainerInherit,ObjectInherit", "None", "Allow")
+                  $acl = Get-ACL "${env:TEMP_DIR}"
+                  $acl.AddAccessRule($accessRule)
+                  Set-ACL -Path "${env:TEMP_DIR}" -ACLObject $acl
+                  cd ${env:GITHUB_WORKSPACE}\phpBB3\phpBB
+                  php ..\composer.phar install
+                  cd ..
+
+            - name: Setup database
+              run: |
+                  $postgreSqlSvc = Get-Service "postgresql*"
+                  Set-Service $postgreSqlSvc.Name -StartupType manual
+                  $runningStatus = [System.ServiceProcess.ServiceControllerStatus]::Running
+                  $maxStartTimeout = New-TimeSpan -Seconds 30
+                  try {
+                    $postgreSqlSvc.Start()
+                    $postgreSqlSvc.WaitForStatus($runningStatus, $maxStartTimeout)
+                  } catch  {
+                    $_ | select *
+                  }
+                  [System.Environment]::SetEnvironmentVariable('PATH',$Env:PATH+";${env:PGBIN}")
+                  $env:PGPASSWORD = 'root'
+                  psql -c 'ALTER SYSTEM SET hot_standby = on;' -U postgres
+                  psql -c 'ALTER SYSTEM SET wal_level = minimal;' -U postgres
+                  psql -c 'DROP DATABASE IF EXISTS phpbb_tests;' -U postgres
+                  psql -c 'create database phpbb_tests;' -U postgres
+                  Set-MpPreference -ExclusionPath "${env:PGDATA}" # Exclude PGDATA directory from Windows Defender
+                  Set-MpPreference -DisableRealtimeMonitoring $true
+
+            - name: Install NPM dependencies
+              if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+
+            - name: Run npm ci
+              if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
+              run: npm ci
+              working-directory: .\phpBB3\phpBB\ext\${{ env.EXTNAME }}
+
+            - name: Install composer dependencies
+              if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
+              run: composer install
+              working-directory: .\phpBB3\phpBB\ext\${{ env.EXTNAME }}
+
+            - name: Setup PHPUnit files
+              run: |
+                if (-not (Test-Path "phpBB\ext\$env:EXTNAME\.github")) { 
+                  mkdir "phpBB\ext\$env:EXTNAME\.github" 
+                }
+                Copy-Item ".github\phpunit*" -Destination "phpBB\ext\$env:EXTNAME\.github" -Force
+              working-directory: .\phpBB3
+
+            - name: Run unit tests
+              if: ${{ matrix.type == 'unit' }}
+              run: phpBB/vendor/bin/phpunit --configuration phpBB/ext/$env:EXTNAME/.github/phpunit-psql-windows-github.xml --bootstrap ./tests/bootstrap.php --verbose --stop-on-error --exclude-group functional
+              working-directory: .\phpBB3
+
+            - name: Run functional tests
+              if: ${{ matrix.type == 'functional' }}
+              run: phpBB/vendor/bin/phpunit --configuration phpBB/ext/$env:EXTNAME/.github/phpunit-psql-windows-github.xml --bootstrap ./tests/bootstrap.php --verbose --stop-on-error --group functional
+              working-directory: .\phpBB3
+    # END IIS & PostgreSQL on Windows Tests Job
