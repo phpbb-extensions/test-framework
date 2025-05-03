@@ -8,8 +8,7 @@ This repository contains a pre-configured test workflow designed for phpBB exten
 
 - ✨ [Features](#-features)
 - 🚀 [How to Use](#-how-to-use)
-- ✅ [Requirements](#-requirements)
-- 🛠 [Advanced Configuration Options](#-advanced-configuration-options)
+- 🛠 [Configuration Options](#-configuration-options)
 - 📊 [Code Coverage with Codecov](#-code-coverage-with-codecov)
 
 ## ✨ Features
@@ -18,10 +17,10 @@ This repository contains a pre-configured test workflow designed for phpBB exten
 - Tests against multiple database engines
 - Optional checks for:
   - PHP CodeSniffer
-  - ICC image profiles
+  - Image ICC profile removal
   - EPV (Extension Pre Validator)
-  - Executable files
-  - Code coverage via Codecov
+  - Files with executable permissions
+  - Code coverage reports via Codecov
 
 ## 🚀 How to Use
 
@@ -59,15 +58,23 @@ jobs:
 
 Use the branch that matches the phpBB version you're developing for.
 
-- `3.3.x`: Targets the **phpBB 3.3.x** release line.
-- `master`: Targets the latest development version of **phpBB** (`master` branch).
+- `3.3.x`: Targets the phpBB 3.3.x release line.
+- `master`: Targets the latest development version of phpBB (`master` branch).
 
-## ✅ Requirements
+> ‼️ Whichever branch you choose here, be sure to use the **same value** for both the `PHPBB_BRANCH` and in the `uses:` line after the `@` symbol. For example, if you're targeting the `3.3.x` branch:
+> 
+> ```yaml
+> uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+> with:
+>     PHPBB_BRANCH: 3.3.x
+> ```
+
+### Requirements
 
 - Your extension's package contents must be located at the root level of the repository. That is, the repository **must directly represent the package**, with all relevant files such as `composer.json`, `README`, `LICENSE`, etc. placed directly in the **root of the repository**, **not inside a subdirectory within the repository**.
 - Tests must be defined in your repository using PHPUnit.
 
-## 🛠 Advanced Configuration Options
+## 🛠 Configuration Options
 
 You can fine-tune this workflow with several optional arguments in the `with` section:
 
@@ -82,46 +89,43 @@ call-tests:
         # OPTIONAL CONFIGURATIONS BELOW
         # The following arguments are optional and can be omitted if not needed.
 
-        # Run EPV (Extension Pre Validator) on your code? 1 or 0
+        # Run phpBB's EPV (Extension Pre Validator)? 1 (yes) or 0 (no)
         # Default: 1
         EPV: 1
 
-        # Run check for executable files? 1 or 0
+        # Check for files with executable permissions? 1 (yes) or 0 (no)
         # Default: 1
         EXECUTABLE_FILES: 1
 
-        # Run icc profile sniffer on your images? 1 or 0
+        # Remove embedded ICC profiles from images? 1 (yes) or 0 (no)
         # Default: 1
         IMAGE_ICC: 1
 
-        # Run code sniffer on your code? 1 or 0
+        # Run CodeSniffer to detect PHP code style issues? 1 (yes) or 0 (no)
         # Default: 1
         SNIFF: 1
 
-        # ADVANCED CONFIGURATIONS BELOW
-        # The following arguments are for users that need to tweak the workflow.
-
-        # Set this to 0 to skip all MySQL/MariaDB tests.
+        # Run MySQL/MariaDB tests? 1 (yes) or 0 (no)
         # Default: 1
         RUN_MYSQL_JOBS: 1
 
-        # Set this to 0 to skip all PostgreSQL tests.
+        # Run PostgreSQL tests? 1 (yes) or 0 (no)
         # Default: 1
         RUN_PGSQL_JOBS: 1
 
-        # Set this to 0 to skip all MSSQL and SQLite3 tests.
+        # Run MSSQL and SQLite3 tests? 1 (yes) or 0 (no)
         # Default: 1
         RUN_MSSQL_JOBS: 1
 
-        # Set this to 0 to skip all Windows IIS & PostgreSQL tests.
+        # Run Windows IIS & PostgreSQL tests? 1 (yes) or 0 (no)
         # Default: 1
         RUN_WINDOWS_JOBS: 1
 
-        # Set this to 1 if your extension relies on NPM dependencies.
+        # Install NPM dependencies (if your extension relies on them)? 1 (yes) or 0 (no)
         # Default: 0
         RUN_NPM_INSTALL: 0
 
-        # Set this to 1 if your extension relies on Composer dependencies.
+        # Install Composer dependencies (if your extension relies on them)? 1 (yes) or 0 (no)
         # Default: 0
         RUN_COMPOSER_INSTALL: 0
 
@@ -137,7 +141,7 @@ call-tests:
         # Default: '["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]'
         PHP_VERSION_MATRIX: '["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]'
 
-        # Set this to 1 to generate a code coverage report. (See documentation below.)
+        # Generate a code coverage report (see documentation below)? 1 (yes) or 0 (no)
         # Default: 0
         CODECOV: 0
 ```
