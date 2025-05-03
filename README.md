@@ -13,7 +13,7 @@ This repository contains a pre-configured test workflow designed for phpBB exten
 
 ## ✨ Features
 
-- Supports **PHP 7.2+** through **8.x**
+- Supports **PHP 8.x**
 - Tests against multiple database engines
 - Optional checks for:
   - PHP CodeSniffer
@@ -46,10 +46,10 @@ on:
 jobs:
     call-tests:
         name: Extension tests
-        uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x  # Must match PHPBB_BRANCH
+        uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master  # Must match PHPBB_BRANCH
         with:
             EXTNAME: acme/demo   # Your extension vendor/package name
-            PHPBB_BRANCH: 3.3.x  # The phpBB branch to run tests on
+            PHPBB_BRANCH: master # The phpBB branch to run tests on
         secrets:
             CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }} # Do not edit or remove this
 ```
@@ -61,12 +61,12 @@ Use the branch that matches the phpBB version you're developing for.
 - `3.3.x`: Targets the phpBB 3.3.x release line.
 - `master`: Targets the latest development version of phpBB (`master` branch).
 
-> ‼️ Whichever branch you choose here, be sure to use the **same value** for both the `PHPBB_BRANCH` and in the `uses:` line after the `@` symbol. For example, if you're targeting the `3.3.x` branch:
+> ‼️ Whichever branch you choose here, be sure to use the **same value** for both the `PHPBB_BRANCH` and in the `uses:` line after the `@` symbol. For example, if you're targeting the `master` branch:
 > 
 > ```yaml
-> uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+> uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master
 > with:
->     PHPBB_BRANCH: 3.3.x
+>     PHPBB_BRANCH: master
 > ```
 
 ### Requirements
@@ -81,10 +81,10 @@ You can fine-tune this workflow with several optional arguments in the `with` se
 ```yaml
 call-tests:
     name: Extension tests
-    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master
     with:
         EXTNAME: acme/demo   # Your extension vendor/package name
-        PHPBB_BRANCH: 3.3.x  # The phpBB branch to run tests on
+        PHPBB_BRANCH: master # The phpBB branch to run tests on
 
         # OPTIONAL CONFIGURATIONS BELOW
         # The following arguments are optional and can be omitted if not needed.
@@ -130,16 +130,16 @@ call-tests:
         RUN_COMPOSER_INSTALL: 0
 
         # CUSTOMISE PHP VERSIONS
-        # To override the default PHP versions tested (7.2 through 8.4):
+        # To override the default PHP versions tested (8.1 through 8.4):
 
         # Preferred PHP version used for all test jobs.
-        # Default: '7.2'
-        PRIMARY_PHP_VERSION: '7.2'
+        # Default: '8.1'
+        PRIMARY_PHP_VERSION: '8.1'
 
         # The MySQL and PostgreSQL jobs run tests across multiple PHP versions.
         # List the PHP versions you want your extension tested with.
-        # Default: '["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]'
-        PHP_VERSION_MATRIX: '["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]'
+        # Default: '["8.1", "8.2", "8.3", "8.4"]'
+        PHP_VERSION_MATRIX: '["8.1", "8.2", "8.3", "8.4"]'
 
         # Generate a code coverage report (see documentation below)? 1 (yes) or 0 (no)
         # Default: 0
