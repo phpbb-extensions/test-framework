@@ -541,8 +541,11 @@ jobs:
                   - ${{ startsWith(inputs.PRIMARY_PHP_VERSION, '7') && '7.4' || inputs.PRIMARY_PHP_VERSION }}
                 db:
                   - postgres
+                type:
+                  - unit
+                  - functional
 
-        name: PHP ${{ matrix.php }} - Windows
+        name: PHP ${{ matrix.php }} - Windows - ${{ matrix.type }}
 
         steps:
             - name: Prepare git for Windows
@@ -656,7 +659,13 @@ jobs:
                 Copy-Item ".github\phpunit*" -Destination "phpBB\ext\$env:EXTNAME\.github" -Force
               working-directory: .\phpBB3
 
-            - name: Run tests
-              run: phpBB/vendor/bin/phpunit --configuration phpBB/ext/$env:EXTNAME/.github/phpunit-psql-windows-github.xml --bootstrap ./tests/bootstrap.php --verbose --stop-on-error
+            - name: Run unit tests
+              if: ${{ matrix.type == 'unit' }}
+              run: phpBB/vendor/bin/phpunit --configuration phpBB/ext/$env:EXTNAME/.github/phpunit-psql-windows-github.xml --bootstrap ./tests/bootstrap.php --verbose --stop-on-error --exclude-group functional
+              working-directory: .\phpBB3
+
+            - name: Run functional tests
+              if: ${{ matrix.type == 'functional' }}
+              run: phpBB/vendor/bin/phpunit --configuration phpBB/ext/$env:EXTNAME/.github/phpunit-psql-windows-github.xml --bootstrap ./tests/bootstrap.php --verbose --stop-on-error --group functional
               working-directory: .\phpBB3
     # END IIS & PostgreSQL on Windows Tests Job
