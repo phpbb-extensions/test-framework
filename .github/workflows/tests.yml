@@ -675,16 +675,18 @@ jobs:
 
             - name: Run unit tests
               run: |
-                  $extraArgs = ""
+                  $args = @(
+                    "--configuration", "phpBB/ext/$env:EXTNAME/.github/phpunit-psql-windows-github.xml",
+                    "--bootstrap", "./tests/bootstrap.php",
+                    "--verbose",
+                    "--stop-on-error"
+                  )
+
                   if ($env:FUNCTIONAL_TESTS -eq "0") {
-                    $extraArgs = "--exclude-group functional"
+                    $args += "--exclude-group"
+                    $args += "functional"
                   }
 
-                  phpBB/vendor/bin/phpunit `
-                    --configuration phpBB/ext/$env:EXTNAME/.github/phpunit-psql-windows-github.xml `
-                    --bootstrap ./tests/bootstrap.php `
-                    --verbose `
-                    --stop-on-error `
-                    $extraArgs
+                  phpBB/vendor/bin/phpunit @args
               working-directory: .\phpBB3
     # END IIS & PostgreSQL on Windows Tests Job
