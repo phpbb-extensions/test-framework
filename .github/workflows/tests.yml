@@ -46,6 +46,10 @@ on:
         required: false
         type: string
         default: '1'
+      RUN_FUNCTIONAL_TESTS:
+        required: false
+        type: string
+        default: '1'
       RUN_NPM_INSTALL:
         required: false
         type: string
@@ -73,6 +77,7 @@ env:
     IMAGE_ICC: ${{ inputs.IMAGE_ICC == '1' && '1' || '0' }}
     EPV: ${{ inputs.EPV == '1' && '1' || '0' }}
     EXECUTABLE_FILES: ${{ inputs.EXECUTABLE_FILES == '1' && '1' || '0' }}
+    FUNCTIONAL_TESTS: ${{ inputs.RUN_FUNCTIONAL_TESTS == '1' && '1' || '0' }}
     PHPBB_BRANCH: ${{ inputs.PHPBB_BRANCH }}
 
 jobs:
@@ -279,9 +284,16 @@ jobs:
               run: |
                   if [ $COVERAGE == '1' ]
                   then
-                      phpBB/vendor/bin/phpunit --configuration phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml --bootstrap ./tests/bootstrap.php --coverage-clover build/logs/clover.xml
+                      phpBB/vendor/bin/phpunit \
+                          --configuration phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml \
+                          --bootstrap ./tests/bootstrap.php \
+                          --coverage-clover build/logs/clover.xml \
+                          $([[ "$FUNCTIONAL_TESTS" == "0" ]] && echo "--exclude-group functional")
                   else
-                      phpBB/vendor/bin/phpunit --configuration phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml --bootstrap ./tests/bootstrap.php
+                      phpBB/vendor/bin/phpunit \
+                          --configuration phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml \
+                          --bootstrap ./tests/bootstrap.php \
+                          $([[ "$FUNCTIONAL_TESTS" == "0" ]] && echo "--exclude-group functional")
                   fi
               working-directory: ./phpBB3
 
@@ -407,7 +419,11 @@ jobs:
             - name: Run unit tests
               env:
                   DB: ${{steps.database-type.outputs.db}}
-              run: phpBB/vendor/bin/phpunit --configuration phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml --bootstrap ./tests/bootstrap.php
+              run: |
+                 phpBB/vendor/bin/phpunit \
+                    --configuration phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml \
+                    --bootstrap ./tests/bootstrap.php \
+                    $([[ "$FUNCTIONAL_TESTS" == "0" ]] && echo "--exclude-group functional")
               working-directory: ./phpBB3
     # END PostgreSQL Job
 
@@ -524,7 +540,11 @@ jobs:
             - name: Run unit tests
               env:
                   DB: ${{steps.database-type.outputs.db}}
-              run: phpBB/vendor/bin/phpunit --configuration phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml --bootstrap ./tests/bootstrap.php
+              run: |
+                  phpBB/vendor/bin/phpunit \
+                    --configuration phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml \
+                    --bootstrap ./tests/bootstrap.php \
+                    $([[ "$FUNCTIONAL_TESTS" == "0" ]] && echo "--exclude-group functional")
               working-directory: ./phpBB3
     # END Other Tests Job
 
@@ -538,11 +558,8 @@ jobs:
                   - ${{ startsWith(inputs.PRIMARY_PHP_VERSION, '7') && '7.4' || inputs.PRIMARY_PHP_VERSION }}
                 db:
                   - postgres
-                type:
-                  - unit
-                  - functional
 
-        name: PHP ${{ matrix.php }} - Windows - ${{ matrix.type }}
+        name: PHP ${{ matrix.php }} - Windows
 
         steps:
             - name: Prepare git for Windows
@@ -650,19 +667,26 @@ jobs:
 
             - name: Setup PHPUnit files
               run: |
-                if (-not (Test-Path "phpBB\ext\$env:EXTNAME\.github")) { 
-                  mkdir "phpBB\ext\$env:EXTNAME\.github" 
-                }
-                Copy-Item ".github\phpunit*" -Destination "phpBB\ext\$env:EXTNAME\.github" -Force
+                  if (-not (Test-Path "phpBB\ext\$env:EXTNAME\.github")) { 
+                    mkdir "phpBB\ext\$env:EXTNAME\.github" 
+                  }
+                  Copy-Item ".github\phpunit*" -Destination "phpBB\ext\$env:EXTNAME\.github" -Force
               working-directory: .\phpBB3
 
             - name: Run unit tests
-              if: ${{ matrix.type == 'unit' }}
-              run: phpBB/vendor/bin/phpunit --configuration phpBB/ext/$env:EXTNAME/.github/phpunit-psql-windows-github.xml --bootstrap ./tests/bootstrap.php --verbose --stop-on-error --exclude-group functional
-              working-directory: .\phpBB3
+              run: |
+                  $args = @(
+                    "--configuration", "phpBB/ext/$env:EXTNAME/.github/phpunit-psql-windows-github.xml",
+                    "--bootstrap", "./tests/bootstrap.php",
+                    "--verbose",
+                    "--stop-on-error"
+                  )
 
-            - name: Run functional tests
-              if: ${{ matrix.type == 'functional' }}
-              run: phpBB/vendor/bin/phpunit --configuration phpBB/ext/$env:EXTNAME/.github/phpunit-psql-windows-github.xml --bootstrap ./tests/bootstrap.php --verbose --stop-on-error --group functional
+                  if ($env:FUNCTIONAL_TESTS -eq "0") {
+                    $args += "--exclude-group"
+                    $args += "functional"
+                  }
+
+                  phpBB/vendor/bin/phpunit @args
               working-directory: .\phpBB3
     # END IIS & PostgreSQL on Windows Tests Job
