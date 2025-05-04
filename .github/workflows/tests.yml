@@ -7,7 +7,8 @@ on:
         required: true
         type: string
       PHPBB_BRANCH:
-        required: true
+        required: false
+        default: 'master'
         type: string
       SNIFF:
         required: false

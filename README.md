@@ -46,27 +46,24 @@ on:
 jobs:
     call-tests:
         name: Extension tests
-        uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master  # Must match PHPBB_BRANCH
+        uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master # The phpBB branch to run tests with
         with:
             EXTNAME: acme/demo   # Your extension vendor/package name
-            PHPBB_BRANCH: master # The phpBB branch to run tests on
         secrets:
             CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }} # Do not edit or remove this
 ```
 
 ### Branches
 
-Use the branch that matches the phpBB version you're developing for.
+Use the test-framework branch that matches the phpBB version you're developing for:
 
 - `3.3.x`: Targets the phpBB 3.3.x release line.
 - `master`: Targets the latest development version of phpBB (`master` branch).
 
-> ‼️ Whichever branch you choose here, be sure to use the **same value** for both the `PHPBB_BRANCH` and in the `uses:` line after the `@` symbol. For example, if you're targeting the `master` branch:
+> ‼️ Whichever branch of this framework you choose, be sure it is appended to the `uses:` line after the `@` symbol. For example, if you're targeting the `master` branch:
 > 
 > ```yaml
 > uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master
-> with:
->     PHPBB_BRANCH: master
 > ```
 
 ### Requirements
@@ -84,10 +81,16 @@ call-tests:
     uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master
     with:
         EXTNAME: acme/demo   # Your extension vendor/package name
-        PHPBB_BRANCH: master # The phpBB branch to run tests on
 
         # OPTIONAL CONFIGURATIONS BELOW
         # The following arguments are optional and can be omitted if not needed.
+
+        # The phpBB branch to use when running tests.
+        # Default is 'master', which this framework is designed for.
+        # If using a different branch, ensure it's compatible with master.
+        # To test with phpBB's 3.3.x branch, refer to the Branches section of this README.
+        # Default: 'master'
+        PHPBB_BRANCH: 'master'
 
         # Run phpBB's EPV (Extension Pre Validator)? 1 (yes) or 0 (no)
         # Default: 1
