@@ -124,6 +124,10 @@ call-tests:
         # Default: 1
         RUN_WINDOWS_JOBS: 1
 
+        # Run functional tests if you have them? 1 (yes) or 0 (no)
+        # Default: 1
+        RUN_FUNCTIONAL_TESTS: 1
+
         # Install NPM dependencies (if your extension relies on them)? 1 (yes) or 0 (no)
         # Default: 0
         RUN_NPM_INSTALL: 0
