@@ -667,10 +667,10 @@ jobs:
 
             - name: Setup PHPUnit files
               run: |
-                if (-not (Test-Path "phpBB\ext\$env:EXTNAME\.github")) { 
-                  mkdir "phpBB\ext\$env:EXTNAME\.github" 
-                }
-                Copy-Item ".github\phpunit*" -Destination "phpBB\ext\$env:EXTNAME\.github" -Force
+                  if (-not (Test-Path "phpBB\ext\$env:EXTNAME\.github")) { 
+                    mkdir "phpBB\ext\$env:EXTNAME\.github" 
+                  }
+                  Copy-Item ".github\phpunit*" -Destination "phpBB\ext\$env:EXTNAME\.github" -Force
               working-directory: .\phpBB3
 
             - name: Run unit tests
