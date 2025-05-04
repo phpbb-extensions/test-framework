@@ -86,11 +86,11 @@ call-tests:
         # The following arguments are optional and can be omitted if not needed.
 
         # The phpBB branch to use when running tests.
-        # Default is '3.3.x', which this framework is designed for.
-        # If using a different branch, ensure it's compatible with 3.3.x.
-        # To test with phpBB's master branch, refer to the Branches section of this README.
-        # Default: '3.3.x'
-        PHPBB_BRANCH: '3.3.x'
+        # Default is 'master', which this framework is designed for.
+        # If using a different branch, ensure it's compatible with master.
+        # To test with phpBB's 3.3.x branch, refer to the Branches section of this README.
+        # Default: 'master'
+        PHPBB_BRANCH: 'master'
 
         # Run phpBB's EPV (Extension Pre Validator)? 1 (yes) or 0 (no)
         # Default: 1
