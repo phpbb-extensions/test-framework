@@ -6,10 +6,10 @@ This repository contains a pre-configured test workflow designed for phpBB exten
 
 ## Table of Contents
 
-- [Features](#-features)
-- [How to Use](#-how-to-use)
-- [Configuration Options](#-configuration-options)
-- [Configuration Examples](#-configuration-examples)
+- [Features](#features)
+- [How to Use](#how-to-use)
+- [Configuration Options](#configuration-options)
+- [Configuration Examples](#configuration-examples)
 
 ## Features
 
