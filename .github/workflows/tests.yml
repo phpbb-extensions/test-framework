@@ -180,7 +180,7 @@ jobs:
                 COVERAGE: ${{ inputs.CODECOV == '1' && '1' || '0' }}
                 db_alias: ${{ inputs.CODECOV == '1' && 'mysql:8.0 with Coverage' || 'mysql:8.0' }}
 
-        name: PHP ${{ matrix.php }} - ${{ matrix.db_alias != '' && matrix.db_alias || matrix.db }}
+        name: ${{ inputs.RUN_MYSQL_JOBS == '1' && format('PHP {0} - {1}', matrix.php, matrix.db_alias != '' && matrix.db_alias || matrix.db) || 'MySQL/MariaDB tests skipped' }}
 
         services:
             mysql:
@@ -326,7 +326,7 @@ jobs:
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'postgres:13'
 
-        name: PHP ${{ matrix.php }} - ${{ matrix.db }}
+        name: ${{ inputs.RUN_PGSQL_JOBS == '1' && format('PHP {0} - {1}', matrix.php, matrix.db) || 'Postgres tests (skipped)' }}
 
         services:
             postgres:
@@ -443,7 +443,7 @@ jobs:
                       db: "mcr.microsoft.com/mssql/server:2022-CU13-ubuntu-22.04"
                       db_alias: 'MSSQL 2022'
 
-        name: PHP ${{ matrix.php }} - ${{ matrix.db_alias != '' && matrix.db_alias || matrix.db }}
+        name: ${{ inputs.RUN_MSSQL_JOBS == '1' && format('PHP {0} - {1}', matrix.php, matrix.db_alias != '' && matrix.db_alias || matrix.db) || 'MSSQL/SQLite tests skipped' }}
 
         services:
             mssql:
@@ -559,7 +559,7 @@ jobs:
                 db:
                   - postgres
 
-        name: PHP ${{ matrix.php }} - Windows
+        name: ${{ inputs.RUN_WINDOWS_JOBS == '1' && format('PHP {0} - Windows', matrix.php) || 'Windows tests skipped' }}
 
         steps:
             - name: Prepare git for Windows
