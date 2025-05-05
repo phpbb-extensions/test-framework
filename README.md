@@ -6,12 +6,12 @@ This repository contains a pre-configured test workflow designed for phpBB exten
 
 ## Table of Contents
 
-- ✨ [Features](#-features)
-- 🚀 [How to Use](#-how-to-use)
-- 🛠 [Configuration Options](#-configuration-options)
+- [Features](#-features)
+- [How to Use](#-how-to-use)
+- [Configuration Options](#-configuration-options)
 - [Configuration Examples](#-configuration-examples)
 
-## ✨ Features
+## Features
 
 - Supports **PHP 7.2+** through **8.x**
 - Tests against multiple database engines
@@ -22,7 +22,7 @@ This repository contains a pre-configured test workflow designed for phpBB exten
   - Files with executable permissions
   - Code coverage reports via Codecov
 
-## 🚀 How to Use
+## How to Use
 
 On GitHub.com, go to your extension's repository, click **Add file → Create new file**, name it `.github/workflows/tests.yml`, add the workflow content shown below, and commit the file. Make sure to replace `acme/demo` with your actual extension vendor/package name, and optionally you may adjust any of the branch names and other checks.
 
@@ -69,7 +69,7 @@ Use the test-framework branch that matches the phpBB version you're developing f
 - Your extension's package contents must be located at the root level of the repository. That is, the repository **must directly represent the package**, with all relevant files such as `composer.json`, `README`, `LICENSE`, etc. placed directly in the **root of the repository**, **not inside a subdirectory within the repository**.
 - Tests must be defined in your repository using PHPUnit.
 
-## 🛠 Configuration Options
+## Configuration Options
 
 You can fine-tune this workflow with several optional arguments in the `with` section:
 
@@ -267,6 +267,6 @@ Then, in your GitHub repository:
 
 > 💡 You can view your coverage reports and badges by visiting your extension's page on [Codecov.io](https://codecov.io).
 
-## 📄 License
+## License
 
 [GNU General Public License v2](license.txt)
