@@ -6,12 +6,12 @@ This repository contains a pre-configured test workflow designed for phpBB exten
 
 ## Table of Contents
 
-- ✨ [Features](#-features)
-- 🚀 [How to Use](#-how-to-use)
-- 🛠 [Configuration Options](#-configuration-options)
-- 📊 [Code Coverage with Codecov](#-code-coverage-with-codecov)
+- [Features](#features)
+- [How to Use](#how-to-use)
+- [Configuration Options](#configuration-options)
+- [Configuration Examples](#configuration-examples)
 
-## ✨ Features
+## Features
 
 - Supports **PHP 7.2+** through **8.x**
 - Tests against multiple database engines
@@ -22,7 +22,7 @@ This repository contains a pre-configured test workflow designed for phpBB exten
   - Files with executable permissions
   - Code coverage reports via Codecov
 
-## 🚀 How to Use
+## How to Use
 
 On GitHub.com, go to your extension's repository, click **Add file → Create new file**, name it `.github/workflows/tests.yml`, add the workflow content shown below, and commit the file. Make sure to replace `acme/demo` with your actual extension vendor/package name, and optionally you may adjust any of the branch names and other checks.
 
@@ -49,8 +49,6 @@ jobs:
         uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x # The phpBB branch to run tests with
         with:
             EXTNAME: acme/demo   # Your extension vendor/package name
-        secrets:
-            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }} # Do not edit or remove this
 ```
 
 ### Branches
@@ -71,7 +69,7 @@ Use the test-framework branch that matches the phpBB version you're developing f
 - Your extension's package contents must be located at the root level of the repository. That is, the repository **must directly represent the package**, with all relevant files such as `composer.json`, `README`, `LICENSE`, etc. placed directly in the **root of the repository**, **not inside a subdirectory within the repository**.
 - Tests must be defined in your repository using PHPUnit.
 
-## 🛠 Configuration Options
+## Configuration Options
 
 You can fine-tune this workflow with several optional arguments in the `with` section:
 
@@ -153,32 +151,105 @@ call-tests:
         CODECOV: 0
 ```
 
-## 📊 Code Coverage with Codecov
+## Configuration Examples
 
-This test framework supports code coverage reporting through [Codecov.io](https://codecov.io). To enable it, follow these steps:
-
-### 1. Add a `codecov.yml` Path Fix
-
-Codecov may report incorrect file paths if phpBB is cloned into a subdirectory. To fix this, add a `codecov.yml` file to the `.github/` directory of your extension’s repository with the following content:
+### Test an extension with phpBB 3.3.x
 
 ```yaml
-fixes:
-    - "/phpBB3/phpBB/ext/acme/demo/::"
+call-tests:
+    name: Extension tests
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+    with:
+        EXTNAME: acme/demo
 ```
 
-Make sure to replace `acme/demo` with your actual extension vendor/package name.
-
-### 2. Enable Codecov in the Workflow
-
-Ensure `CODECOV: 1` is set in your workflow call:
+### Test an extension with phpBB's master-dev version
 
 ```yaml
-with:
-    ...
-    CODECOV: 1
+call-tests:
+    name: Extension tests
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master
+    with:
+        EXTNAME: acme/demo
 ```
 
-### 3. Get Your Codecov Token (if required)
+### Test an extension but skip the PostgreSQL on Linux and Windows tests
+
+```yaml
+call-tests:
+    name: Extension tests
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+    with:
+        EXTNAME: acme/demo
+        RUN_PGSQL_JOBS: 0
+        RUN_WINDOWS_JOBS: 0
+```
+
+### Test an extension that has no PHPUnit tests (basic checks only)
+
+```yaml
+call-tests:
+    name: Extension tests
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+    with:
+        EXTNAME: acme/demo
+        RUN_MYSQL_JOBS: 0
+        RUN_PGSQL_JOBS: 0
+        RUN_MSSQL_JOBS: 0
+        RUN_WINDOWS_JOBS: 0
+```
+
+### Test an extension that has no Functional tests
+
+```yaml
+call-tests:
+    name: Extension tests
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+    with:
+        EXTNAME: acme/demo
+        RUN_FUNCTIONAL_TESTS: 0
+```
+
+### Test an extension that only supports PHP 8+
+
+```yaml
+call-tests:
+    name: Extension tests
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+    with:
+        EXTNAME: acme/demo
+        PRIMARY_PHP_VERSION: '8.0'
+        PHP_VERSION_MATRIX: '["8.0", "8.1", "8.2", "8.3", "8.4"]'
+```
+
+### Test an extension that has composer and NPM dependencies
+
+```yaml
+call-tests:
+    name: Extension tests
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master
+    with:
+        EXTNAME: acme/demo
+        RUN_NPM_INSTALL: 1
+        RUN_COMPOSER_INSTALL: 1
+```
+
+### Test an extension + generate a code coverage report
+
+This test framework supports code coverage reporting through [Codecov.io](https://codecov.io).
+
+```yaml
+call-tests:
+    name: Extension tests
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+    with:
+        EXTNAME: acme/demo
+        CODECOV: 1
+    secrets:                                        # This must be included
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }} # This must be included
+```
+
+#### Get Your Codecov Token (if required)
 
 Most public repositories do **not** require a token.  
 For private repositories or certain CI setups, you may need a global **Codecov token**:
@@ -194,10 +265,8 @@ Then, in your GitHub repository:
 - Click **"New repository secret"**
 - Name it `CODECOV_TOKEN` and paste your token value
 
-Once set up, Codecov will automatically collect and display coverage reports for your extension after each test run.
-
 > 💡 You can view your coverage reports and badges by visiting your extension's page on [Codecov.io](https://codecov.io).
 
-## 📄 License
+## License
 
 [GNU General Public License v2](license.txt)
