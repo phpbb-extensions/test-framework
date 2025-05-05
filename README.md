@@ -178,7 +178,7 @@ call-tests:
 ```yaml
 call-tests:
     name: Extension tests
-    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master
     with:
         EXTNAME: acme/demo
         RUN_PGSQL_JOBS: 0
@@ -190,7 +190,7 @@ call-tests:
 ```yaml
 call-tests:
     name: Extension tests
-    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master
     with:
         EXTNAME: acme/demo
         RUN_MYSQL_JOBS: 0
@@ -204,7 +204,7 @@ call-tests:
 ```yaml
 call-tests:
     name: Extension tests
-    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master
     with:
         EXTNAME: acme/demo
         RUN_FUNCTIONAL_TESTS: 0
@@ -215,7 +215,7 @@ call-tests:
 ```yaml
 call-tests:
     name: Extension tests
-    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master
     with:
         EXTNAME: acme/demo
         PRIMARY_PHP_VERSION: '8.0'
@@ -241,7 +241,7 @@ This test framework supports code coverage reporting through [Codecov.io](https:
 ```yaml
 call-tests:
     name: Extension tests
-    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master
     with:
         EXTNAME: acme/demo
         CODECOV: 1
