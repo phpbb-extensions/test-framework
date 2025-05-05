@@ -279,6 +279,15 @@ jobs:
                   fi
               working-directory: ./phpBB3
 
+            - name: Setup Codecove.io Path Fix
+              if: ${{ matrix.COVERAGE == '1' }}
+              run: |
+                  if [ ! -f .github/codecov.yml ]; then
+                      mkdir -p .github
+                      echo "fixes:" > .github/codecov.yml
+                      echo "    - \"/phpBB3/phpBB/ext/${EXTNAME}::\"" >> .github/codecov.yml
+                  fi
+
             - name: Run unit tests
               env:
                   DB: ${{steps.database-type.outputs.db}}
