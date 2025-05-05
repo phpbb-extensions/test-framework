@@ -9,7 +9,7 @@ This repository contains a pre-configured test workflow designed for phpBB exten
 - ✨ [Features](#-features)
 - 🚀 [How to Use](#-how-to-use)
 - 🛠 [Configuration Options](#-configuration-options)
-- 📊 [Code Coverage with Codecov](#-code-coverage-with-codecov)
+- [Configuration Examples](#-configuration-examples)
 
 ## ✨ Features
 
@@ -151,32 +151,105 @@ call-tests:
         CODECOV: 0
 ```
 
-## 📊 Code Coverage with Codecov
+## Configuration Examples
 
-This test framework supports code coverage reporting through [Codecov.io](https://codecov.io). To enable it, follow these steps:
-
-### 1. Add a `codecov.yml` Path Fix
-
-Codecov may report incorrect file paths if phpBB is cloned into a subdirectory. To fix this, add a `codecov.yml` file to the `.github/` directory of your extension’s repository with the following content:
+### Test an extension with phpBB 3.3.x
 
 ```yaml
-fixes:
-    - "/phpBB3/phpBB/ext/acme/demo/::"
+call-tests:
+    name: Extension tests
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+    with:
+        EXTNAME: acme/demo
 ```
 
-Make sure to replace `acme/demo` with your actual extension vendor/package name.
-
-### 2. Enable Codecov in the Workflow
-
-Ensure `CODECOV: 1` is set in your workflow call:
+### Test an extension with phpBB's master-dev version
 
 ```yaml
-with:
-    ...
-    CODECOV: 1
+call-tests:
+    name: Extension tests
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master
+    with:
+        EXTNAME: acme/demo
 ```
 
-### 3. Get Your Codecov Token (if required)
+### Test an extension but skip the PostgreSQL on Linux and Windows tests
+
+```yaml
+call-tests:
+    name: Extension tests
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+    with:
+        EXTNAME: acme/demo
+        RUN_PGSQL_JOBS: 0
+        RUN_WINDOWS_JOBS: 0
+```
+
+### Test an extension that has no PHPUnit tests (basic checks only)
+
+```yaml
+call-tests:
+    name: Extension tests
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+    with:
+        EXTNAME: acme/demo
+        RUN_MYSQL_JOBS: 0
+        RUN_PGSQL_JOBS: 0
+        RUN_MSSQL_JOBS: 0
+        RUN_WINDOWS_JOBS: 0
+```
+
+### Test an extension that has no Functional tests
+
+```yaml
+call-tests:
+    name: Extension tests
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+    with:
+        EXTNAME: acme/demo
+        RUN_FUNCTIONAL_TESTS: 0
+```
+
+### Test an extension that only supports PHP 8+
+
+```yaml
+call-tests:
+    name: Extension tests
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+    with:
+        EXTNAME: acme/demo
+        PRIMARY_PHP_VERSION: '8.0'
+        PHP_VERSION_MATRIX: '["8.0", "8.1", "8.2", "8.3", "8.4"]'
+```
+
+### Test an extension that has composer and NPM dependencies
+
+```yaml
+call-tests:
+    name: Extension tests
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master
+    with:
+        EXTNAME: acme/demo
+        RUN_NPM_INSTALL: 1
+        RUN_COMPOSER_INSTALL: 1
+```
+
+### Test an extension + generate a code coverage report
+
+This test framework supports code coverage reporting through [Codecov.io](https://codecov.io).
+
+```yaml
+call-tests:
+    name: Extension tests
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+    with:
+        EXTNAME: acme/demo
+        CODECOV: 1
+    secrets:                                        # This must be included
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }} # This must be included
+```
+
+#### Get Your Codecov Token (if required)
 
 Most public repositories do **not** require a token.  
 For private repositories or certain CI setups, you may need a global **Codecov token**:
@@ -191,8 +264,6 @@ Then, in your GitHub repository:
 - Navigate to **Settings → Secrets and variables → Actions**
 - Click **"New repository secret"**
 - Name it `CODECOV_TOKEN` and paste your token value
-
-Once set up, Codecov will automatically collect and display coverage reports for your extension after each test run.
 
 > 💡 You can view your coverage reports and badges by visiting your extension's page on [Codecov.io](https://codecov.io).
 
