@@ -49,8 +49,6 @@ jobs:
         uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x # The phpBB branch to run tests with
         with:
             EXTNAME: acme/demo   # Your extension vendor/package name
-        secrets:
-            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }} # Do not edit or remove this
 ```
 
 ### Branches
