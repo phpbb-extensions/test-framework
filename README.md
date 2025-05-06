@@ -2,27 +2,7 @@
 
 Reusable GitHub Actions workflow for testing phpBB extensions across multiple environments.
 
-This repository contains a pre-configured test workflow designed for phpBB extension developers. It runs your extension's tests using various PHP versions and database systems, including **MySQL**, **PostgreSQL**, **SQLite**, and **Microsoft SQL Server**.
-
-## Table of Contents
-
-- [Features](#features)
-- [How to Use](#how-to-use)
-- [Configuration Options](#configuration-options)
-- [Configuration Examples](#configuration-examples)
-
-## Features
-
-- Supports **PHP 8.x**
-- Tests against multiple database engines
-- Optional checks for:
-  - PHP CodeSniffer
-  - Image ICC profile removal
-  - EPV (Extension Pre Validator)
-  - Files with executable permissions
-  - Code coverage reports via Codecov
-
-## How to Use
+This repository provides a reusable GitHub Actions workflow designed for phpBB extension developers. It supports testing across PHP 8.x and database engines including MySQL, PostgreSQL, SQLite, and Microsoft SQL Server. Optional checks include PHP CodeSniffer, Extension Pre Validator (EPV), executable file detection, image ICC profile removal, and code coverage reporting via Codecov.
 
 On GitHub.com, go to your extension's repository, click **Add file → Create new file**, name it `.github/workflows/tests.yml`, add the workflow content shown below, and commit the file. Make sure to replace `acme/demo` with your actual extension vendor/package name, and optionally you may adjust any of the branch names and other checks.
 
@@ -51,7 +31,7 @@ jobs:
             EXTNAME: acme/demo   # Your extension vendor/package name
 ```
 
-### Branches
+## Branches
 
 Use the test-framework branch that matches the phpBB version you're developing for:
 
@@ -64,12 +44,12 @@ Use the test-framework branch that matches the phpBB version you're developing f
 > uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master
 > ```
 
-### Requirements
+## Requirements
 
 - Your extension's package contents must be located at the root level of the repository. That is, the repository **must directly represent the package**, with all relevant files such as `composer.json`, `README`, `LICENSE`, etc. placed directly in the **root of the repository**, **not inside a subdirectory within the repository**.
 - Tests must be defined in your repository using PHPUnit.
 
-## Configuration Options
+# Configuration Options
 
 You can fine-tune this workflow with several optional arguments in the `with` section:
 
@@ -151,9 +131,9 @@ call-tests:
         CODECOV: 0
 ```
 
-## Configuration Examples
+# Configuration Examples
 
-### Test an extension with phpBB 3.3.x
+## Test an extension with phpBB 3.3.x
 
 ```yaml
 call-tests:
@@ -163,7 +143,7 @@ call-tests:
         EXTNAME: acme/demo
 ```
 
-### Test an extension with phpBB's master-dev version
+## Test an extension with phpBB's master-dev version
 
 ```yaml
 call-tests:
@@ -173,7 +153,7 @@ call-tests:
         EXTNAME: acme/demo
 ```
 
-### Test an extension but skip the PostgreSQL on Linux and Windows tests
+## Test an extension but skip the PostgreSQL on Linux and Windows tests
 
 ```yaml
 call-tests:
@@ -185,7 +165,7 @@ call-tests:
         RUN_WINDOWS_JOBS: 0
 ```
 
-### Test an extension that has no PHPUnit tests (basic checks only)
+## Test an extension that has no PHPUnit tests (basic checks only)
 
 ```yaml
 call-tests:
@@ -199,7 +179,7 @@ call-tests:
         RUN_WINDOWS_JOBS: 0
 ```
 
-### Test an extension that has no Functional tests
+## Test an extension that has no Functional tests
 
 ```yaml
 call-tests:
@@ -210,7 +190,7 @@ call-tests:
         RUN_FUNCTIONAL_TESTS: 0
 ```
 
-### Test an extension that only supports PHP 8+
+## Test an extension that only supports PHP 8+
 
 ```yaml
 call-tests:
@@ -222,7 +202,7 @@ call-tests:
         PHP_VERSION_MATRIX: '["8.0", "8.1", "8.2", "8.3", "8.4"]'
 ```
 
-### Test an extension that has composer and NPM dependencies
+## Test an extension that has composer and NPM dependencies
 
 ```yaml
 call-tests:
@@ -234,7 +214,7 @@ call-tests:
         RUN_COMPOSER_INSTALL: 1
 ```
 
-### Test an extension + generate a code coverage report
+## Test an extension + generate a code coverage report
 
 This test framework supports code coverage reporting through [Codecov.io](https://codecov.io).
 
@@ -249,24 +229,45 @@ call-tests:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }} # This must be included
 ```
 
-#### Get Your Codecov Token (if required)
-
-Most public repositories do **not** require a token.  
-For private repositories or certain CI setups, you may need a global **Codecov token**:
-
-- Visit [https://codecov.io](https://codecov.io)
-- Log in with your **GitHub** account
-- Go to your [Codecov account settings](https://app.codecov.io/account/token)
-- Copy the token
-
-Then, in your GitHub repository:
-
-- Navigate to **Settings → Secrets and variables → Actions**
-- Click **"New repository secret"**
-- Name it `CODECOV_TOKEN` and paste your token value
-
+> **Get Your Codecov Token (if required)**
+>
+> Most public repositories do **not** require a token.  
+> For private repositories or certain CI setups, you may need a global **Codecov token**:
+>
+> - Visit [https://codecov.io](https://codecov.io)
+> - Log in with your **GitHub** account
+> - Go to your [Codecov account settings](https://app.codecov.io/account/token)
+> - Copy the token
+> 
+> Then, in your GitHub repository:
+> 
+> - Navigate to **Settings → Secrets and variables → Actions**
+> - Click **"New repository secret"**
+> - Name it `CODECOV_TOKEN` and paste your token value
+> 
 > 💡 You can view your coverage reports and badges by visiting your extension's page on [Codecov.io](https://codecov.io).
 
-## License
+## When the configuration options aren’t enough
+
+If testing your extension requires more flexibility than the provided configuration options allow, you have two choices:
+
+**Open an Issue** – If something is missing or could be improved, feel free to [open an issue](https://github.com/phpbb-extensions/test-framework/issues). Suggestions and feedback are welcome and may help improve the framework for everyone.
+
+**Create Your Own Custom Version** – For highly specific needs, you can create your own version of this framework by using it as a template. Just click **Use this template → Create a new repository** to get started. Once your custom repository is set up, you can modify the workflow as needed. Then, reference your version of the framework from your extension’s test workflow like so:
+
+```yaml
+call-tests:
+    name: Extension tests
+    uses: your-org/your-repo/.github/workflows/tests.yml@your-branch
+    with:
+        EXTNAME: acme/demo
+        PHPBB_BRANCH: master
+```
+
+# Contributing
+
+Issues and pull requests are welcome! If you have suggestions for improvement, feel free to [open an issue](https://github.com/phpbb-extensions/test-framework/issues).
+
+# License
 
 [GNU General Public License v2](license.txt)
