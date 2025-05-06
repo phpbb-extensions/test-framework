@@ -8,7 +8,7 @@ on:
         type: string
       PHPBB_BRANCH:
         required: false
-        default: '3.3.x'
+        default: 'master'
         type: string
       SNIFF:
         required: false
@@ -61,11 +61,11 @@ on:
       PRIMARY_PHP_VERSION:
         required: false
         type: string
-        default: '7.2'
+        default: '8.1'
       PHP_VERSION_MATRIX:
         required: false
         type: string
-        default: '["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]'
+        default: '["8.1", "8.2", "8.3", "8.4"]'
     secrets:
       CODECOV_TOKEN:
         required: false
@@ -84,7 +84,7 @@ jobs:
     # START Basic Checks Job (EPV, code sniffer, images check, etc.)
     basic-checks:
         if: ${{ inputs.EPV == '1' || inputs.EXECUTABLE_FILES == '1' || inputs.IMAGE_ICC == '1' || inputs.SNIFF == '1' }}
-        runs-on: ubuntu-22.04
+        runs-on: ubuntu-latest
         strategy:
             matrix:
                 include:
@@ -111,7 +111,7 @@ jobs:
               uses: shivammathur/setup-php@v2
               with:
                   php-version: ${{ matrix.php }}
-                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, mysqli, sqlite, pdo_sqlite, intl, gd, exif, iconv, sqlsrv, pdo_sqlsrv, ldap
+                  extensions: dom, curl, libxml, mbstring, zip, pcntl, intl, gd, exif, iconv
                   coverage: none
 
             - name: Setup environment for phpBB
@@ -153,14 +153,12 @@ jobs:
     # START MySQL and MariaDB Job
     mysql-tests:
         if: ${{ inputs.RUN_MYSQL_JOBS == '1' }}
-        runs-on: ubuntu-22.04
+        runs-on: ubuntu-latest
         strategy:
           matrix:
             php: ${{ fromJSON(inputs.PHP_VERSION_MATRIX) }}
-            db: ['mysql:5.7']
+            db: ['mysql:8.0', 'mysql:8.1', 'mariadb:10.5']
             include:
-              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
-                db: 'mariadb:10.1'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'mariadb:10.2'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
@@ -168,17 +166,21 @@ jobs:
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'mariadb:10.4'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
-                db: 'mariadb:10.5'
+                db: 'mariadb:10.6'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
-                db: 'mysql:5.6'
+                db: 'mariadb:10.9'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
-                db: 'mysql:5.6'
+                db: 'mariadb:10.10'
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'mariadb:10.11'
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'mysql:5.7'
                 db_alias: 'MyISAM Tests'
                 MYISAM: 1
               - php: ${{ startsWith(inputs.PRIMARY_PHP_VERSION, '7') && '7.4' || inputs.PRIMARY_PHP_VERSION }}
-                db: 'mysql:8.0'
+                db: 'mysql:5.7'
                 COVERAGE: ${{ inputs.CODECOV == '1' && '1' || '0' }}
-                db_alias: ${{ inputs.CODECOV == '1' && 'mysql:8.0 with Coverage' || 'mysql:8.0' }}
+                db_alias: ${{ inputs.CODECOV == '1' && 'mysql:5.7 with Coverage' || 'mysql:5.7' }}
 
         name: PHP ${{ matrix.php }} - ${{ matrix.db_alias != '' && matrix.db_alias || matrix.db }}
 
@@ -271,7 +273,7 @@ jobs:
               run: |
                   if [ $COVERAGE == '1' ]
                   then
-                      sed -n '1h;1!H;${;g;s/<\/php>/<\/php>\n\t<filter>\n\t\t<whitelist>\n\t\t\t<directory>..\/<\/directory>\n\t\t\t<exclude>\n\t\t\t\t<directory>..\/tests\/<\/directory>\n\t\t\t\t<directory>..\/language\/<\/directory>\n\t\t\t\t<directory>..\/migrations\/<\/directory>\n\t\t\t<\/exclude>\n\t\t<\/whitelist>\n\t<\/filter>/g;p;}' .github/phpunit-$DB-github.xml &> phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml
+                      sed -n '1h;1!H;${;g;s/<\/php>/<\/php>\n\t<coverage>\n\t\t<include>\n\t\t\t<directory>..\/<\/directory>\n\t\t<\/include>\n\t\t<exclude>\n\t\t\t<directory>..\/tests\/<\/directory>\n\t\t\t<directory>..\/language\/<\/directory>\n\t\t\t<directory>..\/migrations\/<\/directory>\n\t\t<\/exclude>\n\t<\/coverage>/g;p;}' .github/phpunit-$DB-github.xml &> phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml
                   else
                       mkdir -p phpBB/ext/$EXTNAME/.github && cp .github/phpunit* $_
                   fi
@@ -316,11 +318,11 @@ jobs:
     # START PostgreSQL Job
     postgres-tests:
         if: ${{ inputs.RUN_PGSQL_JOBS == '1' }}
-        runs-on: ubuntu-22.04
+        runs-on: ubuntu-latest
         strategy:
           matrix:
             php: ${{ fromJSON(inputs.PHP_VERSION_MATRIX) }}
-            db: ['postgres:14']
+            db: ['postgres:15']
             include:
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'postgres:9.5'
@@ -334,12 +336,14 @@ jobs:
                 db: 'postgres:12'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'postgres:13'
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'postgres:14'
 
         name: PHP ${{ matrix.php }} - ${{ matrix.db }}
 
         services:
             postgres:
-                image: ${{ matrix.db != 'postgres:9.5' && matrix.db != 'postgres:9.6' && matrix.db != 'postgres:10' && matrix.db != 'postgres:11' && matrix.db != 'postgres:12' && matrix.db != 'postgres:13' && 'postgres:10' || matrix.db }}
+                image: ${{ matrix.db != 'postgres:9.5' && matrix.db != 'postgres:9.6' && matrix.db != 'postgres:10' && matrix.db != 'postgres:11' && matrix.db != 'postgres:12' && matrix.db != 'postgres:13' && matrix.db != 'postgres:14' && matrix.db != 'postgres:15' && 'postgres:10' || matrix.db }}
                 env:
                     POSTGRES_HOST: localhost
                     POSTGRES_USER: postgres
@@ -387,7 +391,7 @@ jobs:
               uses: shivammathur/setup-php@v2
               with:
                   php-version: ${{ matrix.php }}
-                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, mysqli, sqlite, pdo_sqlite, intl, gd, exif, iconv, sqlsrv, pdo_sqlsrv, ldap
+                  extensions: dom, curl, libxml, mbstring, zip, pcntl, intl, gd, exif, iconv, pgsql, pdo, pdo_pgsql
                   coverage: none
 
             - name: Setup environment for phpBB
@@ -452,11 +456,12 @@ jobs:
                       db: "mcr.microsoft.com/mssql/server:2022-CU13-ubuntu-22.04"
                       db_alias: 'MSSQL 2022'
 
+
         name: PHP ${{ matrix.php }} - ${{ matrix.db_alias != '' && matrix.db_alias || matrix.db }}
 
         services:
             mssql:
-                image: ${{ matrix.db != 'mcr.microsoft.com/mssql/server:2022-CU13-ubuntu-22.04' && matrix.db != 'mcr.microsoft.com/mssql/server:2019-CU27-ubuntu-20.04' && 'mcr.microsoft.com/mssql/server:2022-CU13-ubuntu-22.04' || matrix.db }}
+                image: ${{ matrix.db != 'mcr.microsoft.com/mssql/server:2019-CU27-ubuntu-20.04' && matrix.db != 'mcr.microsoft.com/mssql/server:2022-CU13-ubuntu-22.04' && 'mcr.microsoft.com/mssql/server:2022-CU13-ubuntu-22.04' || matrix.db }}
                 env:
                     SA_PASSWORD: "Pssw0rd_12"
                     ACCEPT_EULA: "y"
@@ -496,7 +501,7 @@ jobs:
               env:
                   MATRIX_DB: ${{ matrix.db }}
               run: |
-                  if [ $MATRIX_DB == 'mcr.microsoft.com/mssql/server:2022-CU13-ubuntu-22.04' ] || [ $MATRIX_DB == 'mcr.microsoft.com/mssql/server:2019-CU27-ubuntu-20.04' ]
+                  if [ $MATRIX_DB == 'mcr.microsoft.com/mssql/server:2019-CU27-ubuntu-20.04' ] || [ $MATRIX_DB == 'mcr.microsoft.com/mssql/server:2022-CU13-ubuntu-22.04' ]
                   then
                       db='mssql'
                   else
@@ -508,7 +513,7 @@ jobs:
               uses: shivammathur/setup-php@v2
               with:
                   php-version: ${{ matrix.php }}
-                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, mysqli, sqlite, pdo_sqlite, intl, gd, exif, iconv, sqlsrv, pdo_sqlsrv, ldap
+                  extensions: dom, curl, libxml, mbstring, zip, pcntl, intl, gd, exif, iconv, sqlsrv, pdo, pdo_sqlsrv
                   coverage: none
 
             - name: Setup environment for phpBB
@@ -592,7 +597,7 @@ jobs:
               uses: shivammathur/setup-php@v2
               with:
                   php-version: ${{ matrix.php }}
-                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, intl, gd, exif, iconv, pgsql, pdo_pgsql
+                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, intl, gd, exif, iconv, pgsql, pdo_pgsql, sodium
                   ini-values: upload_tmp_dir=${{ runner.temp }}, sys_temp_dir=${{ runner.temp }}
                   coverage: none
 
@@ -626,6 +631,10 @@ jobs:
                   icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\cache" /grant Users:F /T
                   icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\files" /grant Users:F /T
                   icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\store" /grant Users:F /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\ext" /grant Users:F /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\vendor-ext" /grant Users:F /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\composer-ext.json" /grant Users:F /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\composer-ext.lock" /grant Users:F /T
                   icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\images\avatars\upload" /grant Users:F /T
                   $accessRule = New-Object System.Security.AccessControl.FileSystemAccessRule("IIS_IUSRS", "FullControl", "ContainerInherit,ObjectInherit", "None", "Allow")
                   $acl = Get-ACL "${env:TEMP_DIR}"
@@ -633,8 +642,6 @@ jobs:
                   Set-ACL -Path "${env:TEMP_DIR}" -ACLObject $acl
                   cd ${env:GITHUB_WORKSPACE}\phpBB3\phpBB
                   php ..\composer.phar install
-                  php ..\composer.phar remove phpunit/dbunit --dev --update-with-dependencies
-                  php ..\composer.phar require symfony/yaml:~4.4 misantron/dbunit:~5.0 phpunit/phpunit:^9.3 doctrine/instantiator:^1.4 --dev --update-with-all-dependencies --ignore-platform-reqs
                   cd ..
 
             - name: Setup database
