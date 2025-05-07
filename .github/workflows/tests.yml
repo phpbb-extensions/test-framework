@@ -629,13 +629,13 @@ jobs:
                   mkdir "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\cache\test"
                   mkdir "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\cache\installer"
                   icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\cache" /grant Users:F /T
-                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\files" /grant Users:F /T
-                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\store" /grant Users:F /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\files" /grant "Users:(OI)(CI)F" /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\images" /grant "Users:(OI)(CI)F" /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\store" /grant "Users:(OI)(CI)F" /T
                   icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\ext" /grant Users:F /T
                   icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\vendor-ext" /grant Users:F /T
                   icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\composer-ext.json" /grant Users:F /T
                   icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\composer-ext.lock" /grant Users:F /T
-                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\images\avatars\upload" /grant Users:F /T
                   $accessRule = New-Object System.Security.AccessControl.FileSystemAccessRule("IIS_IUSRS", "FullControl", "ContainerInherit,ObjectInherit", "None", "Allow")
                   $acl = Get-ACL "${env:TEMP_DIR}"
                   $acl.AddAccessRule($accessRule)
