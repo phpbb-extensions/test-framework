@@ -282,4 +282,4 @@ Issues and pull requests are welcome! If you have suggestions for improvement, f
 
 # License
 
-[GNU General Public License v2](license.txt)
+[GNU General Public License v2](https://opensource.org/licenses/GPL-2.0)
