@@ -51,6 +51,16 @@ Use the test-framework branch that matches the phpBB version you're developing f
 - Your extension's package contents must be located at the root level of the repository. That is, the repository **must directly represent the package**, with all relevant files such as `composer.json`, `README`, `LICENSE`, etc. placed directly in the **root of the repository**, **not inside a subdirectory within the repository**.
 - Tests must be defined in your repository using PHPUnit.
 
+## Status Badges
+
+Display a status badge in your repository to indicate the status of your test results.
+
+![Tests](https://github.com/phpbb/phpbb-ext-acme-demo/actions/workflows/tests.yml/badge.svg)
+
+```md
+[![Tests](https://github.com/your-org/your-repo/actions/workflows/tests.yml/badge.svg)](https://github.com/your-org/your-repo/actions/workflows/tests.yml)
+```
+
 # Configuration Options
 
 You can fine-tune this workflow with several optional arguments in the `with` section:
