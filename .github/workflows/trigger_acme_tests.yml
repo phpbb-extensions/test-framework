@@ -9,12 +9,10 @@ jobs:
   dispatch:
     runs-on: ubuntu-latest
     steps:
-      - name: Send repository_dispatch to iMattPro/phpbb-ext-acme-demo
-        run: |
-          curl -i -X POST https://api.github.com/repos/iMattPro/phpbb-ext-acme-demo/dispatches \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: token ${{ secrets.ACME_DEMO_PAT }}" \
-            -H "Content-Type: application/json" \
-            -d '{"event_type":"external-push"}'
-        env:
-          ACME_DEMO_PAT: ${{ secrets.ACME_DEMO_PAT }}
+      - uses: convictional/trigger-workflow-and-wait@v1.3.0
+        with:
+          owner: iMattPro
+          repo: phpbb-ext-acme-demo
+          ref: testing-framework
+          github_token: ${{ secrets.ACME_DEMO_PAT }}
+          workflow_file_name: tests.yml
