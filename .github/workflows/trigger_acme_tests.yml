@@ -1,0 +1,21 @@
+name: Trigger Acme Demo Tests
+
+on:
+  push:
+    branches:
+      - 3.3.x
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send repository_dispatch to phpbb-ext-acme-demo
+        run: |
+          curl -X POST https://api.github.com/repos/iMattPro/phpbb-ext-acme-demo/dispatches \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: token ${{ secrets.ACME_DEMO_PAT }}" \
+            -H "Content-Type: application/json" \
+            -d '{"event_type":"external-push"}'
+        env:
+          # This must exist in Repo A
+          ACME_DEMO_PAT: ${{ secrets.ACME_DEMO_PAT }}
