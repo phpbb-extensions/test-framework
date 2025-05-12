@@ -7,6 +7,7 @@ on:
 
 jobs:
   dispatch:
+    name: Trigger tests in acme demo extension
     runs-on: ubuntu-latest
     steps:
       - uses: convictional/trigger-workflow-and-wait@v1.3.0
