@@ -127,7 +127,7 @@ jobs:
               env:
                   PHP_VERSION: ${{ matrix.php }}
               run: |
-                  if [[ "$(printf '%s\n' "$PHP_VERSION" "8.1" | sort -V | head -n1)" == "8.1" ]]; then
+                  if [[ "$(printf '%s\n' "$PHP_VERSION" "8.0" | sort -V | head -n1)" == "8.0" ]]; then
                     composer require phpbb/epv:dev-master --dev --no-interaction --ignore-platform-reqs --with-all-dependencies
                   else
                     composer require phpbb/epv:dev-master --dev --no-interaction --ignore-platform-reqs
