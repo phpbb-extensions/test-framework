@@ -10,7 +10,7 @@ jobs:
     name: Trigger tests in acme demo extension
     runs-on: ubuntu-latest
     steps:
-      - uses: convictional/trigger-workflow-and-wait@v1.3.0
+      - uses: convictional/trigger-workflow-and-wait@v1.6.5
         with:
           owner: iMattPro
           repo: phpbb-ext-acme-demo
