@@ -7,6 +7,7 @@ on:
 
 jobs:
   dispatch:
+    if: github.repository == 'phpbb-extensions/test-framework'  # only run if it's the main (source) repo
     name: Trigger tests in acme demo extension
     runs-on: ubuntu-latest
     steps:
@@ -15,7 +16,7 @@ jobs:
           owner: phpbb
           repo: phpbb-ext-acme-demo
           ref: master
-          github_user: iMattPro
+          github_user: iMattPro  # The name of the github user whose access token is being used to trigger the workflow.
           github_token: ${{ secrets.ACME_DEMO_PAT }}
           workflow_file_name: tests.yml
           wait_workflow: false
