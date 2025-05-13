@@ -14,7 +14,7 @@ jobs:
         with:
           owner: phpbb
           repo: phpbb-ext-acme-demo
-          ref: testing-framework
+          ref: master
           github_user: iMattPro
           github_token: ${{ secrets.ACME_DEMO_PAT }}
           workflow_file_name: tests.yml
