@@ -12,9 +12,10 @@ jobs:
     steps:
       - uses: convictional/trigger-workflow-and-wait@v1.6.5
         with:
-          owner: iMattPro
+          owner: phpbb
           repo: phpbb-ext-acme-demo
           ref: testing-framework
+          github_user: iMattPro
           github_token: ${{ secrets.ACME_DEMO_PAT }}
           workflow_file_name: tests.yml
           wait_workflow: false
