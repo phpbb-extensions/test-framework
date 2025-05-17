@@ -1,0 +1,22 @@
+name: Trigger Acme Demo Tests
+
+on:
+  push:
+    branches:
+      - 3.3.x
+
+jobs:
+  dispatch:
+    if: github.repository == 'phpbb-extensions/test-framework'  # only run if it's the main (source) repo
+    name: Trigger tests in acme demo extension
+    runs-on: ubuntu-latest
+    steps:
+      - uses: convictional/trigger-workflow-and-wait@v1.6.5
+        with:
+          owner: phpbb
+          repo: phpbb-ext-acme-demo
+          ref: master
+          github_user: iMattPro  # The name of the github user whose access token is being used to trigger the workflow.
+          github_token: ${{ secrets.ACME_DEMO_PAT }}
+          workflow_file_name: tests.yml
+          wait_workflow: false
