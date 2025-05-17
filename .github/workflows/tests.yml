@@ -293,19 +293,11 @@ jobs:
                   DB: ${{steps.database-type.outputs.db}}
                   COVERAGE: ${{ matrix.COVERAGE == '1' && '1' || '0' }}
               run: |
-                  if [ $COVERAGE == '1' ]
-                  then
-                      phpBB/vendor/bin/phpunit \
-                          --configuration phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml \
-                          --bootstrap ./tests/bootstrap.php \
-                          --coverage-clover build/logs/clover.xml \
-                          $([[ "$FUNCTIONAL_TESTS" == "0" ]] && echo "--exclude-group functional")
-                  else
-                      phpBB/vendor/bin/phpunit \
-                          --configuration phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml \
-                          --bootstrap ./tests/bootstrap.php \
-                          $([[ "$FUNCTIONAL_TESTS" == "0" ]] && echo "--exclude-group functional")
-                  fi
+                  phpBB/vendor/bin/phpunit \
+                      --configuration phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml \
+                      --bootstrap ./tests/bootstrap.php \
+                      $([[ "$COVERAGE" == "1" ]] && echo "--coverage-clover build/logs/clover.xml") \
+                      $([[ "$FUNCTIONAL_TESTS" == "0" ]] && echo "--exclude-group functional")
               working-directory: ./phpBB3
 
             - name: Send code coverage
