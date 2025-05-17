@@ -1,9 +1,14 @@
 # test-framework
 
-Reusable GitHub Actions workflow for testing phpBB extensions across multiple environments.
+<img align="left" src="detective-bertie.png" alt="Detective Bertie running diagnostics" height="200" width="200">
 
-This repository provides a reusable GitHub Actions workflow designed for phpBB extension developers. It supports testing across PHP versions 7.2 through 8.x and database engines including MySQL, PostgreSQL, SQLite, and Microsoft SQL Server. Optional checks include PHP CodeSniffer, Extension Pre Validator (EPV), executable file detection, image ICC profile removal, and code coverage reporting via Codecov.
+This repository provides a reusable GitHub Actions workflow for phpBB extension developers.
 
+It supports testing phpBB extensions across multiple PHP versions and database engines including MySQL, PostgreSQL, SQLite, and Microsoft SQL Server.
+
+Additional checks include PHP CodeSniffer, Extension Pre Validator (EPV), executable file detection, image ICC profile removal, and code coverage reporting via Codecov.
+<br clear="both"/>
+ 
 # How to Use
 
 On GitHub.com, go to your extension's repository, click **Add file → Create new file**, name it `.github/workflows/tests.yml`, add the workflow content shown below, and commit the file. Make sure to replace `acme/demo` with your actual extension vendor/package name, and optionally you may adjust any of the branch names and other checks.
