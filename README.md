@@ -1,6 +1,6 @@
 # phpBB Extension Test Framework
 
-<img align="left" src="detective-bertie.png" alt="Detective Bertie running diagnostics" height="200" width="200">
+<img align="left" src="https://raw.githubusercontent.com/phpbb/website-assets/master/images/images/extensions/detective-bertie.png" alt="Detective Bertie running diagnostics" height="200" width="200">
 
 This repository provides a reusable GitHub Actions workflow for phpBB extension developers.
 
