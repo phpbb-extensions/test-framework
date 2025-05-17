@@ -255,18 +255,37 @@ jobs:
               run: .github/setup-database.sh $DB $MYISAM
               working-directory: ./phpBB3
 
-            - name: Install NPM dependencies
+            - name: Set up Node.js
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
               uses: actions/setup-node@v4
               with:
-                  node-version: 20
+                node-version: 20
+
+            - name: Cache NPM dependencies
+              if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
+              uses: actions/cache@v4
+              with:
+                path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/node_modules
+                key: ${{ runner.os }}-node-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/package-lock.json') }}
+                restore-keys: |
+                  ${{ runner.os }}-node-
 
             - name: Run npm ci
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
               run: npm ci
               working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
 
-            - name: Install composer dependencies
+            - name: Cache Composer dependencies
+              if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
+              uses: actions/cache@v4
+              with:
+                path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/vendor
+                key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/composer.lock') }}
+                restore-keys: |
+                  ${{ runner.os }}-composer-${{ matrix.php }}-
+                  ${{ runner.os }}-composer-
+
+            - name: Install Composer dependencies
               if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
               run: composer install
               working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
@@ -404,18 +423,37 @@ jobs:
               run: .github/setup-database.sh $DB $MYISAM
               working-directory: ./phpBB3
 
-            - name: Install NPM dependencies
+            - name: Set up Node.js
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
               uses: actions/setup-node@v4
               with:
-                  node-version: 20
+                node-version: 20
+
+            - name: Cache NPM dependencies
+              if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
+              uses: actions/cache@v4
+              with:
+                path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/node_modules
+                key: ${{ runner.os }}-node-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/package-lock.json') }}
+                restore-keys: |
+                  ${{ runner.os }}-node-
 
             - name: Run npm ci
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
               run: npm ci
               working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
 
-            - name: Install composer dependencies
+            - name: Cache Composer dependencies
+              if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
+              uses: actions/cache@v4
+              with:
+                path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/vendor
+                key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/composer.lock') }}
+                restore-keys: |
+                  ${{ runner.os }}-composer-${{ matrix.php }}-
+                  ${{ runner.os }}-composer-
+
+            - name: Install Composer dependencies
               if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
               run: composer install
               working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
@@ -525,18 +563,37 @@ jobs:
               run: .github/setup-database.sh $DB $MYISAM
               working-directory: ./phpBB3
 
-            - name: Install NPM dependencies
+            - name: Set up Node.js
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
               uses: actions/setup-node@v4
               with:
-                  node-version: 20
+                node-version: 20
+
+            - name: Cache NPM dependencies
+              if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
+              uses: actions/cache@v4
+              with:
+                path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/node_modules
+                key: ${{ runner.os }}-node-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/package-lock.json') }}
+                restore-keys: |
+                  ${{ runner.os }}-node-
 
             - name: Run npm ci
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
               run: npm ci
               working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
 
-            - name: Install composer dependencies
+            - name: Cache Composer dependencies
+              if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
+              uses: actions/cache@v4
+              with:
+                path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/vendor
+                key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/composer.lock') }}
+                restore-keys: |
+                  ${{ runner.os }}-composer-${{ matrix.php }}-
+                  ${{ runner.os }}-composer-
+
+            - name: Install Composer dependencies
               if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
               run: composer install
               working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
@@ -657,18 +714,37 @@ jobs:
                   Set-MpPreference -ExclusionPath "${env:PGDATA}" # Exclude PGDATA directory from Windows Defender
                   Set-MpPreference -DisableRealtimeMonitoring $true
 
-            - name: Install NPM dependencies
+            - name: Set up Node.js
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
               uses: actions/setup-node@v4
               with:
-                  node-version: 20
+                node-version: 20
+
+            - name: Cache NPM dependencies
+              if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
+              uses: actions/cache@v4
+              with:
+                path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/node_modules
+                key: ${{ runner.os }}-node-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/package-lock.json') }}
+                restore-keys: |
+                  ${{ runner.os }}-node-
 
             - name: Run npm ci
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
               run: npm ci
               working-directory: .\phpBB3\phpBB\ext\${{ env.EXTNAME }}
 
-            - name: Install composer dependencies
+            - name: Cache Composer dependencies
+              if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
+              uses: actions/cache@v4
+              with:
+                path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/vendor
+                key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/composer.lock') }}
+                restore-keys: |
+                  ${{ runner.os }}-composer-${{ matrix.php }}-
+                  ${{ runner.os }}-composer-
+
+            - name: Install Composer dependencies
               if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
               run: composer install
               working-directory: .\phpBB3\phpBB\ext\${{ env.EXTNAME }}
