@@ -1,10 +1,17 @@
-# test-framework
+# phpBB Extension Test Framework
 
-Reusable GitHub Actions workflow for testing phpBB extensions across multiple environments.
+<img align="left" src="detective-bertie.png" alt="Detective Bertie running diagnostics" height="200" width="200">
 
-This repository provides a reusable GitHub Actions workflow designed for phpBB extension developers. It supports testing across PHP versions 7.2 through 8.x and database engines including MySQL, PostgreSQL, SQLite, and Microsoft SQL Server. Optional checks include PHP CodeSniffer, Extension Pre Validator (EPV), executable file detection, image ICC profile removal, and code coverage reporting via Codecov.
+This repository provides a reusable GitHub Actions workflow for phpBB extension developers.
 
+It supports testing phpBB extensions across multiple PHP versions and database engines including MySQL, PostgreSQL, SQLite, and Microsoft SQL Server.
+
+Additional checks include PHP CodeSniffer, Extension Pre Validator (EPV), executable file detection, image ICC profile removal, and code coverage reporting via Codecov.
+<br clear="both"/>
+ 
 # How to Use
+
+Your extension's package contents must be located at the root level of the repository. That is, your extension's `composer.json` must be in the **root of the repository**, not inside a subdirectory within the repository.
 
 On GitHub.com, go to your extension's repository, click **Add file → Create new file**, name it `.github/workflows/tests.yml`, add the workflow content shown below, and commit the file. Make sure to replace `acme/demo` with your actual extension vendor/package name, and optionally you may adjust any of the branch names and other checks.
 
@@ -12,25 +19,25 @@ On GitHub.com, go to your extension's repository, click **Add file → Create ne
 name: Tests
 
 on:
-    push:
-        branches:   # Run tests when commits are pushed to these branches in your repo
-            - main
-            - master
-            - develop
-            - dev/*
-    pull_request:   # Run tests when pull requests are made on these branches in your repo
-        branches:
-            - main
-            - master
-            - develop
-            - dev/*
+  push:
+    branches:     # Run tests when commits are pushed to these branches in your repo
+      - main
+      - master
+      - develop
+      - dev/*
+  pull_request:   # Run tests when pull requests are made on these branches in your repo
+    branches:
+      - main
+      - master
+      - develop
+      - dev/*
 
 jobs:
-    call-tests:
-        name: Extension tests
-        uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x # The phpBB branch to run tests with
-        with:
-            EXTNAME: acme/demo   # Your extension vendor/package name
+  call-tests:
+    name: Extension tests
+    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+    with:
+      EXTNAME: acme/demo   # Your extension vendor/package name
 ```
 
 ## Branches
@@ -46,101 +53,86 @@ Use the test-framework branch that matches the phpBB version you're developing f
 > uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
 > ```
 
-## Requirements
-
-- Your extension's package contents must be located at the root level of the repository. That is, the repository **must directly represent the package**, with all relevant files such as `composer.json`, `README`, `LICENSE`, etc. placed directly in the **root of the repository**, **not inside a subdirectory within the repository**.
-- Tests must be defined in your repository using PHPUnit.
-
-## Status Badges
-
-Display a status badge in your repository to indicate the status of your test results.
-
-![Tests](https://github.com/phpbb/phpbb-ext-acme-demo/actions/workflows/tests.yml/badge.svg)
-
-```md
-[![Tests](https://github.com/your-org/your-repo/actions/workflows/tests.yml/badge.svg)](https://github.com/your-org/your-repo/actions/workflows/tests.yml)
-```
-
 # Configuration Options
 
 You can fine-tune this workflow with several optional arguments in the `with` section:
 
 ```yaml
 call-tests:
-    name: Extension tests
-    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
-    with:
-        EXTNAME: acme/demo   # Your extension vendor/package name
+  name: Extension tests
+  uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+  with:
+    EXTNAME: acme/demo   # Your extension vendor/package name
 
-        # OPTIONAL CONFIGURATIONS BELOW
-        # The following arguments are optional and can be omitted if not needed.
+    # OPTIONAL CONFIGURATIONS BELOW
+    # The following arguments are optional and can be omitted if not needed.
 
-        # The phpBB branch to use when running tests.
-        # Default is '3.3.x', which this framework is designed for.
-        # If using a different branch, ensure it's compatible with 3.3.x.
-        # To test with phpBB's master branch, refer to the Branches section of this README.
-        # Default: '3.3.x'
-        PHPBB_BRANCH: '3.3.x'
+    # The phpBB branch to use when running tests.
+    # Default is '3.3.x', which this framework is designed for.
+    # If using a different branch, ensure it's compatible with 3.3.x.
+    # To test with phpBB's master branch, refer to the Branches section of this README.
+    # Default: '3.3.x'
+    PHPBB_BRANCH: '3.3.x'
 
-        # Run phpBB's EPV (Extension Pre Validator)? 1 (yes) or 0 (no)
-        # Default: 1
-        EPV: 1
+    # Run phpBB's EPV (Extension Pre Validator)? 1 (yes) or 0 (no)
+    # Default: 1
+    EPV: 1
 
-        # Check for files with executable permissions? 1 (yes) or 0 (no)
-        # Default: 1
-        EXECUTABLE_FILES: 1
+    # Check for files with executable permissions? 1 (yes) or 0 (no)
+    # Default: 1
+    EXECUTABLE_FILES: 1
 
-        # Remove embedded ICC profiles from images? 1 (yes) or 0 (no)
-        # Default: 1
-        IMAGE_ICC: 1
+    # Remove embedded ICC profiles from images? 1 (yes) or 0 (no)
+    # Default: 1
+    IMAGE_ICC: 1
 
-        # Run CodeSniffer to detect PHP code style issues? 1 (yes) or 0 (no)
-        # Default: 1
-        SNIFF: 1
+    # Run CodeSniffer to detect PHP code style issues? 1 (yes) or 0 (no)
+    # Default: 1
+    SNIFF: 1
 
-        # Run MySQL/MariaDB tests? 1 (yes) or 0 (no)
-        # Default: 1
-        RUN_MYSQL_JOBS: 1
+    # Run MySQL/MariaDB tests? 1 (yes) or 0 (no)
+    # Default: 1
+    RUN_MYSQL_JOBS: 1
 
-        # Run PostgreSQL tests? 1 (yes) or 0 (no)
-        # Default: 1
-        RUN_PGSQL_JOBS: 1
+    # Run PostgreSQL tests? 1 (yes) or 0 (no)
+    # Default: 1
+    RUN_PGSQL_JOBS: 1
 
-        # Run MSSQL and SQLite3 tests? 1 (yes) or 0 (no)
-        # Default: 1
-        RUN_MSSQL_JOBS: 1
+    # Run MSSQL and SQLite3 tests? 1 (yes) or 0 (no)
+    # Default: 1
+    RUN_MSSQL_JOBS: 1
 
-        # Run Windows IIS & PostgreSQL tests? 1 (yes) or 0 (no)
-        # Default: 1
-        RUN_WINDOWS_JOBS: 1
+    # Run Windows IIS & PostgreSQL tests? 1 (yes) or 0 (no)
+    # Default: 1
+    RUN_WINDOWS_JOBS: 1
 
-        # Run functional tests if you have them? 1 (yes) or 0 (no)
-        # Default: 1
-        RUN_FUNCTIONAL_TESTS: 1
+    # Run functional tests if you have them? 1 (yes) or 0 (no)
+    # Default: 1
+    RUN_FUNCTIONAL_TESTS: 1
 
-        # Install NPM dependencies (if your extension relies on them)? 1 (yes) or 0 (no)
-        # Default: 0
-        RUN_NPM_INSTALL: 0
+    # Install NPM dependencies (if your extension relies on them)? 1 (yes) or 0 (no)
+    # Default: 0
+    RUN_NPM_INSTALL: 0
 
-        # Install Composer dependencies (if your extension relies on them)? 1 (yes) or 0 (no)
-        # Default: 0
-        RUN_COMPOSER_INSTALL: 0
+    # Install Composer dependencies (if your extension relies on them)? 1 (yes) or 0 (no)
+    # Default: 0
+    RUN_COMPOSER_INSTALL: 0
 
-        # CUSTOMISE PHP VERSIONS
-        # To override the default PHP versions tested (7.2 through 8.4):
+    # CUSTOMISE PHP VERSIONS
+    # To override the default PHP versions tested (7.2 through 8.4):
 
-        # Preferred PHP version used for all test jobs.
-        # Default: '7.2'
-        PRIMARY_PHP_VERSION: '7.2'
+    # Preferred PHP version used for all test jobs.
+    # Default: '7.2'
+    PRIMARY_PHP_VERSION: '7.2'
 
-        # The MySQL and PostgreSQL jobs run tests across multiple PHP versions.
-        # List the PHP versions you want your extension tested with.
-        # Default: '["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]'
-        PHP_VERSION_MATRIX: '["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]'
+    # The MySQL and PostgreSQL jobs run tests across multiple PHP versions.
+    # List the PHP versions you want your extension tested with.
+    # Default: '["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]'
+    PHP_VERSION_MATRIX: '["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]'
 
-        # Generate a code coverage report (see documentation below)? 1 (yes) or 0 (no)
-        # Default: 0
-        CODECOV: 0
+    # Generate a code coverage report (see documentation below)? 1 (yes) or 0 (no)
+    # Default: 0
+    CODECOV: 0
 ```
 
 # Configuration Examples
@@ -149,81 +141,81 @@ call-tests:
 
 ```yaml
 call-tests:
-    name: Extension tests
-    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
-    with:
-        EXTNAME: acme/demo
+  name: Extension tests
+  uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+  with:
+    EXTNAME: acme/demo
 ```
 
 ## Test an extension with phpBB's master-dev version
 
 ```yaml
 call-tests:
-    name: Extension tests
-    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master
-    with:
-        EXTNAME: acme/demo
+  name: Extension tests
+  uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master
+  with:
+    EXTNAME: acme/demo
 ```
 
 ## Test an extension but skip the PostgreSQL on Linux and Windows tests
 
 ```yaml
 call-tests:
-    name: Extension tests
-    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
-    with:
-        EXTNAME: acme/demo
-        RUN_PGSQL_JOBS: 0
-        RUN_WINDOWS_JOBS: 0
+  name: Extension tests
+  uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+  with:
+    EXTNAME: acme/demo
+    RUN_PGSQL_JOBS: 0
+    RUN_WINDOWS_JOBS: 0
 ```
 
 ## Test an extension that has no PHPUnit tests (basic checks only)
 
 ```yaml
 call-tests:
-    name: Extension tests
-    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
-    with:
-        EXTNAME: acme/demo
-        RUN_MYSQL_JOBS: 0
-        RUN_PGSQL_JOBS: 0
-        RUN_MSSQL_JOBS: 0
-        RUN_WINDOWS_JOBS: 0
+  name: Extension tests
+  uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+  with:
+    EXTNAME: acme/demo
+    RUN_MYSQL_JOBS: 0
+    RUN_PGSQL_JOBS: 0
+    RUN_MSSQL_JOBS: 0
+    RUN_WINDOWS_JOBS: 0
 ```
 
 ## Test an extension that has no Functional tests
 
 ```yaml
 call-tests:
-    name: Extension tests
-    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
-    with:
-        EXTNAME: acme/demo
-        RUN_FUNCTIONAL_TESTS: 0
+  name: Extension tests
+  uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+  with:
+    EXTNAME: acme/demo
+    RUN_FUNCTIONAL_TESTS: 0
 ```
 
 ## Test an extension that only supports PHP 8+
 
 ```yaml
 call-tests:
-    name: Extension tests
-    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
-    with:
-        EXTNAME: acme/demo
-        PRIMARY_PHP_VERSION: '8.0'
-        PHP_VERSION_MATRIX: '["8.0", "8.1", "8.2", "8.3", "8.4"]'
+  name: Extension tests
+  uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+  with:
+    EXTNAME: acme/demo
+    PRIMARY_PHP_VERSION: '8.0'
+    PHP_VERSION_MATRIX: '["8.0", "8.1", "8.2", "8.3", "8.4"]'
 ```
 
 ## Test an extension that has composer and NPM dependencies
 
 ```yaml
 call-tests:
-    name: Extension tests
-    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master
-    with:
-        EXTNAME: acme/demo
-        RUN_NPM_INSTALL: 1
-        RUN_COMPOSER_INSTALL: 1
+  name: Extension tests
+  uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master
+  with:
+    EXTNAME: acme/demo
+    RUN_NPM_INSTALL: 1
+    RUN_COMPOSER_INSTALL: 1
 ```
 
 ## Test an extension + generate a code coverage report
@@ -232,13 +224,13 @@ This test framework supports code coverage reporting through [Codecov.io](https:
 
 ```yaml
 call-tests:
-    name: Extension tests
-    uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
-    with:
-        EXTNAME: acme/demo
-        CODECOV: 1
-    secrets:                                        # This must be included
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }} # This must be included
+  name: Extension tests
+  uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
+  with:
+    EXTNAME: acme/demo
+    CODECOV: 1
+  secrets:                                      # This must be included
+    CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }} # This must be included
 ```
 
 > **Get Your Codecov Token (if required)**
@@ -269,11 +261,21 @@ If testing your extension requires more flexibility than the provided configurat
 
 ```yaml
 call-tests:
-    name: Extension tests
-    uses: your-org/your-repo/.github/workflows/tests.yml@your-branch
-    with:
-        EXTNAME: acme/demo
-        PHPBB_BRANCH: 3.3.x
+  name: Extension tests
+  uses: your-org/your-repo/.github/workflows/tests.yml@your-branch
+  with:
+    EXTNAME: acme/demo
+    PHPBB_BRANCH: 3.3.x
+```
+
+## Status Badges
+
+Display a status badge in your repository to indicate the status of your test results.
+
+![Tests](https://github.com/phpbb/phpbb-ext-acme-demo/actions/workflows/tests.yml/badge.svg)
+
+```md
+[![Tests](https://github.com/your-org/your-repo/actions/workflows/tests.yml/badge.svg)](https://github.com/your-org/your-repo/actions/workflows/tests.yml)
 ```
 
 # Contributing
