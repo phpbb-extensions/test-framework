@@ -2,11 +2,12 @@
 
 <img align="left" src="https://raw.githubusercontent.com/phpbb/website-assets/master/images/images/extensions/detective-bertie.png" alt="Detective Bertie running diagnostics" height="200" width="200">
 
-This repository provides a reusable GitHub Actions workflow for phpBB extension developers.
-
-It supports testing phpBB extensions across multiple PHP versions and database engines including MySQL, PostgreSQL, SQLite, and Microsoft SQL Server.
+This repository provides a reusable GitHub Actions workflow for phpBB extension developers. It supports testing phpBB extensions across multiple PHP versions and database engines including MySQL, PostgreSQL, SQLite, and Microsoft SQL Server.
 
 Additional checks include PHP CodeSniffer, Extension Pre Validator (EPV), executable file detection, image ICC profile removal, and code coverage reporting via Codecov.
+
+[![Build](https://github.com/phpbb-extensions/test-framework/actions/workflows/validate_workflows.yml/badge.svg)](https://github.com/phpbb-extensions/test-framework/actions/workflows/validate_workflows.yml)
+[![Tests](https://github.com/phpbb/phpbb-ext-acme-demo/actions/workflows/tests.yml/badge.svg)](https://github.com/phpbb/phpbb-ext-acme-demo/actions/workflows/tests.yml)
 <br clear="both"/>
  
 # How to Use
@@ -37,10 +38,10 @@ jobs:
     name: Extension tests
     uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master
     with:
-      EXTNAME: acme/demo   # Your extension vendor/package name
+      EXTNAME: acme/demo   # Your extension vendor/package name (required)
 ```
 
-## Branches
+## phpBB Branches
 
 Use the test-framework branch that matches the phpBB version you're developing for:
 
@@ -62,15 +63,15 @@ call-tests:
   name: Extension tests
   uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master
   with:
-    EXTNAME: acme/demo   # Your extension vendor/package name
+    EXTNAME: acme/demo   # Your extension vendor/package name (required)
 
     # OPTIONAL CONFIGURATIONS BELOW
     # The following arguments are optional and can be omitted if not needed.
 
-    # The phpBB branch to use when running tests.
+    # The phpBB repository's branch to use when running tests.
     # Default is 'master', which this framework is designed for.
     # If using a different branch, ensure it's compatible with master.
-    # To test with phpBB's 3.3.x branch, refer to the Branches section of this README.
+    # To test with phpBB's 3.3.x branch, refer to the phpBB Branches section of this README.
     # Default: 'master'
     PHPBB_BRANCH: 'master'
 
