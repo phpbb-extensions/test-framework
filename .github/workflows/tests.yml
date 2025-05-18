@@ -119,7 +119,7 @@ jobs:
                   DB: ${{ matrix.db }}
                   PHP_VERSION: ${{ matrix.php }}
                   NOTESTS: '1'
-              run: .github/setup-phpbb.sh $DB $PHP_VERSION $NOTESTS
+              run: .github/setup-phpbb.sh "$DB" "$PHP_VERSION" "$NOTESTS"
               working-directory: ./phpBB3
 
             - name: Setup EPV
@@ -131,7 +131,7 @@ jobs:
               if: ${{ env.SNIFF != '0' }}
               env:
                   NOTESTS: '1'
-              run: .github/ext-sniff.sh $EXTNAME $NOTESTS
+              run: .github/ext-sniff.sh "$EXTNAME" "$NOTESTS"
               working-directory: ./phpBB3
 
             - name: Check image ICC profiles
@@ -141,7 +141,7 @@ jobs:
 
             - name: Check executable files
               if: ${{ env.EXECUTABLE_FILES != '0' }}
-              run: .github/ext-check-executable-files.sh ./ $EXTNAME
+              run: .github/ext-check-executable-files.sh ./ "$EXTNAME"
               working-directory: ./phpBB3
 
             - name: Run EPV
@@ -225,8 +225,8 @@ jobs:
               env:
                   MATRIX_DB: ${{ matrix.db }}
               run: |
-                  db=$(echo "${MATRIX_DB%%:*}")
-                  echo "db=$db" >> $GITHUB_OUTPUT
+                  db="${MATRIX_DB%%:*}"
+                  echo "db=$db" >> "$GITHUB_OUTPUT"
 
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
@@ -240,14 +240,14 @@ jobs:
                   DB: ${{steps.database-type.outputs.db}}
                   PHP_VERSION: ${{ matrix.php }}
                   NOTESTS: '0'
-              run: .github/setup-phpbb.sh $DB $PHP_VERSION ${NOTESTS:-0}
+              run: .github/setup-phpbb.sh "$DB" "$PHP_VERSION" "${NOTESTS:-0}"
               working-directory: ./phpBB3
 
             - name: Setup database
               env:
                   DB: ${{steps.database-type.outputs.db}}
                   MYISAM: ${{ matrix.MYISAM != 1 && '0' || '1' }}
-              run: .github/setup-database.sh $DB $MYISAM
+              run: .github/setup-database.sh "$DB" "$MYISAM"
               working-directory: ./phpBB3
 
             - name: Set up Node.js
@@ -290,11 +290,10 @@ jobs:
                   DB: ${{steps.database-type.outputs.db}}
                   COVERAGE: ${{ matrix.COVERAGE == '1' && '1' || '0' }}
               run: |
-                  if [ $COVERAGE == '1' ]
-                  then
-                      sed -n '1h;1!H;${;g;s/<\/php>/<\/php>\n\t<coverage>\n\t\t<include>\n\t\t\t<directory>..\/<\/directory>\n\t\t<\/include>\n\t\t<exclude>\n\t\t\t<directory>..\/tests\/<\/directory>\n\t\t\t<directory>..\/language\/<\/directory>\n\t\t\t<directory>..\/migrations\/<\/directory>\n\t\t<\/exclude>\n\t<\/coverage>/g;p;}' .github/phpunit-$DB-github.xml &> phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml
+                  if [ "$COVERAGE" == '1' ]; then
+                      sed -n '1h;1!H;${;g;s/<\/php>/<\/php>\n\t<coverage>\n\t\t<include>\n\t\t\t<directory>..\/<\/directory>\n\t\t<\/include>\n\t\t<exclude>\n\t\t\t<directory>..\/tests\/<\/directory>\n\t\t\t<directory>..\/language\/<\/directory>\n\t\t\t<directory>..\/migrations\/<\/directory>\n\t\t<\/exclude>\n\t<\/coverage>/g;p;}' ".github/phpunit-$DB-github.xml" &> "phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml"
                   else
-                      mkdir -p phpBB/ext/$EXTNAME/.github && cp .github/phpunit* $_
+                      mkdir -p "phpBB/ext/$EXTNAME/.github" && cp .github/phpunit* "$_"
                   fi
               working-directory: ./phpBB3
 
@@ -313,10 +312,10 @@ jobs:
                   COVERAGE: ${{ matrix.COVERAGE == '1' && '1' || '0' }}
               run: |
                   phpBB/vendor/bin/phpunit \
-                      --configuration phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml \
+                      --configuration "phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml" \
                       --bootstrap ./tests/bootstrap.php \
-                      $([[ "$COVERAGE" == "1" ]] && echo "--coverage-clover build/logs/clover.xml") \
-                      $([[ "$FUNCTIONAL_TESTS" == "0" ]] && echo "--exclude-group functional")
+                      "$( [[ "$COVERAGE" == "1" ]] && echo "--coverage-clover build/logs/clover.xml" )" \
+                      "$( [[ "$FUNCTIONAL_TESTS" == "0" ]] && echo "--exclude-group functional" )"
               working-directory: ./phpBB3
 
             - name: Send code coverage
@@ -395,8 +394,8 @@ jobs:
               env:
                   MATRIX_DB: ${{ matrix.db }}
               run: |
-                  db=$(echo "${MATRIX_DB%%:*}")
-                  echo "db=$db" >> $GITHUB_OUTPUT
+                  db="${MATRIX_DB%%:*}"
+                  echo "db=$db" >> "$GITHUB_OUTPUT"
 
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
@@ -410,14 +409,14 @@ jobs:
                   DB: ${{steps.database-type.outputs.db}}
                   PHP_VERSION: ${{ matrix.php }}
                   NOTESTS: '0'
-              run: .github/setup-phpbb.sh $DB $PHP_VERSION ${NOTESTS:-0}
+              run: .github/setup-phpbb.sh "$DB" "$PHP_VERSION" "${NOTESTS:-0}"
               working-directory: ./phpBB3
 
             - name: Setup database
               env:
                   DB: ${{steps.database-type.outputs.db}}
                   MYISAM: '0'
-              run: .github/setup-database.sh $DB $MYISAM
+              run: .github/setup-database.sh "$DB" "$MYISAM"
               working-directory: ./phpBB3
 
             - name: Set up Node.js
@@ -456,7 +455,7 @@ jobs:
               working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
 
             - name: Setup PHPUnit files
-              run: mkdir -p phpBB/ext/$EXTNAME/.github && cp .github/phpunit* $_
+              run: mkdir -p "phpBB/ext/$EXTNAME/.github" && cp .github/phpunit* "$_"
               working-directory: ./phpBB3
 
             - name: Run unit tests
@@ -464,9 +463,9 @@ jobs:
                   DB: ${{steps.database-type.outputs.db}}
               run: |
                  phpBB/vendor/bin/phpunit \
-                    --configuration phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml \
+                    --configuration "phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml" \
                     --bootstrap ./tests/bootstrap.php \
-                    $([[ "$FUNCTIONAL_TESTS" == "0" ]] && echo "--exclude-group functional")
+                    "$( [[ "$FUNCTIONAL_TESTS" == "0" ]] && echo "--exclude-group functional" )"
               working-directory: ./phpBB3
     # END PostgreSQL Job
 
@@ -531,13 +530,13 @@ jobs:
               env:
                   MATRIX_DB: ${{ matrix.db }}
               run: |
-                  if [ $MATRIX_DB == 'mcr.microsoft.com/mssql/server:2019-CU27-ubuntu-20.04' ] || [ $MATRIX_DB == 'mcr.microsoft.com/mssql/server:2022-CU13-ubuntu-22.04' ]
+                  if [ "$MATRIX_DB" == 'mcr.microsoft.com/mssql/server:2019-CU27-ubuntu-20.04' ] || [ "$MATRIX_DB" == 'mcr.microsoft.com/mssql/server:2022-CU13-ubuntu-22.04' ]
                   then
                       db='mssql'
                   else
-                      db=$(echo "${MATRIX_DB%%:*}")
+                      db="${MATRIX_DB%%:*}"
                   fi
-                  echo "db=$db" >> $GITHUB_OUTPUT
+                  echo "db=$db" >> "$GITHUB_OUTPUT"
 
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
@@ -551,14 +550,14 @@ jobs:
                   DB: ${{steps.database-type.outputs.db}}
                   PHP_VERSION: ${{ matrix.php }}
                   NOTESTS: '0'
-              run: .github/setup-phpbb.sh $DB $PHP_VERSION ${NOTESTS:-0}
+              run: .github/setup-phpbb.sh "$DB" "$PHP_VERSION" "${NOTESTS:-0}"
               working-directory: ./phpBB3
 
             - name: Setup database
               env:
                   DB: ${{steps.database-type.outputs.db}}
                   MYISAM: '0'
-              run: .github/setup-database.sh $DB $MYISAM
+              run: .github/setup-database.sh "$DB" "$MYISAM"
               working-directory: ./phpBB3
 
             - name: Set up Node.js
@@ -597,7 +596,7 @@ jobs:
               working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
 
             - name: Setup PHPUnit files
-              run: mkdir -p phpBB/ext/$EXTNAME/.github && cp .github/phpunit* $_
+              run: mkdir -p "phpBB/ext/$EXTNAME/.github" && cp .github/phpunit* "$_"
               working-directory: ./phpBB3
 
             - name: Run unit tests
@@ -605,9 +604,9 @@ jobs:
                   DB: ${{steps.database-type.outputs.db}}
               run: |
                   phpBB/vendor/bin/phpunit \
-                    --configuration phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml \
+                    --configuration "phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml" \
                     --bootstrap ./tests/bootstrap.php \
-                    $([[ "$FUNCTIONAL_TESTS" == "0" ]] && echo "--exclude-group functional")
+                    "$( [[ "$FUNCTIONAL_TESTS" == "0" ]] && echo "--exclude-group functional" )"
               working-directory: ./phpBB3
     # END Other Tests Job
 
