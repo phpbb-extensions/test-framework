@@ -1,12 +1,15 @@
 # phpBB Extension Test Framework
 
-<img align="left" src="https://raw.githubusercontent.com/phpbb/website-assets/master/images/images/extensions/detective-bertie.png" alt="Detective Bertie running diagnostics" height="200" width="200">
+<img align="left" src="https://raw.githubusercontent.com/phpbb/website-assets/master/images/images/extensions/detective-bertie.png" alt="Detective Bertie running diagnostics" height="250" width="250">
 
 This repository provides a reusable GitHub Actions workflow for phpBB extension developers.
 
 It supports testing phpBB extensions across multiple PHP versions and database engines including MySQL, PostgreSQL, SQLite, and Microsoft SQL Server.
 
 Additional checks include PHP CodeSniffer, Extension Pre Validator (EPV), executable file detection, image ICC profile removal, and code coverage reporting via Codecov.
+
+[![Build](https://github.com/phpbb-extensions/test-framework/actions/workflows/validate_workflows.yml/badge.svg)](https://github.com/phpbb-extensions/test-framework/actions/workflows/validate_workflows.yml)
+[![Tests](https://github.com/phpbb/phpbb-ext-acme-demo/actions/workflows/tests.yml/badge.svg)](https://github.com/phpbb/phpbb-ext-acme-demo/actions/workflows/tests.yml)
 <br clear="both"/>
  
 # How to Use
@@ -37,7 +40,7 @@ jobs:
     name: Extension tests
     uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
     with:
-      EXTNAME: acme/demo   # Your extension vendor/package name
+      EXTNAME: acme/demo   # Your extension vendor/package name (required)
 ```
 
 ## phpBB Branches
@@ -62,7 +65,7 @@ call-tests:
   name: Extension tests
   uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
   with:
-    EXTNAME: acme/demo   # Your extension vendor/package name
+    EXTNAME: acme/demo   # Your extension vendor/package name (required)
 
     # OPTIONAL CONFIGURATIONS BELOW
     # The following arguments are optional and can be omitted if not needed.
