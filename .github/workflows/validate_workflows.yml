@@ -1,0 +1,43 @@
+name: Validate Workflows
+
+on:
+  push:
+    paths:
+      - ".github/workflows/**/*.yml"
+      - ".github/workflows/**/*.yaml"
+  pull_request:
+    paths:
+      - ".github/workflows/**/*.yml"
+      - ".github/workflows/**/*.yaml"
+
+jobs:
+  validate:
+    name: Lint & Schema Validate Workflows
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 1: Run actionlint for logic/deprecation checks
+      - name: Run actionlint
+        uses: raven-actions/actionlint@v1
+
+      # Step 2: Set up Python for schema validation
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install check-jsonschema
+        run: pip install check-jsonschema
+
+      # Step 3: Validate each workflow YAML file against schema
+      - name: Validate against GitHub workflow schema
+        run: |
+          for file in $(find .github/workflows -name "*.y*ml"); do
+            echo "Validating $file..."
+            check-jsonschema \
+              --schemafile https://json.schemastore.org/github-workflow.json \
+              "$file"
+          done
