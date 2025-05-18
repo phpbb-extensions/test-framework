@@ -40,7 +40,7 @@ jobs:
       EXTNAME: acme/demo   # Your extension vendor/package name
 ```
 
-## Branches
+## phpBB Branches
 
 Use the test-framework branch that matches the phpBB version you're developing for:
 
@@ -67,10 +67,10 @@ call-tests:
     # OPTIONAL CONFIGURATIONS BELOW
     # The following arguments are optional and can be omitted if not needed.
 
-    # The phpBB branch to use when running tests.
+    # The phpBB repository's branch to use when running tests.
     # Default is '3.3.x', which this framework is designed for.
     # If using a different branch, ensure it's compatible with 3.3.x.
-    # To test with phpBB's master branch, refer to the Branches section of this README.
+    # To test with phpBB's master branch, refer to the phpBB Branches section of this README.
     # Default: '3.3.x'
     PHPBB_BRANCH: '3.3.x'
 
