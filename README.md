@@ -1,10 +1,8 @@
 # phpBB Extension Test Framework
 
-<img align="left" src="https://raw.githubusercontent.com/phpbb/website-assets/master/images/images/extensions/detective-bertie.png" alt="Detective Bertie running diagnostics" height="250" width="250">
+<img align="left" src="https://raw.githubusercontent.com/phpbb/website-assets/master/images/images/extensions/detective-bertie.png" alt="Detective Bertie running diagnostics" height="200" width="200">
 
-This repository provides a reusable GitHub Actions workflow for phpBB extension developers.
-
-It supports testing phpBB extensions across multiple PHP versions and database engines including MySQL, PostgreSQL, SQLite, and Microsoft SQL Server.
+This repository provides a reusable GitHub Actions workflow for phpBB extension developers. It supports testing phpBB extensions across multiple PHP versions and database engines including MySQL, PostgreSQL, SQLite, and Microsoft SQL Server.
 
 Additional checks include PHP CodeSniffer, Extension Pre Validator (EPV), executable file detection, image ICC profile removal, and code coverage reporting via Codecov.
 
