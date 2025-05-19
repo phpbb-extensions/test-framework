@@ -20,17 +20,16 @@ On GitHub.com, go to your extension's repository, click **Add file → Create ne
 name: Tests
 
 on:
-  push:
-    branches:     # Run tests when commits are pushed to these branches in your repo
+  push:           # Run tests when commits are pushed to these branches in your repo,
+    branches:     # ... or remove this branches section to run tests on all your branches
+      - main      # Main production branch
+      - master    # Legacy or alternative main branch
+      - dev/*     # Any feature branches under "dev/", e.g., dev/new-feature
+  
+  pull_request:   # Run tests when pull requests are made on these branches in your repo,
+    branches:     # ... or remove this branches section to run tests on all your branches
       - main
       - master
-      - develop
-      - dev/*
-  pull_request:   # Run tests when pull requests are made on these branches in your repo
-    branches:
-      - main
-      - master
-      - develop
       - dev/*
 
 jobs:
