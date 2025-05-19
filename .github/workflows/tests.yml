@@ -221,7 +221,8 @@ jobs:
               with:
                   path: phpBB3/phpBB/ext/${{ env.EXTNAME }}
 
-            - id: database-type
+            - name: Set database type
+              id: database-type
               env:
                   MATRIX_DB: ${{ matrix.db }}
               run: |
@@ -311,11 +312,18 @@ jobs:
                   DB: ${{steps.database-type.outputs.db}}
                   COVERAGE: ${{ matrix.COVERAGE == '1' && '1' || '0' }}
               run: |
+                  args=()
+                  if [ "$COVERAGE" == "1" ]; then
+                      args+=(--coverage-clover build/logs/clover.xml)
+                  fi
+                  if [ "$FUNCTIONAL_TESTS" == "0" ]; then
+                      args+=(--exclude-group functional)
+                  fi
+
                   phpBB/vendor/bin/phpunit \
                       --configuration "phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml" \
                       --bootstrap ./tests/bootstrap.php \
-                      "$( [[ "$COVERAGE" == "1" ]] && echo "--coverage-clover build/logs/clover.xml" )" \
-                      "$( [[ "$FUNCTIONAL_TESTS" == "0" ]] && echo "--exclude-group functional" )"
+                      "${args[@]}"
               working-directory: ./phpBB3
 
             - name: Send code coverage
@@ -390,7 +398,8 @@ jobs:
               with:
                   path: phpBB3/phpBB/ext/${{ env.EXTNAME }}
 
-            - id: database-type
+            - name: Set database type
+              id: database-type
               env:
                   MATRIX_DB: ${{ matrix.db }}
               run: |
@@ -462,10 +471,15 @@ jobs:
               env:
                   DB: ${{steps.database-type.outputs.db}}
               run: |
-                 phpBB/vendor/bin/phpunit \
-                    --configuration "phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml" \
-                    --bootstrap ./tests/bootstrap.php \
-                    "$( [[ "$FUNCTIONAL_TESTS" == "0" ]] && echo "--exclude-group functional" )"
+                  args=()
+                  if [ "$FUNCTIONAL_TESTS" == "0" ]; then
+                      args+=(--exclude-group functional)
+                  fi
+
+                  phpBB/vendor/bin/phpunit \
+                      --configuration "phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml" \
+                      --bootstrap ./tests/bootstrap.php \
+                      "${args[@]}"
               working-directory: ./phpBB3
     # END PostgreSQL Job
 
@@ -526,7 +540,8 @@ jobs:
               with:
                   path: phpBB3/phpBB/ext/${{ env.EXTNAME }}
 
-            - id: database-type
+            - name: Set database type
+              id: database-type
               env:
                   MATRIX_DB: ${{ matrix.db }}
               run: |
@@ -603,10 +618,15 @@ jobs:
               env:
                   DB: ${{steps.database-type.outputs.db}}
               run: |
+                  args=()
+                  if [ "$FUNCTIONAL_TESTS" == "0" ]; then
+                      args+=(--exclude-group functional)
+                  fi
+
                   phpBB/vendor/bin/phpunit \
-                    --configuration "phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml" \
-                    --bootstrap ./tests/bootstrap.php \
-                    "$( [[ "$FUNCTIONAL_TESTS" == "0" ]] && echo "--exclude-group functional" )"
+                      --configuration "phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml" \
+                      --bootstrap ./tests/bootstrap.php \
+                      "${args[@]}"
               working-directory: ./phpBB3
     # END Other Tests Job
 
