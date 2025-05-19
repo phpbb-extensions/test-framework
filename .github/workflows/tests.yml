@@ -226,7 +226,8 @@ jobs:
               with:
                   path: phpBB3/phpBB/ext/${{ env.EXTNAME }}
 
-            - id: database-type
+            - name: Set database type
+              id: database-type
               env:
                   MATRIX_DB: ${{ matrix.db }}
               run: |
@@ -400,7 +401,8 @@ jobs:
               with:
                   path: phpBB3/phpBB/ext/${{ env.EXTNAME }}
 
-            - id: database-type
+            - name: Set database type
+              id: database-type
               env:
                   MATRIX_DB: ${{ matrix.db }}
               run: |
@@ -540,7 +542,8 @@ jobs:
               with:
                   path: phpBB3/phpBB/ext/${{ env.EXTNAME }}
 
-            - id: database-type
+            - name: Set database type
+              id: database-type
               env:
                   MATRIX_DB: ${{ matrix.db }}
               run: |
