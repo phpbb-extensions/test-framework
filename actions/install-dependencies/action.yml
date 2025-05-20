@@ -1,0 +1,52 @@
+name: Install Dependencies
+description: Sets up Node.js, npm, and Composer for the extension
+
+inputs:
+  RUN_NPM_INSTALL:
+    required: true
+  RUN_COMPOSER_INSTALL:
+    required: true
+  EXTNAME:
+    required: true
+  PHP_VERSION:
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Node.js
+      if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Cache NPM dependencies
+      if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
+      uses: actions/cache@v4
+      with:
+        path: ./phpBB3/phpBB/ext/${{ inputs.EXTNAME }}/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles(format('phpBB3/phpBB/ext/{0}/package-lock.json', inputs.EXTNAME)) }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Run npm ci
+      if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
+      run: npm ci
+      shell: bash
+      working-directory: ./phpBB3/phpBB/ext/${{ inputs.EXTNAME }}
+
+    - name: Cache Composer dependencies
+      if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
+      uses: actions/cache@v4
+      with:
+        path: ./phpBB3/phpBB/ext/${{ inputs.EXTNAME }}/vendor
+        key: ${{ runner.os }}-composer-${{ inputs.PHP_VERSION || 'default' }}-${{ hashFiles(format('phpBB3/phpBB/ext/{0}/composer.lock', inputs.EXTNAME)) }}
+        restore-keys: |
+          ${{ runner.os }}-composer-${{ inputs.PHP_VERSION || 'default' }}-
+          ${{ runner.os }}-composer-
+
+    - name: Install Composer dependencies
+      if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
+      run: composer install
+      shell: bash
+      working-directory: ./phpBB3/phpBB/ext/${{ inputs.EXTNAME }}
