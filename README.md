@@ -9,8 +9,8 @@ Additional checks include PHP CodeSniffer, Extension Pre Validator (EPV), execut
 [![Build](https://github.com/phpbb-extensions/test-framework/actions/workflows/validate_workflows.yml/badge.svg)](https://github.com/phpbb-extensions/test-framework/actions/workflows/validate_workflows.yml)
 [![Tests](https://github.com/phpbb/phpbb-ext-acme-demo/actions/workflows/tests.yml/badge.svg)](https://github.com/phpbb/phpbb-ext-acme-demo/actions/workflows/tests.yml)
 <br clear="both"/>
- 
-# How to Use
+
+## How to Use
 
 Your extension's package contents must be located at the root level of the repository. That is, your extension's `composer.json` must be in the **root of the repository**, not inside a subdirectory within the repository.
 
@@ -40,7 +40,7 @@ jobs:
       EXTNAME: acme/demo   # Your extension vendor/package name (required)
 ```
 
-## phpBB Branches
+### phpBB Branches
 
 Use the test-framework branch that matches the phpBB version you're developing for:
 
@@ -48,12 +48,12 @@ Use the test-framework branch that matches the phpBB version you're developing f
 - `master`: Targets the latest development version of phpBB (`master` branch).
 
 > ‼️ Whichever branch of this framework you choose, be sure it is appended to the `uses:` line after the `@` symbol. For example, if you're targeting the `3.3.x` branch:
-> 
+>
 > ```yaml
 > uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@3.3.x
 > ```
 
-# Configuration Options
+## Configuration Options
 
 You can fine-tune this workflow with several optional arguments in the `with` section:
 
@@ -110,7 +110,7 @@ call-tests:
     # Default: 1
     RUN_FUNCTIONAL_TESTS: 1
 
-    # Install NPM dependencies (if your extension relies on them)? 1 (yes) or 0 (no)
+    # Install npm dependencies (if your extension relies on them)? 1 (yes) or 0 (no)
     # Default: 0
     RUN_NPM_INSTALL: 0
 
@@ -135,9 +135,9 @@ call-tests:
     CODECOV: 0
 ```
 
-# Configuration Examples
+## Configuration Examples
 
-## Test an extension with phpBB 3.3.x
+### Test an extension with phpBB 3.3.x
 
 ```yaml
 call-tests:
@@ -147,7 +147,7 @@ call-tests:
     EXTNAME: acme/demo
 ```
 
-## Test an extension with phpBB's master-dev version
+### Test an extension with phpBB's master-dev version
 
 ```yaml
 call-tests:
@@ -157,7 +157,7 @@ call-tests:
     EXTNAME: acme/demo
 ```
 
-## Test an extension but skip the PostgreSQL on Linux and Windows tests
+### Test an extension but skip the PostgreSQL on Linux and Windows tests
 
 ```yaml
 call-tests:
@@ -169,7 +169,7 @@ call-tests:
     RUN_WINDOWS_JOBS: 0
 ```
 
-## Test an extension that has no PHPUnit tests (basic checks only)
+### Test an extension that has no PHPUnit tests (basic checks only)
 
 ```yaml
 call-tests:
@@ -183,7 +183,7 @@ call-tests:
     RUN_WINDOWS_JOBS: 0
 ```
 
-## Test an extension that has no Functional tests
+### Test an extension that has no Functional tests
 
 ```yaml
 call-tests:
@@ -194,7 +194,7 @@ call-tests:
     RUN_FUNCTIONAL_TESTS: 0
 ```
 
-## Test an extension that only supports PHP 8+
+### Test an extension that only supports PHP 8+
 
 ```yaml
 call-tests:
@@ -206,7 +206,7 @@ call-tests:
     PHP_VERSION_MATRIX: '["8.0", "8.1", "8.2", "8.3", "8.4"]'
 ```
 
-## Test an extension that has composer and NPM dependencies
+### Test an extension that has composer and npm dependencies
 
 ```yaml
 call-tests:
@@ -218,7 +218,7 @@ call-tests:
     RUN_COMPOSER_INSTALL: 1
 ```
 
-## Test an extension + generate a code coverage report
+### Test an extension + generate a code coverage report
 
 This test framework supports code coverage reporting through [Codecov.io](https://codecov.io).
 
@@ -242,13 +242,13 @@ call-tests:
 > - Log in with your **GitHub** account
 > - Go to your [Codecov account settings](https://app.codecov.io/account/token)
 > - Copy the token
-> 
+>
 > Then, in your GitHub repository:
-> 
+>
 > - Navigate to **Settings → Secrets and variables → Actions**
 > - Click **"New repository secret"**
 > - Name it `CODECOV_TOKEN` and paste your token value
-> 
+>
 > 💡 You can view your coverage reports and badges by visiting your extension's page on [Codecov.io](https://codecov.io).
 
 ## When the configuration options aren’t enough
@@ -278,10 +278,10 @@ Display a status badge in your repository to indicate the status of your test re
 [![Tests](https://github.com/your-org/your-repo/actions/workflows/tests.yml/badge.svg)](https://github.com/your-org/your-repo/actions/workflows/tests.yml)
 ```
 
-# Contributing
+## Contributing
 
 Issues and pull requests are welcome! If you have suggestions for improvement, feel free to [open an issue](https://github.com/phpbb-extensions/test-framework/issues).
 
-# License
+## License
 
 [GNU General Public License v2](https://opensource.org/licenses/GPL-2.0)
