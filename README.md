@@ -14,7 +14,9 @@ Additional checks include PHP CodeSniffer, Extension Pre Validator (EPV), execut
 
 Your extension's package contents must be located at the root level of the repository. That is, your extension's `composer.json` must be in the **root of the repository**, not inside a subdirectory within the repository.
 
-On GitHub.com, go to your extension's repository, click **Add file → Create new file**, name it `.github/workflows/tests.yml`, add the workflow content shown below, and commit the file. Make sure to replace `acme/demo` with your actual extension vendor/package name, and optionally you may adjust any of the branch names and other checks.
+On GitHub.com, go to your extension's repository, click **Add file → Create new file**, name it `.github/workflows/tests.yml`, add the workflow content shown below, and commit the file.
+
+> ‼️ Make sure to replace `acme/demo` with your actual extension vendor/package name, and adjust the branch names as needed.
 
 ```yaml
 name: Tests
