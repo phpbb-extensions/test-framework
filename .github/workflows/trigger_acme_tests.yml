@@ -3,7 +3,7 @@ name: Trigger Acme Demo Tests
 on:
   push:
     branches:
-      - 3.3.x
+      - master
 
 jobs:
   dispatch:
@@ -20,3 +20,4 @@ jobs:
           github_token: ${{ secrets.ACME_DEMO_PAT }}
           workflow_file_name: tests.yml
           wait_workflow: false
+          client_payload: '{"branch":"master"}'
