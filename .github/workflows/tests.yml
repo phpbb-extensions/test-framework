@@ -100,12 +100,12 @@ jobs:
               with:
                   repository: phpbb/phpbb
                   ref: ${{ env.PHPBB_BRANCH }}
-                  path: phpBB3
+                  path: phpBB4
 
             - name: Checkout extension
               uses: actions/checkout@v4
               with:
-                  path: phpBB3/phpBB/ext/${{ env.EXTNAME }}
+                  path: phpBB4/phpBB/ext/${{ env.EXTNAME }}
 
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
@@ -120,34 +120,34 @@ jobs:
                   PHP_VERSION: ${{ matrix.php }}
                   NOTESTS: '1'
               run: .github/setup-phpbb.sh "$DB" "$PHP_VERSION" "$NOTESTS"
-              working-directory: ./phpBB3
+              working-directory: ./phpBB4
 
             - name: Setup EPV
               if: ${{ env.EPV != '0' }}
               run: composer require phpbb/epv:dev-master --dev --no-interaction --ignore-platform-reqs
-              working-directory: ./phpBB3/phpBB
+              working-directory: ./phpBB4/phpBB
 
             - name: Run code sniffer
               if: ${{ env.SNIFF != '0' }}
               env:
                   NOTESTS: '1'
               run: .github/ext-sniff.sh "$EXTNAME" "$NOTESTS"
-              working-directory: ./phpBB3
+              working-directory: ./phpBB4
 
             - name: Check image ICC profiles
               if: ${{ env.IMAGE_ICC != '0' }}
               run: .github/check-image-icc-profiles.sh
-              working-directory: ./phpBB3
+              working-directory: ./phpBB4
 
             - name: Check executable files
               if: ${{ env.EXECUTABLE_FILES != '0' }}
               run: .github/ext-check-executable-files.sh ./ "$EXTNAME"
-              working-directory: ./phpBB3
+              working-directory: ./phpBB4
 
             - name: Run EPV
               if: ${{ env.EPV != '0' }}
               run: phpBB/vendor/bin/EPV.php run --dir="phpBB/ext/$EXTNAME/"
-              working-directory: ./phpBB3
+              working-directory: ./phpBB4
     # END Basic Checks Job
 
     # START MySQL and MariaDB Job
@@ -214,12 +214,12 @@ jobs:
               with:
                   repository: phpbb/phpbb
                   ref: ${{ env.PHPBB_BRANCH }}
-                  path: phpBB3
+                  path: phpBB4
 
             - name: Checkout extension
               uses: actions/checkout@v4
               with:
-                  path: phpBB3/phpBB/ext/${{ env.EXTNAME }}
+                  path: phpBB4/phpBB/ext/${{ env.EXTNAME }}
 
             - name: Set database type
               id: database-type
@@ -242,14 +242,14 @@ jobs:
                   PHP_VERSION: ${{ matrix.php }}
                   NOTESTS: '0'
               run: .github/setup-phpbb.sh "$DB" "$PHP_VERSION" "${NOTESTS:-0}"
-              working-directory: ./phpBB3
+              working-directory: ./phpBB4
 
             - name: Setup database
               env:
                   DB: ${{steps.database-type.outputs.db}}
                   MYISAM: ${{ matrix.MYISAM != 1 && '0' || '1' }}
               run: .github/setup-database.sh "$DB" "$MYISAM"
-              working-directory: ./phpBB3
+              working-directory: ./phpBB4
 
             - name: Set up Node.js
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
@@ -261,22 +261,22 @@ jobs:
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
               uses: actions/cache@v4
               with:
-                path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/node_modules
-                key: ${{ runner.os }}-node-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/package-lock.json') }}
+                path: ./phpBB4/phpBB/ext/${{ env.EXTNAME }}/node_modules
+                key: ${{ runner.os }}-node-${{ hashFiles('phpBB4/phpBB/ext/${{ env.EXTNAME }}/package-lock.json') }}
                 restore-keys: |
                   ${{ runner.os }}-node-
 
             - name: Run npm ci
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
               run: npm ci
-              working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
+              working-directory: ./phpBB4/phpBB/ext/${{ env.EXTNAME }}
 
             - name: Cache Composer dependencies
               if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
               uses: actions/cache@v4
               with:
-                path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/vendor
-                key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/composer.lock') }}
+                path: ./phpBB4/phpBB/ext/${{ env.EXTNAME }}/vendor
+                key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('phpBB4/phpBB/ext/${{ env.EXTNAME }}/composer.lock') }}
                 restore-keys: |
                   ${{ runner.os }}-composer-${{ matrix.php }}-
                   ${{ runner.os }}-composer-
@@ -284,7 +284,7 @@ jobs:
             - name: Install Composer dependencies
               if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
               run: composer install
-              working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
+              working-directory: ./phpBB4/phpBB/ext/${{ env.EXTNAME }}
 
             - name: Setup PHPUnit files
               env:
@@ -296,7 +296,7 @@ jobs:
                   else
                       mkdir -p "phpBB/ext/$EXTNAME/.github" && cp .github/phpunit* "$_"
                   fi
-              working-directory: ./phpBB3
+              working-directory: ./phpBB4
 
             - name: Setup Codecove.io Path Fix
               if: ${{ matrix.COVERAGE == '1' }}
@@ -304,7 +304,7 @@ jobs:
                   if [ ! -f .github/codecov.yml ]; then
                       mkdir -p .github
                       echo "fixes:" > .github/codecov.yml
-                      echo "    - \"/phpBB3/phpBB/ext/${EXTNAME}::\"" >> .github/codecov.yml
+                      echo "    - \"/phpBB4/phpBB/ext/${EXTNAME}::\"" >> .github/codecov.yml
                   fi
 
             - name: Run unit tests
@@ -324,7 +324,7 @@ jobs:
                       --configuration "phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml" \
                       --bootstrap ./tests/bootstrap.php \
                       "${args[@]}"
-              working-directory: ./phpBB3
+              working-directory: ./phpBB4
 
             - name: Send code coverage
               if: ${{ matrix.COVERAGE == '1' }}
@@ -391,12 +391,12 @@ jobs:
               with:
                   repository: phpbb/phpbb
                   ref: ${{ env.PHPBB_BRANCH }}
-                  path: phpBB3
+                  path: phpBB4
 
             - name: Checkout extension
               uses: actions/checkout@v4
               with:
-                  path: phpBB3/phpBB/ext/${{ env.EXTNAME }}
+                  path: phpBB4/phpBB/ext/${{ env.EXTNAME }}
 
             - name: Set database type
               id: database-type
@@ -419,14 +419,14 @@ jobs:
                   PHP_VERSION: ${{ matrix.php }}
                   NOTESTS: '0'
               run: .github/setup-phpbb.sh "$DB" "$PHP_VERSION" "${NOTESTS:-0}"
-              working-directory: ./phpBB3
+              working-directory: ./phpBB4
 
             - name: Setup database
               env:
                   DB: ${{steps.database-type.outputs.db}}
                   MYISAM: '0'
               run: .github/setup-database.sh "$DB" "$MYISAM"
-              working-directory: ./phpBB3
+              working-directory: ./phpBB4
 
             - name: Set up Node.js
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
@@ -438,22 +438,22 @@ jobs:
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
               uses: actions/cache@v4
               with:
-                path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/node_modules
-                key: ${{ runner.os }}-node-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/package-lock.json') }}
+                path: ./phpBB4/phpBB/ext/${{ env.EXTNAME }}/node_modules
+                key: ${{ runner.os }}-node-${{ hashFiles('phpBB4/phpBB/ext/${{ env.EXTNAME }}/package-lock.json') }}
                 restore-keys: |
                   ${{ runner.os }}-node-
 
             - name: Run npm ci
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
               run: npm ci
-              working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
+              working-directory: ./phpBB4/phpBB/ext/${{ env.EXTNAME }}
 
             - name: Cache Composer dependencies
               if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
               uses: actions/cache@v4
               with:
-                path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/vendor
-                key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/composer.lock') }}
+                path: ./phpBB4/phpBB/ext/${{ env.EXTNAME }}/vendor
+                key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('phpBB4/phpBB/ext/${{ env.EXTNAME }}/composer.lock') }}
                 restore-keys: |
                   ${{ runner.os }}-composer-${{ matrix.php }}-
                   ${{ runner.os }}-composer-
@@ -461,11 +461,11 @@ jobs:
             - name: Install Composer dependencies
               if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
               run: composer install
-              working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
+              working-directory: ./phpBB4/phpBB/ext/${{ env.EXTNAME }}
 
             - name: Setup PHPUnit files
               run: mkdir -p "phpBB/ext/$EXTNAME/.github" && cp .github/phpunit* "$_"
-              working-directory: ./phpBB3
+              working-directory: ./phpBB4
 
             - name: Run unit tests
               env:
@@ -480,7 +480,7 @@ jobs:
                       --configuration "phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml" \
                       --bootstrap ./tests/bootstrap.php \
                       "${args[@]}"
-              working-directory: ./phpBB3
+              working-directory: ./phpBB4
     # END PostgreSQL Job
 
     # START Other Tests Job (SQLite 3 and mssql)
@@ -533,12 +533,12 @@ jobs:
               with:
                   repository: phpbb/phpbb
                   ref: ${{ env.PHPBB_BRANCH }}
-                  path: phpBB3
+                  path: phpBB4
 
             - name: Checkout extension
               uses: actions/checkout@v4
               with:
-                  path: phpBB3/phpBB/ext/${{ env.EXTNAME }}
+                  path: phpBB4/phpBB/ext/${{ env.EXTNAME }}
 
             - name: Set database type
               id: database-type
@@ -566,14 +566,14 @@ jobs:
                   PHP_VERSION: ${{ matrix.php }}
                   NOTESTS: '0'
               run: .github/setup-phpbb.sh "$DB" "$PHP_VERSION" "${NOTESTS:-0}"
-              working-directory: ./phpBB3
+              working-directory: ./phpBB4
 
             - name: Setup database
               env:
                   DB: ${{steps.database-type.outputs.db}}
                   MYISAM: '0'
               run: .github/setup-database.sh "$DB" "$MYISAM"
-              working-directory: ./phpBB3
+              working-directory: ./phpBB4
 
             - name: Set up Node.js
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
@@ -585,22 +585,22 @@ jobs:
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
               uses: actions/cache@v4
               with:
-                path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/node_modules
-                key: ${{ runner.os }}-node-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/package-lock.json') }}
+                path: ./phpBB4/phpBB/ext/${{ env.EXTNAME }}/node_modules
+                key: ${{ runner.os }}-node-${{ hashFiles('phpBB4/phpBB/ext/${{ env.EXTNAME }}/package-lock.json') }}
                 restore-keys: |
                   ${{ runner.os }}-node-
 
             - name: Run npm ci
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
               run: npm ci
-              working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
+              working-directory: ./phpBB4/phpBB/ext/${{ env.EXTNAME }}
 
             - name: Cache Composer dependencies
               if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
               uses: actions/cache@v4
               with:
-                path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/vendor
-                key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/composer.lock') }}
+                path: ./phpBB4/phpBB/ext/${{ env.EXTNAME }}/vendor
+                key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('phpBB4/phpBB/ext/${{ env.EXTNAME }}/composer.lock') }}
                 restore-keys: |
                   ${{ runner.os }}-composer-${{ matrix.php }}-
                   ${{ runner.os }}-composer-
@@ -608,11 +608,11 @@ jobs:
             - name: Install Composer dependencies
               if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
               run: composer install
-              working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
+              working-directory: ./phpBB4/phpBB/ext/${{ env.EXTNAME }}
 
             - name: Setup PHPUnit files
               run: mkdir -p "phpBB/ext/$EXTNAME/.github" && cp .github/phpunit* "$_"
-              working-directory: ./phpBB3
+              working-directory: ./phpBB4
 
             - name: Run unit tests
               env:
@@ -627,7 +627,7 @@ jobs:
                       --configuration "phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml" \
                       --bootstrap ./tests/bootstrap.php \
                       "${args[@]}"
-              working-directory: ./phpBB3
+              working-directory: ./phpBB4
     # END Other Tests Job
 
     # Test with IIS & PostgreSQL on Windows
@@ -654,12 +654,12 @@ jobs:
               with:
                   repository: phpbb/phpbb
                   ref: ${{ env.PHPBB_BRANCH }}
-                  path: phpBB3
+                  path: phpBB4
 
             - name: Checkout extension
               uses: actions/checkout@v4
               with:
-                  path: phpBB3/phpBB/ext/${{ env.EXTNAME }}
+                  path: phpBB4/phpBB/ext/${{ env.EXTNAME }}
 
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
@@ -676,11 +676,11 @@ jobs:
               run: |
                   Enable-WindowsOptionalFeature -Online -FeatureName IIS-WebServerRole, IIS-WebServer, IIS-CommonHttpFeatures, IIS-ManagementConsole, IIS-HttpErrors, IIS-HttpRedirect, IIS-WindowsAuthentication, IIS-StaticContent, IIS-DefaultDocument, IIS-HttpCompressionStatic, IIS-DirectoryBrowsing, IIS-WebServerManagementTools, IIS-CGI -All
                   Set-Service wuauserv -StartupType Manual
-                  (Get-Content ${env:GITHUB_WORKSPACE}\phpBB3\phpBB\web.config).replace("<configuration>", "<configuration>`n`t<system.web>`n`t`t<customErrors mode=`"Off`"/>`n`t</system.web>") | Set-Content ${env:GITHUB_WORKSPACE}\phpBB3\phpBB\web.config
-                  (Get-Content ${env:GITHUB_WORKSPACE}\phpBB3\phpBB\web.config).replace("`t</system.webServer>", "`t`t<httpErrors errorMode=`"Detailed`" />`n`t</system.webServer>") | Set-Content ${env:GITHUB_WORKSPACE}\phpBB3\phpBB\web.config
+                  (Get-Content ${env:GITHUB_WORKSPACE}\phpBB4\phpBB\web.config).replace("<configuration>", "<configuration>`n`t<system.web>`n`t`t<customErrors mode=`"Off`"/>`n`t</system.web>") | Set-Content ${env:GITHUB_WORKSPACE}\phpBB4\phpBB\web.config
+                  (Get-Content ${env:GITHUB_WORKSPACE}\phpBB4\phpBB\web.config).replace("`t</system.webServer>", "`t`t<httpErrors errorMode=`"Detailed`" />`n`t</system.webServer>") | Set-Content ${env:GITHUB_WORKSPACE}\phpBB4\phpBB\web.config
                   choco install urlrewrite -y
                   Import-Module WebAdministration
-                  New-WebSite -Name 'phpBBTest' -PhysicalPath "${env:GITHUB_WORKSPACE}\phpBB3\phpBB" -Force
+                  New-WebSite -Name 'phpBBTest' -PhysicalPath "${env:GITHUB_WORKSPACE}\phpBB4\phpBB" -Force
                   $session = Get-PSSession -Name WinPSCompatSession
                   $sb = {Set-ItemProperty 'IIS:\Sites\phpBBTest' -name Bindings -value @{protocol='http';bindingInformation='*:80:phpbb.test'}}
                   Invoke-Command -Scriptblock $sb -Session $session
@@ -694,21 +694,21 @@ jobs:
                   New-WebHandler -Name "PHP-FastCGI" -Path "*.php" -Modules FastCgiModule -ScriptProcessor "C:\tools\php\php-cgi.exe" -Verb '*' -ResourceType Either
                   iisreset
                   NET START W3SVC
-                  mkdir "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\cache\test"
-                  mkdir "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\cache\installer"
-                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\cache" /grant Users:F /T
-                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\files" /grant "Users:(OI)(CI)F" /T
-                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\images" /grant "Users:(OI)(CI)F" /T
-                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\store" /grant "Users:(OI)(CI)F" /T
-                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\ext" /grant Users:F /T
-                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\vendor-ext" /grant Users:F /T
-                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\composer-ext.json" /grant Users:F /T
-                  icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\composer-ext.lock" /grant Users:F /T
+                  mkdir "${env:GITHUB_WORKSPACE}\phpBB4\phpBB\cache\test"
+                  mkdir "${env:GITHUB_WORKSPACE}\phpBB4\phpBB\cache\installer"
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB4\phpBB\cache" /grant Users:F /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB4\phpBB\files" /grant "Users:(OI)(CI)F" /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB4\phpBB\images" /grant "Users:(OI)(CI)F" /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB4\phpBB\store" /grant "Users:(OI)(CI)F" /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB4\phpBB\ext" /grant Users:F /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB4\phpBB\vendor-ext" /grant Users:F /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB4\phpBB\composer-ext.json" /grant Users:F /T
+                  icacls "${env:GITHUB_WORKSPACE}\phpBB4\phpBB\composer-ext.lock" /grant Users:F /T
                   $accessRule = New-Object System.Security.AccessControl.FileSystemAccessRule("IIS_IUSRS", "FullControl", "ContainerInherit,ObjectInherit", "None", "Allow")
                   $acl = Get-ACL "${env:TEMP_DIR}"
                   $acl.AddAccessRule($accessRule)
                   Set-ACL -Path "${env:TEMP_DIR}" -ACLObject $acl
-                  cd ${env:GITHUB_WORKSPACE}\phpBB3\phpBB
+                  cd ${env:GITHUB_WORKSPACE}\phpBB4\phpBB
                   php ..\composer.phar install
                   cd ..
 
@@ -743,22 +743,22 @@ jobs:
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
               uses: actions/cache@v4
               with:
-                path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/node_modules
-                key: ${{ runner.os }}-node-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/package-lock.json') }}
+                path: ./phpBB4/phpBB/ext/${{ env.EXTNAME }}/node_modules
+                key: ${{ runner.os }}-node-${{ hashFiles('phpBB4/phpBB/ext/${{ env.EXTNAME }}/package-lock.json') }}
                 restore-keys: |
                   ${{ runner.os }}-node-
 
             - name: Run npm ci
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
               run: npm ci
-              working-directory: .\phpBB3\phpBB\ext\${{ env.EXTNAME }}
+              working-directory: .\phpBB4\phpBB\ext\${{ env.EXTNAME }}
 
             - name: Cache Composer dependencies
               if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
               uses: actions/cache@v4
               with:
-                path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/vendor
-                key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/composer.lock') }}
+                path: ./phpBB4/phpBB/ext/${{ env.EXTNAME }}/vendor
+                key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('phpBB4/phpBB/ext/${{ env.EXTNAME }}/composer.lock') }}
                 restore-keys: |
                   ${{ runner.os }}-composer-${{ matrix.php }}-
                   ${{ runner.os }}-composer-
@@ -766,7 +766,7 @@ jobs:
             - name: Install Composer dependencies
               if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
               run: composer install
-              working-directory: .\phpBB3\phpBB\ext\${{ env.EXTNAME }}
+              working-directory: .\phpBB4\phpBB\ext\${{ env.EXTNAME }}
 
             - name: Setup PHPUnit files
               run: |
@@ -774,7 +774,7 @@ jobs:
                     mkdir "phpBB\ext\$env:EXTNAME\.github" 
                   }
                   Copy-Item ".github\phpunit*" -Destination "phpBB\ext\$env:EXTNAME\.github" -Force
-              working-directory: .\phpBB3
+              working-directory: .\phpBB4
 
             - name: Run unit tests
               run: |
@@ -791,5 +791,5 @@ jobs:
                   }
 
                   phpBB/vendor/bin/phpunit @args
-              working-directory: .\phpBB3
+              working-directory: .\phpBB4
     # END IIS & PostgreSQL on Windows Tests Job
