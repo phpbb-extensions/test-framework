@@ -94,6 +94,9 @@ jobs:
 
         name: PHP ${{ matrix.php }} - ${{ matrix.db }}
 
+        outputs:
+          has-tests: ${{ steps.check-unit-tests.outputs.exists }}
+
         steps:
             - name: Checkout phpBB
               uses: actions/checkout@v4
@@ -106,6 +109,16 @@ jobs:
               uses: actions/checkout@v4
               with:
                   path: phpBB3/phpBB/ext/${{ env.EXTNAME }}
+
+            - name: Check for unit tests
+              id: check-unit-tests
+              run: |
+                  if [ -d "tests" ]; then
+                      echo "exists=true" >> "$GITHUB_OUTPUT"
+                  else
+                      echo "exists=false" >> "$GITHUB_OUTPUT"
+                  fi
+              working-directory: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}
 
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
@@ -159,7 +172,8 @@ jobs:
 
     # START MySQL and MariaDB Job
     mysql-tests:
-        if: ${{ inputs.RUN_MYSQL_JOBS == '1' }}
+        needs: basic-checks
+        if: ${{ inputs.RUN_MYSQL_JOBS == '1' && needs.basic-checks.outputs.has-tests == 'true' }}
         runs-on: ubuntu-22.04
         strategy:
           matrix:
@@ -340,7 +354,8 @@ jobs:
 
     # START PostgreSQL Job
     postgres-tests:
-        if: ${{ inputs.RUN_PGSQL_JOBS == '1' }}
+        needs: basic-checks
+        if: ${{ inputs.RUN_PGSQL_JOBS == '1' && needs.basic-checks.outputs.has-tests == 'true' }}
         runs-on: ubuntu-22.04
         strategy:
           matrix:
@@ -488,7 +503,8 @@ jobs:
 
     # START Other Tests Job (SQLite 3 and mssql)
     other-tests:
-        if: ${{ inputs.RUN_MSSQL_JOBS == '1' }}
+        needs: basic-checks
+        if: ${{ inputs.RUN_MSSQL_JOBS == '1' && needs.basic-checks.outputs.has-tests == 'true' }}
         runs-on: ubuntu-22.04
         strategy:
             matrix:
@@ -634,7 +650,8 @@ jobs:
 
     # Test with IIS & PostgreSQL on Windows
     windows-tests:
-        if: ${{ inputs.RUN_WINDOWS_JOBS == '1' }}
+        needs: basic-checks
+        if: ${{ inputs.RUN_WINDOWS_JOBS == '1' && needs.basic-checks.outputs.has-tests == 'true' }}
         runs-on: windows-latest
         strategy:
             matrix:
