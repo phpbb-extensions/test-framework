@@ -306,7 +306,7 @@ jobs:
                   COVERAGE: ${{ matrix.COVERAGE == '1' && '1' || '0' }}
               run: |
                   if [ "$COVERAGE" == '1' ]; then
-                      sed -n '1h;1!H;${;g;s/<\/php>/<\/php>\n\t<coverage>\n\t\t<include>\n\t\t\t<directory>..\/<\/directory>\n\t\t<\/include>\n\t\t<exclude>\n\t\t\t<directory>..\/tests\/<\/directory>\n\t\t\t<directory>..\/language\/<\/directory>\n\t\t\t<directory>..\/migrations\/<\/directory>\n\t\t<\/exclude>\n\t<\/coverage>/g;p;}' ".github/phpunit-$DB-github.xml" &> "phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml"
+                      sed -n '1h;1!H;${;g;s/<source restrictDeprecations="true">.*<\/source>/<source restrictDeprecations="true"\/>/;s/<\/php>/<\/php>\n\t<coverage>\n\t\t<include>\n\t\t\t<directory>..\/<\/directory>\n\t\t<\/include>\n\t\t<exclude>\n\t\t\t<directory>..\/tests\/<\/directory>\n\t\t\t<directory>..\/language\/<\/directory>\n\t\t\t<directory>..\/migrations\/<\/directory>\n\t\t<\/exclude>\n\t<\/coverage>/g;p;}' ".github/phpunit-$DB-github.xml" &> "phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml"
                   else
                       mkdir -p "phpBB/ext/$EXTNAME/.github" && cp .github/phpunit* "$_"
                   fi
