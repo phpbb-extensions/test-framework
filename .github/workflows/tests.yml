@@ -306,7 +306,7 @@ jobs:
               with:
                 repository: phpbb-extensions/test-framework
                 ref: ${{ env.PHPBB_BRANCH }}
-                path: phpBB4/.shared
+                path: phpBB4/test-framework
 
             - name: Setup PHPUnit files
               env:
@@ -314,7 +314,7 @@ jobs:
                   COVERAGE: ${{ matrix.COVERAGE == '1' && '1' || '0' }}
               run: |
                   if [ "$COVERAGE" == '1' ]; then
-                      mkdir -p "phpBB/ext/$EXTNAME/.github" && cp .shared/phpunit* "$_"
+                      mkdir -p "phpBB/ext/$EXTNAME/.github" && cp test-framework/.github/phpunit* "$_"
                   else
                       mkdir -p "phpBB/ext/$EXTNAME/.github" && cp .github/phpunit* "$_"
                   fi
