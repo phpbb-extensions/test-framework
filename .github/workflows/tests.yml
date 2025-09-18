@@ -300,13 +300,21 @@ jobs:
               run: composer install
               working-directory: ./phpBB4/phpBB/ext/${{ env.EXTNAME }}
 
+            - name: Checkout test-framework
+              if: ${{ matrix.COVERAGE == '1' }}
+              uses: actions/checkout@v4
+              with:
+                repository: phpbb-extensions/test-framework
+                ref: ${{ env.PHPBB_BRANCH }}
+                path: phpBB4/test-framework
+
             - name: Setup PHPUnit files
               env:
                   DB: ${{steps.database-type.outputs.db}}
                   COVERAGE: ${{ matrix.COVERAGE == '1' && '1' || '0' }}
               run: |
                   if [ "$COVERAGE" == '1' ]; then
-                      sed '/<source restrictDeprecations="true">/,/<\/source>/c\\t<source restrictDeprecations="true">\n\t\t<include>\n\t\t\t<directory>../</directory>\n\t\t</include>\n\t\t<exclude>\n\t\t\t<directory>../tests/</directory>\n\t\t\t<directory>../language/</directory>\n\t\t\t<directory>../migrations/</directory>\n\t\t</exclude>\n\t</source>' ".github/phpunit-$DB-github.xml" > "phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml"
+                      mkdir -p "phpBB/ext/$EXTNAME/.github" && cp test-framework/.github/phpunit* "$_"
                   else
                       mkdir -p "phpBB/ext/$EXTNAME/.github" && cp .github/phpunit* "$_"
                   fi
