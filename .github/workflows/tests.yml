@@ -65,7 +65,7 @@ on:
       PHP_VERSION_MATRIX:
         required: false
         type: string
-        default: '["8.1", "8.2", "8.3", "8.4"]'
+        default: '["8.1", "8.2", "8.3", "8.4", "8.5"]'
     secrets:
       CODECOV_TOKEN:
         required: false
@@ -171,7 +171,7 @@ jobs:
         strategy:
           matrix:
             php: ${{ fromJSON(inputs.PHP_VERSION_MATRIX) }}
-            db: ['mysql:8.0', 'mysql:8.1', 'mariadb:10.5']
+            db: ['mysql:8.0', 'mariadb:10.5']
             include:
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'mariadb:10.2'
@@ -187,6 +187,8 @@ jobs:
                 db: 'mariadb:10.10'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'mariadb:10.11'
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'mysql:8.1'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'mysql:5.7'
                 db_alias: 'MyISAM Tests'
@@ -690,7 +692,7 @@ jobs:
               uses: shivammathur/setup-php@v2
               with:
                   php-version: ${{ matrix.php }}
-                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, intl, gd, exif, iconv, pgsql, pdo_pgsql, sodium
+                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, intl, gd, exif, iconv, pgsql, pdo_pgsql, sodium, bz2, fileinfo
                   ini-values: upload_tmp_dir=${{ runner.temp }}, sys_temp_dir=${{ runner.temp }}
                   coverage: none
 
