@@ -347,6 +347,7 @@ jobs:
                   phpBB/vendor/bin/phpunit \
                       --configuration "phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml" \
                       --bootstrap ./tests/bootstrap.php \
+                      --display-all-issues \
                       "${args[@]}"
               working-directory: ./phpBB4
 
@@ -504,6 +505,7 @@ jobs:
                   phpBB/vendor/bin/phpunit \
                       --configuration "phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml" \
                       --bootstrap ./tests/bootstrap.php \
+                      --display-all-issues \
                       "${args[@]}"
               working-directory: ./phpBB4
     # END PostgreSQL Job
@@ -652,6 +654,7 @@ jobs:
                   phpBB/vendor/bin/phpunit \
                       --configuration "phpBB/ext/$EXTNAME/.github/phpunit-$DB-github.xml" \
                       --bootstrap ./tests/bootstrap.php \
+                      --display-all-issues \
                       "${args[@]}"
               working-directory: ./phpBB4
     # END Other Tests Job
