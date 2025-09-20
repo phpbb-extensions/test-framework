@@ -171,7 +171,7 @@ jobs:
         strategy:
           matrix:
             php: ${{ fromJSON(inputs.PHP_VERSION_MATRIX) }}
-            db: ['mysql:8.0', 'mysql:8.1', 'mariadb:10.5']
+            db: ['mysql:8.0', 'mariadb:10.5']
             include:
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'mariadb:10.2'
@@ -187,6 +187,8 @@ jobs:
                 db: 'mariadb:10.10'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'mariadb:10.11'
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'mysql:8.1'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'mysql:5.7'
                 db_alias: 'MyISAM Tests'
