@@ -98,6 +98,10 @@ jobs:
           has-tests: ${{ steps.check-unit-tests.outputs.exists }}
 
         steps:
+            - name: Update Ubuntu package lists
+              run: |
+                  sudo apt-get update -y  --allow-releaseinfo-change
+
             - name: Checkout phpBB
               uses: actions/checkout@v4
               with:
@@ -225,6 +229,10 @@ jobs:
                     - 6379:6379
 
         steps:
+            - name: Update Ubuntu package lists
+              run: |
+                  sudo apt-get update -y  --allow-releaseinfo-change
+
             - name: Checkout phpBB
               uses: actions/checkout@v4
               with:
@@ -412,6 +420,10 @@ jobs:
                     - 6379:6379
 
         steps:
+            - name: Update Ubuntu package lists
+              run: |
+                  sudo apt-get update -y  --allow-releaseinfo-change
+
             - name: Checkout phpBB
               uses: actions/checkout@v4
               with:
@@ -556,6 +568,10 @@ jobs:
                     - 6379:6379
 
         steps:
+            - name: Update Ubuntu package lists
+              run: |
+                  sudo apt-get update -y  --allow-releaseinfo-change
+
             - name: Checkout phpBB
               uses: actions/checkout@v4
               with:
