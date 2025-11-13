@@ -139,6 +139,7 @@ jobs:
               if: ${{ env.EPV != '0' }}
               env:
                   PHP_VERSION: ${{ matrix.php }}
+                  COMPOSER_AUDIT_BLOCK_INSECURE: "false"
               run: |
                   if [[ "$(printf '%s\n' "$PHP_VERSION" "8.0" | sort -V | head -n1)" == "8.0" ]]; then
                     composer require phpbb/epv:dev-master --dev --no-interaction --ignore-platform-reqs --with-all-dependencies
