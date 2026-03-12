@@ -103,14 +103,14 @@ jobs:
                   sudo apt-get update -y  --allow-releaseinfo-change
 
             - name: Checkout phpBB
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   repository: phpbb/phpbb
                   ref: ${{ env.PHPBB_BRANCH }}
                   path: phpBB4
 
             - name: Checkout extension
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   path: phpBB4/phpBB/ext/${{ env.EXTNAME }}
 
@@ -175,7 +175,7 @@ jobs:
         strategy:
           matrix:
             php: ${{ fromJSON(inputs.PHP_VERSION_MATRIX) }}
-            db: ['mysql:8.0', 'mariadb:10.5']
+            db: ['mysql:8.4', 'mysql:9.4']
             include:
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'mariadb:10.2'
@@ -192,15 +192,13 @@ jobs:
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'mariadb:10.11'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
-                db: 'mysql:8.1'
-              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
-                db: 'mysql:5.7'
+                db: 'mysql:8.0'
                 db_alias: 'MyISAM Tests'
                 MYISAM: 1
               - php: ${{ startsWith(inputs.PRIMARY_PHP_VERSION, '7') && '7.4' || inputs.PRIMARY_PHP_VERSION }}
-                db: 'mysql:5.7'
+                db: 'mysql:8.0'
                 COVERAGE: ${{ inputs.CODECOV == '1' && '1' || '0' }}
-                db_alias: ${{ inputs.CODECOV == '1' && 'mysql:5.7 with Coverage' || 'mysql:5.7' }}
+                db_alias: ${{ inputs.CODECOV == '1' && 'mysql:8.0 with Coverage' || 'mysql:8.0' }}
 
         name: PHP ${{ matrix.php }} - ${{ matrix.db_alias != '' && matrix.db_alias || matrix.db }}
 
@@ -234,14 +232,14 @@ jobs:
                   sudo apt-get update -y  --allow-releaseinfo-change
 
             - name: Checkout phpBB
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   repository: phpbb/phpbb
                   ref: ${{ env.PHPBB_BRANCH }}
                   path: phpBB4
 
             - name: Checkout extension
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   path: phpBB4/phpBB/ext/${{ env.EXTNAME }}
 
@@ -277,13 +275,13 @@ jobs:
 
             - name: Set up Node.js
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
-                node-version: 20
+                node-version: 24
 
             - name: Cache NPM dependencies
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                 path: ./phpBB4/phpBB/ext/${{ env.EXTNAME }}/node_modules
                 key: ${{ runner.os }}-node-${{ hashFiles('phpBB4/phpBB/ext/${{ env.EXTNAME }}/package-lock.json') }}
@@ -297,7 +295,7 @@ jobs:
 
             - name: Cache Composer dependencies
               if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                 path: ./phpBB4/phpBB/ext/${{ env.EXTNAME }}/vendor
                 key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('phpBB4/phpBB/ext/${{ env.EXTNAME }}/composer.lock') }}
@@ -312,7 +310,7 @@ jobs:
 
             - name: Checkout test-framework
               if: ${{ matrix.COVERAGE == '1' }}
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                 repository: phpbb-extensions/test-framework
                 ref: ${{ env.PHPBB_BRANCH }}
@@ -374,10 +372,8 @@ jobs:
         strategy:
           matrix:
             php: ${{ fromJSON(inputs.PHP_VERSION_MATRIX) }}
-            db: ['postgres:15']
+            db: ['postgres:9.5']
             include:
-              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
-                db: 'postgres:9.5'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'postgres:9.6'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
@@ -390,6 +386,8 @@ jobs:
                 db: 'postgres:13'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'postgres:14'
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'postgres:15'
 
         name: PHP ${{ matrix.php }} - ${{ matrix.db }}
 
@@ -425,14 +423,14 @@ jobs:
                   sudo apt-get update -y  --allow-releaseinfo-change
 
             - name: Checkout phpBB
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   repository: phpbb/phpbb
                   ref: ${{ env.PHPBB_BRANCH }}
                   path: phpBB4
 
             - name: Checkout extension
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   path: phpBB4/phpBB/ext/${{ env.EXTNAME }}
 
@@ -468,13 +466,13 @@ jobs:
 
             - name: Set up Node.js
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
-                node-version: 20
+                node-version: 24
 
             - name: Cache NPM dependencies
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                 path: ./phpBB4/phpBB/ext/${{ env.EXTNAME }}/node_modules
                 key: ${{ runner.os }}-node-${{ hashFiles('phpBB4/phpBB/ext/${{ env.EXTNAME }}/package-lock.json') }}
@@ -488,7 +486,7 @@ jobs:
 
             - name: Cache Composer dependencies
               if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                 path: ./phpBB4/phpBB/ext/${{ env.EXTNAME }}/vendor
                 key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('phpBB4/phpBB/ext/${{ env.EXTNAME }}/composer.lock') }}
@@ -573,14 +571,14 @@ jobs:
                   sudo apt-get update -y  --allow-releaseinfo-change
 
             - name: Checkout phpBB
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   repository: phpbb/phpbb
                   ref: ${{ env.PHPBB_BRANCH }}
                   path: phpBB4
 
             - name: Checkout extension
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   path: phpBB4/phpBB/ext/${{ env.EXTNAME }}
 
@@ -621,13 +619,13 @@ jobs:
 
             - name: Set up Node.js
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
-                node-version: 20
+                node-version: 24
 
             - name: Cache NPM dependencies
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                 path: ./phpBB4/phpBB/ext/${{ env.EXTNAME }}/node_modules
                 key: ${{ runner.os }}-node-${{ hashFiles('phpBB4/phpBB/ext/${{ env.EXTNAME }}/package-lock.json') }}
@@ -641,7 +639,7 @@ jobs:
 
             - name: Cache Composer dependencies
               if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                 path: ./phpBB4/phpBB/ext/${{ env.EXTNAME }}/vendor
                 key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('phpBB4/phpBB/ext/${{ env.EXTNAME }}/composer.lock') }}
@@ -696,14 +694,14 @@ jobs:
                   git config --system core.eol lf
 
             - name: Checkout phpBB
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   repository: phpbb/phpbb
                   ref: ${{ env.PHPBB_BRANCH }}
                   path: phpBB4
 
             - name: Checkout extension
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   path: phpBB4/phpBB/ext/${{ env.EXTNAME }}
 
@@ -781,13 +779,13 @@ jobs:
 
             - name: Set up Node.js
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
-                node-version: 20
+                node-version: 24
 
             - name: Cache NPM dependencies
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                 path: ./phpBB4/phpBB/ext/${{ env.EXTNAME }}/node_modules
                 key: ${{ runner.os }}-node-${{ hashFiles('phpBB4/phpBB/ext/${{ env.EXTNAME }}/package-lock.json') }}
@@ -801,7 +799,7 @@ jobs:
 
             - name: Cache Composer dependencies
               if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                 path: ./phpBB4/phpBB/ext/${{ env.EXTNAME }}/vendor
                 key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('phpBB4/phpBB/ext/${{ env.EXTNAME }}/composer.lock') }}
