@@ -121,16 +121,16 @@ call-tests:
     RUN_COMPOSER_INSTALL: 0
 
     # CUSTOMISE PHP VERSIONS
-    # To override the default PHP versions tested (8.1 through 8.4):
+    # To override the default PHP versions tested (8.2 through 8.5):
 
     # Preferred PHP version used for all test jobs.
-    # Default: '8.1'
-    PRIMARY_PHP_VERSION: '8.1'
+    # Default: '8.2'
+    PRIMARY_PHP_VERSION: '8.2'
 
     # The MySQL and PostgreSQL jobs run tests across multiple PHP versions.
     # List the PHP versions you want your extension tested with.
-    # Default: '["8.1", "8.2", "8.3", "8.4"]'
-    PHP_VERSION_MATRIX: '["8.1", "8.2", "8.3", "8.4"]'
+    # Default: '["8.2", "8.3", "8.4", "8.5"]'
+    PHP_VERSION_MATRIX: '["8.2", "8.3", "8.4", "8.5"]'
 
     # Generate a code coverage report (see documentation below)? 1 (yes) or 0 (no)
     # Default: 0
@@ -204,8 +204,8 @@ call-tests:
   uses: phpbb-extensions/test-framework/.github/workflows/tests.yml@master
   with:
     EXTNAME: acme/demo
-    PRIMARY_PHP_VERSION: '8.0'
-    PHP_VERSION_MATRIX: '["8.0", "8.1", "8.2", "8.3", "8.4"]'
+    PRIMARY_PHP_VERSION: '8.2'
+    PHP_VERSION_MATRIX: '["8.2", "8.3", "8.4", "8.5"]'
 ```
 
 ### Test an extension that has composer and npm dependencies
