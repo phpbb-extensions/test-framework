@@ -175,7 +175,7 @@ jobs:
         strategy:
           matrix:
             php: ${{ fromJSON(inputs.PHP_VERSION_MATRIX) }}
-            db: ['mysql:8.0', 'mariadb:10.5']
+            db: ['mysql:8.4', 'mysql:9.4']
             include:
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'mariadb:10.2'
@@ -192,15 +192,13 @@ jobs:
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'mariadb:10.11'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
-                db: 'mysql:8.1'
-              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
-                db: 'mysql:5.7'
+                db: 'mysql:8.0'
                 db_alias: 'MyISAM Tests'
                 MYISAM: 1
               - php: ${{ startsWith(inputs.PRIMARY_PHP_VERSION, '7') && '7.4' || inputs.PRIMARY_PHP_VERSION }}
-                db: 'mysql:5.7'
+                db: 'mysql:8.0'
                 COVERAGE: ${{ inputs.CODECOV == '1' && '1' || '0' }}
-                db_alias: ${{ inputs.CODECOV == '1' && 'mysql:5.7 with Coverage' || 'mysql:5.7' }}
+                db_alias: ${{ inputs.CODECOV == '1' && 'mysql:8.0 with Coverage' || 'mysql:8.0' }}
 
         name: PHP ${{ matrix.php }} - ${{ matrix.db_alias != '' && matrix.db_alias || matrix.db }}
 
@@ -374,10 +372,8 @@ jobs:
         strategy:
           matrix:
             php: ${{ fromJSON(inputs.PHP_VERSION_MATRIX) }}
-            db: ['postgres:15']
+            db: ['postgres:9.5']
             include:
-              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
-                db: 'postgres:9.5'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'postgres:9.6'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
@@ -390,6 +386,8 @@ jobs:
                 db: 'postgres:13'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'postgres:14'
+              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
+                db: 'postgres:15'
 
         name: PHP ${{ matrix.php }} - ${{ matrix.db }}
 
