@@ -99,14 +99,14 @@ jobs:
 
         steps:
             - name: Checkout phpBB
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   repository: phpbb/phpbb
                   ref: ${{ env.PHPBB_BRANCH }}
                   path: phpBB3
 
             - name: Checkout extension
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   path: phpBB3/phpBB/ext/${{ env.EXTNAME }}
 
@@ -230,14 +230,14 @@ jobs:
 
         steps:
             - name: Checkout phpBB
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   repository: phpbb/phpbb
                   ref: ${{ env.PHPBB_BRANCH }}
                   path: phpBB3
 
             - name: Checkout extension
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   path: phpBB3/phpBB/ext/${{ env.EXTNAME }}
 
@@ -273,13 +273,13 @@ jobs:
 
             - name: Set up Node.js
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
-                node-version: 20
+                node-version: 24
 
             - name: Cache NPM dependencies
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                 path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/node_modules
                 key: ${{ runner.os }}-node-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/package-lock.json') }}
@@ -293,7 +293,7 @@ jobs:
 
             - name: Cache Composer dependencies
               if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                 path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/vendor
                 key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/composer.lock') }}
@@ -406,14 +406,14 @@ jobs:
 
         steps:
             - name: Checkout phpBB
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   repository: phpbb/phpbb
                   ref: ${{ env.PHPBB_BRANCH }}
                   path: phpBB3
 
             - name: Checkout extension
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   path: phpBB3/phpBB/ext/${{ env.EXTNAME }}
 
@@ -449,13 +449,13 @@ jobs:
 
             - name: Set up Node.js
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
-                node-version: 20
+                node-version: 24
 
             - name: Cache NPM dependencies
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                 path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/node_modules
                 key: ${{ runner.os }}-node-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/package-lock.json') }}
@@ -469,7 +469,7 @@ jobs:
 
             - name: Cache Composer dependencies
               if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                 path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/vendor
                 key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/composer.lock') }}
@@ -548,14 +548,14 @@ jobs:
 
         steps:
             - name: Checkout phpBB
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   repository: phpbb/phpbb
                   ref: ${{ env.PHPBB_BRANCH }}
                   path: phpBB3
 
             - name: Checkout extension
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   path: phpBB3/phpBB/ext/${{ env.EXTNAME }}
 
@@ -596,13 +596,13 @@ jobs:
 
             - name: Set up Node.js
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
-                node-version: 20
+                node-version: 24
 
             - name: Cache NPM dependencies
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                 path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/node_modules
                 key: ${{ runner.os }}-node-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/package-lock.json') }}
@@ -616,7 +616,7 @@ jobs:
 
             - name: Cache Composer dependencies
               if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                 path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/vendor
                 key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/composer.lock') }}
@@ -670,14 +670,14 @@ jobs:
                   git config --system core.eol lf
 
             - name: Checkout phpBB
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   repository: phpbb/phpbb
                   ref: ${{ env.PHPBB_BRANCH }}
                   path: phpBB3
 
             - name: Checkout extension
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   path: phpBB3/phpBB/ext/${{ env.EXTNAME }}
 
@@ -753,13 +753,13 @@ jobs:
 
             - name: Set up Node.js
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
-                node-version: 20
+                node-version: 24
 
             - name: Cache NPM dependencies
               if: ${{ inputs.RUN_NPM_INSTALL == '1' }}
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                 path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/node_modules
                 key: ${{ runner.os }}-node-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/package-lock.json') }}
@@ -773,7 +773,7 @@ jobs:
 
             - name: Cache Composer dependencies
               if: ${{ inputs.RUN_COMPOSER_INSTALL == '1' }}
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                 path: ./phpBB3/phpBB/ext/${{ env.EXTNAME }}/vendor
                 key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('phpBB3/phpBB/ext/${{ env.EXTNAME }}/composer.lock') }}
