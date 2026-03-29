@@ -17,15 +17,15 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       # Step 1: Run actionlint for logic/deprecation checks
       - name: Run actionlint
-        uses: raven-actions/actionlint@v1
+        uses: raven-actions/actionlint@v2
 
       # Step 2: Set up Python for schema validation
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.x"
 
