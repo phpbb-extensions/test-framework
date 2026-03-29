@@ -140,6 +140,7 @@ jobs:
               env:
                   PHP_VERSION: ${{ matrix.php }}
               run: |
+                  php ../composer.phar config audit.block-insecure false
                   if [[ "$(printf '%s\n' "$PHP_VERSION" "8.0" | sort -V | head -n1)" == "8.0" ]]; then
                     php ../composer.phar require phpbb/epv:dev-master --dev --no-interaction --ignore-platform-reqs --with-all-dependencies
                   else
