@@ -359,7 +359,7 @@ jobs:
 
             - name: Send code coverage
               if: ${{ matrix.COVERAGE == '1' }}
-              uses: codecov/codecov-action@v5
+              uses: codecov/codecov-action@v6
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
     # END MySQL and MariaDB Job
