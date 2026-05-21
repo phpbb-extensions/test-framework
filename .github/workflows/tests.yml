@@ -726,8 +726,10 @@ jobs:
                   Set-ACL -Path "${env:TEMP_DIR}" -ACLObject $acl
                   cd ${env:GITHUB_WORKSPACE}\phpBB3\phpBB
                   php ..\composer.phar install
-                  php ..\composer.phar remove phpunit/dbunit --dev --update-with-dependencies
-                  php ..\composer.phar require symfony/yaml:~4.4 misantron/dbunit:~5.0 phpunit/phpunit:^9.3 doctrine/instantiator:^1.4 --dev --update-with-all-dependencies --ignore-platform-reqs
+                  if ("${{ matrix.php }}" -match "^8") {
+                      php ..\composer.phar remove phpunit/dbunit --dev --update-with-dependencies --no-security-blocking
+                      php ..\composer.phar require symfony/yaml:^4.4 misantron/dbunit:5.2.1 phpunit/phpunit:^9.3 doctrine/instantiator:^1.4 --dev --update-with-all-dependencies --ignore-platform-reqs --no-security-blocking
+                  }
                   cd ..
 
             - name: Setup database
