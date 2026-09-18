@@ -178,10 +178,6 @@ jobs:
             db: ['mysql:8.4', 'mysql:9.4']
             include:
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
-                db: 'mariadb:10.2'
-              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
-                db: 'mariadb:10.3'
-              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'mariadb:10.4'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'mariadb:10.6'
@@ -372,12 +368,8 @@ jobs:
         strategy:
           matrix:
             php: ${{ fromJSON(inputs.PHP_VERSION_MATRIX) }}
-            db: ['postgres:9.5']
+            db: ['postgres:10']
             include:
-              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
-                db: 'postgres:9.6'
-              - php: ${{ inputs.PRIMARY_PHP_VERSION }}
-                db: 'postgres:10'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                 db: 'postgres:11'
               - php: ${{ inputs.PRIMARY_PHP_VERSION }}
@@ -393,7 +385,7 @@ jobs:
 
         services:
             postgres:
-                image: ${{ matrix.db != 'postgres:9.5' && matrix.db != 'postgres:9.6' && matrix.db != 'postgres:10' && matrix.db != 'postgres:11' && matrix.db != 'postgres:12' && matrix.db != 'postgres:13' && matrix.db != 'postgres:14' && matrix.db != 'postgres:15' && 'postgres:10' || matrix.db }}
+                image: ${{ matrix.db != 'postgres:10' && matrix.db != 'postgres:11' && matrix.db != 'postgres:12' && matrix.db != 'postgres:13' && matrix.db != 'postgres:14' && matrix.db != 'postgres:15' && 'postgres:10' || matrix.db }}
                 env:
                     POSTGRES_HOST: localhost
                     POSTGRES_USER: postgres
