@@ -385,7 +385,7 @@ jobs:
 
         services:
             postgres:
-                image: ${{ matrix.db != 'postgres:10' && matrix.db != 'postgres:11' && matrix.db != 'postgres:12' && matrix.db != 'postgres:13' && matrix.db != 'postgres:14' && matrix.db != 'postgres:15' && 'postgres:10' || matrix.db }}
+                image: ${{ matrix.db }}
                 env:
                     POSTGRES_HOST: localhost
                     POSTGRES_USER: postgres
@@ -394,7 +394,7 @@ jobs:
                     - 5432:5432
                 options: >-
                     -v /var/run/postgresql:/var/run/postgresql
-                    --health-cmd pg_isready
+                    --health-cmd "pg_isready -U postgres"
                     --health-interval 10s
                     --health-timeout 5s
                     --health-retries 5
@@ -522,11 +522,14 @@ jobs:
                 include:
                     - php: ${{ inputs.PRIMARY_PHP_VERSION }}
                       db: "sqlite3"
+                      db_image: ''
                     - php: ${{ inputs.PRIMARY_PHP_VERSION }}
-                      db: "mcr.microsoft.com/mssql/server:2019-CU27-ubuntu-20.04"
+                      db: "mssql"
+                      db_image: "mcr.microsoft.com/mssql/server:2019-CU27-ubuntu-20.04"
                       db_alias: 'MSSQL 2019'
                     - php: ${{ inputs.PRIMARY_PHP_VERSION }}
-                      db: "mcr.microsoft.com/mssql/server:2022-CU13-ubuntu-22.04"
+                      db: "mssql"
+                      db_image: "mcr.microsoft.com/mssql/server:2022-CU13-ubuntu-22.04"
                       db_alias: 'MSSQL 2022'
 
 
@@ -534,7 +537,7 @@ jobs:
 
         services:
             mssql:
-                image: ${{ matrix.db != 'mcr.microsoft.com/mssql/server:2019-CU27-ubuntu-20.04' && matrix.db != 'mcr.microsoft.com/mssql/server:2022-CU13-ubuntu-22.04' && 'mcr.microsoft.com/mssql/server:2022-CU13-ubuntu-22.04' || matrix.db }}
+                image: ${{ matrix.db_image }}
                 env:
                     SA_PASSWORD: "Pssw0rd_12"
                     ACCEPT_EULA: "y"
@@ -574,19 +577,6 @@ jobs:
               with:
                   path: phpBB4/phpBB/ext/${{ env.EXTNAME }}
 
-            - name: Set database type
-              id: database-type
-              env:
-                  MATRIX_DB: ${{ matrix.db }}
-              run: |
-                  if [ "$MATRIX_DB" == 'mcr.microsoft.com/mssql/server:2019-CU27-ubuntu-20.04' ] || [ "$MATRIX_DB" == 'mcr.microsoft.com/mssql/server:2022-CU13-ubuntu-22.04' ]
-                  then
-                      db='mssql'
-                  else
-                      db="${MATRIX_DB%%:*}"
-                  fi
-                  echo "db=$db" >> "$GITHUB_OUTPUT"
-
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
@@ -596,7 +586,7 @@ jobs:
 
             - name: Setup environment for phpBB
               env:
-                  DB: ${{steps.database-type.outputs.db}}
+                  DB: ${{ matrix.db }}
                   PHP_VERSION: ${{ matrix.php }}
                   NOTESTS: '0'
               run: .github/setup-phpbb.sh "$DB" "$PHP_VERSION" "${NOTESTS:-0}"
@@ -604,7 +594,7 @@ jobs:
 
             - name: Setup database
               env:
-                  DB: ${{steps.database-type.outputs.db}}
+                  DB: ${{ matrix.db }}
                   MYISAM: '0'
               run: .github/setup-database.sh "$DB" "$MYISAM"
               working-directory: ./phpBB4
@@ -650,7 +640,7 @@ jobs:
 
             - name: Run unit tests
               env:
-                  DB: ${{steps.database-type.outputs.db}}
+                  DB: ${{ matrix.db }}
               run: |
                   args=()
                   if [ "$FUNCTIONAL_TESTS" == "0" ]; then
