@@ -701,9 +701,13 @@ jobs:
                   $rewriteInstalled = $false
                   try {
                       choco install urlrewrite -y --no-progress
+                      # Native command failures do not necessarily throw in PowerShell.
+                      if ($LASTEXITCODE -ne 0) {
+                          throw "Chocolatey URL Rewrite installation exited with code $LASTEXITCODE."
+                      }
                       $rewriteInstalled = $true
                   } catch {
-                      Write-Warning "URL Rewrite installation failed; continuing without rewrite-specific IIS configuration."
+                      Write-Warning "URL Rewrite installation failed; continuing without rewrite-specific IIS configuration. $_"
                   }
                   if (-not $rewriteInstalled) {
                       $rewrite = $webConfigXml.SelectSingleNode('/configuration/system.webServer/rewrite')
