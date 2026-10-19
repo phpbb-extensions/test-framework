@@ -698,12 +698,18 @@ jobs:
                   $httpErrors = $webConfigXml.CreateElement('httpErrors')
                   $httpErrors.SetAttribute('errorMode', 'Detailed')
                   [void]$systemWebServer.AppendChild($httpErrors)
+                  $appCmd = Join-Path $env:windir 'System32\inetsrv\appcmd.exe'
                   $rewriteInstalled = $false
                   try {
                       choco install urlrewrite -y --no-progress
                       # Native command failures do not necessarily throw in PowerShell.
                       if ($LASTEXITCODE -ne 0) {
                           throw "Chocolatey URL Rewrite installation exited with code $LASTEXITCODE."
+                      }
+                      # Chocolatey can report success even when its feed failed and no packages were installed.
+                      $iisModules = @(& $appCmd list modules /text:MODULE.NAME)
+                      if ($LASTEXITCODE -ne 0 -or $iisModules -notcontains 'RewriteModule') {
+                          throw 'IIS URL Rewrite module is not registered after installation.'
                       }
                       $rewriteInstalled = $true
                   } catch {
@@ -731,6 +737,11 @@ jobs:
                   New-WebHandler -Name "PHP-FastCGI" -Path "*.php" -Modules FastCgiModule -ScriptProcessor "C:\tools\php\php-cgi.exe" -Verb '*' -ResourceType Either
                   iisreset
                   NET START W3SVC
+                  $iisConfiguration = & $appCmd list config 'phpBBTest/'
+                  if ($LASTEXITCODE -ne 0) {
+                      Get-Content $webConfig
+                      throw "IIS rejected the phpBB test site configuration: $iisConfiguration"
+                  }
                   mkdir "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\cache\test"
                   mkdir "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\cache\installer"
                   icacls "${env:GITHUB_WORKSPACE}\phpBB3\phpBB\cache" /grant Users:F /T
